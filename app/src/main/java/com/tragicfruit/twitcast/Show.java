@@ -5,12 +5,21 @@ package com.tragicfruit.twitcast;
  */
 public class Show {
     private String mTitle;
-
-    public Show(String title) {
-        mTitle = title;
-    }
+    private String mCoverArtUrl;
 
     public String getTitle() {
         return mTitle;
+    }
+
+    public void setTitle(String title) {
+        mTitle = title;
+    }
+
+    public String getCoverArtUrl() {
+        return mCoverArtUrl;
+    }
+
+    public void setCoverArtUrl(String coverArtUrl) {
+        mCoverArtUrl = coverArtUrl;
     }
 }

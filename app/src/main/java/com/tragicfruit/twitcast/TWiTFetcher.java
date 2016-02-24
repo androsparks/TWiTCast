@@ -60,10 +60,7 @@ public class TWiTFetcher {
                     .build();
 
             String jsonBody = getUrlString(uri.toString());
-            Log.d(TAG, "Received JSON: " + jsonBody);
-
             JSONObject jsonObject = new JSONObject(jsonBody);
-
             return parseShows(jsonObject);
 
         } catch (JSONException je) {
@@ -81,9 +78,14 @@ public class TWiTFetcher {
         JSONArray shows = json.getJSONArray("shows");
         for (int i = 0; i < shows.length(); i++) {
             JSONObject show = shows.getJSONObject(i);
-            String title = show.getString("label");
 
-            showList.add(new Show(title));
+            Show newShow = new Show();
+            newShow.setTitle(show.getString("label"));
+
+            JSONObject coverArt = show.getJSONObject("coverArt");
+            newShow.setCoverArtUrl(coverArt.getString("url"));
+
+            showList.add(newShow);
         }
 
         return showList;

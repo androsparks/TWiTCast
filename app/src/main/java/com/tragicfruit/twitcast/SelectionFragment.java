@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,6 +32,8 @@ public class SelectionFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+
         new FetchShowsTask().execute();
     }
 
@@ -42,12 +45,18 @@ public class SelectionFragment extends Fragment {
         mRecyclerView = (RecyclerView) v.findViewById(R.id.fragment_selection_recycler_view);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
 
+        setupAdapter();
+
         return v;
     }
 
     private void setupAdapter() {
         if (isAdded()) {
-            mRecyclerView.setAdapter(new ShowAdapter(mShows));
+            if (mShows != null) {
+                mRecyclerView.setAdapter(new ShowAdapter(mShows));
+            } else {
+                mRecyclerView.setAdapter(new ShowAdapter(new ArrayList<Show>()));
+            }
         }
     }
 
