@@ -14,6 +14,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -41,6 +44,7 @@ public class SelectionFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         setRetainInstance(true);
         updateShows();
 
@@ -73,6 +77,24 @@ public class SelectionFragment extends Fragment {
         setupAdapter();
 
         return v;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_selection, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.refresh_button:
+                mCoverArtDownloader.clearQueue();
+                updateShows();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private void setupAdapter() {
@@ -163,7 +185,9 @@ public class SelectionFragment extends Fragment {
 
             // dismiss loading dialog
             DialogFragment dialog = (DialogFragment) getFragmentManager().findFragmentByTag(DIALOG_UPDATING_SHOWS);
-            dialog.dismiss();
+            if (dialog != null) {
+                dialog.dismiss();
+            }
 
             if (shows == null) {
                 return;
