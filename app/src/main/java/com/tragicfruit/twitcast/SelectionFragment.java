@@ -1,7 +1,11 @@
 package com.tragicfruit.twitcast;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -10,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -24,6 +29,7 @@ public class SelectionFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
     private List<Show> mShows;
+    private CoverArtDownloader<ShowHolder> mCoverArtDownloader;
 
     public static SelectionFragment newInstance() {
         return new SelectionFragment();
@@ -33,8 +39,22 @@ public class SelectionFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-
         new FetchShowsTask().execute();
+
+        Handler responseHandler = new Handler();
+        mCoverArtDownloader = new CoverArtDownloader<>(responseHandler);
+        mCoverArtDownloader.setCoverArtDownloadListener(new CoverArtDownloader.CoverArtDownloadListener<ShowHolder>() {
+            @Override
+            public void onCoverArtDownloaded(ShowHolder holder, Bitmap coverArt) {
+                if (isAdded()) {
+                    Drawable drawable = new BitmapDrawable(getResources(), coverArt);
+                    holder.bindDrawable(drawable);
+                }
+            }
+        });
+        mCoverArtDownloader.start();
+        mCoverArtDownloader.getLooper();
+        Log.i(TAG, "CoverArtDownloader thread started");
     }
 
     @Nullable
@@ -50,6 +70,12 @@ public class SelectionFragment extends Fragment {
         return v;
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mCoverArtDownloader.clearQueue();
+    }
+
     private void setupAdapter() {
         if (isAdded()) {
             if (mShows != null) {
@@ -60,18 +86,24 @@ public class SelectionFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mCoverArtDownloader.quit();
+        Log.i(TAG, "CoverArtDownloader thread destroyed");
+    }
+
     private class ShowHolder extends RecyclerView.ViewHolder {
-        private TextView mTitleTextView;
+        private ImageView mImageView;
 
         public ShowHolder(View itemView) {
             super(itemView);
 
-            mTitleTextView = (TextView) itemView;
+            mImageView = (ImageView) itemView.findViewById(R.id.fragment_selection_image_view);
         }
 
-        public void bindShow(Show show) {
-            String title = show.getTitle();
-            mTitleTextView.setText(title);
+        public void bindDrawable(Drawable drawable) {
+            mImageView.setImageDrawable(drawable);
         }
     }
 
@@ -85,14 +117,16 @@ public class SelectionFragment extends Fragment {
         @Override
         public ShowHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(getActivity());
-            View view = inflater.inflate(android.R.layout.simple_list_item_1, parent, false);
+            View view = inflater.inflate(R.layout.cover_art_item, parent, false);
             return new ShowHolder(view);
         }
 
         @Override
         public void onBindViewHolder(ShowHolder holder, int position) {
             Show show = mShowList.get(position);
-            holder.bindShow(show);
+            Drawable placeholder = getResources().getDrawable(R.drawable.cover_art_placeholder);
+            holder.bindDrawable(placeholder);
+            mCoverArtDownloader.queueDownload(holder, show.getCoverArtUrl());
         }
 
         @Override
