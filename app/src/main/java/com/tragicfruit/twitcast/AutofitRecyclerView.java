@@ -12,7 +12,7 @@ import android.util.AttributeSet;
 public class AutofitRecyclerView extends RecyclerView {
     private GridLayoutManager manager;
     private int columnWidth = -1;
-    private int mStretchedColumnWidth;
+    private int mStretchedSize;
 
     public AutofitRecyclerView(Context context) {
         super(context);
@@ -50,11 +50,11 @@ public class AutofitRecyclerView extends RecyclerView {
             int spanCount = Math.max(1, getMeasuredWidth() / columnWidth);
             manager.setSpanCount(spanCount);
 
-            mStretchedColumnWidth = getMeasuredWidth() / spanCount;
+            mStretchedSize = getMeasuredWidth() / spanCount;
         }
     }
 
-    public int getStretchedColumnWidth() {
-        return mStretchedColumnWidth;
+    public int getStretchedSize() {
+        return mStretchedSize;
     }
 }

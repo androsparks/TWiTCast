@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">TWiT Cast</string>
+    <string name="updating_shows_dialog_text">Updating shows</string>
 </resources>

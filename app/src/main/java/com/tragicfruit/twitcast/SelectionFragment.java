@@ -8,13 +8,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -26,6 +25,7 @@ import java.util.List;
  */
 public class SelectionFragment extends Fragment {
     private static final String TAG = "SelectionFragment";
+    private static final String DIALOG_UPDATING_SHOWS = "updating_shows";
 
     private AutofitRecyclerView mRecyclerView;
     private List<Show> mShows;
@@ -39,7 +39,7 @@ public class SelectionFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        new FetchShowsTask().execute();
+        updateShows();
 
         Handler responseHandler = new Handler();
         mCoverArtDownloader = new CoverArtDownloader<>(responseHandler);
@@ -57,6 +57,16 @@ public class SelectionFragment extends Fragment {
         Log.i(TAG, "CoverArtDownloader thread started");
     }
 
+    private UpdatingShowsFragment mLoadingDialog;
+
+    private void updateShows() {
+        mLoadingDialog = UpdatingShowsFragment.newInstance();
+        FragmentManager fm = getFragmentManager();
+        mLoadingDialog.show(fm, DIALOG_UPDATING_SHOWS);
+
+        new FetchShowsTask().execute(); // TODO: handle no internet connection
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -64,13 +74,12 @@ public class SelectionFragment extends Fragment {
 
         mRecyclerView = (AutofitRecyclerView) v.findViewById(R.id.fragment_selection_recycler_view);
 
-        setupAdapter();
-
         return v;
     }
 
     private void setupAdapter() {
         if (isAdded()) {
+            mLoadingDialog.dismiss();
             if (mShows != null) {
                 mRecyclerView.setAdapter(new ShowAdapter(mShows));
             } else {
@@ -95,8 +104,8 @@ public class SelectionFragment extends Fragment {
             mImageView = (ImageView) itemView.findViewById(R.id.fragment_selection_image_view);
 
             // stretch image if not wide enough
-            int columnWidth = mRecyclerView.getStretchedColumnWidth();
-            mImageView.setLayoutParams(new FrameLayout.LayoutParams(columnWidth, columnWidth));
+            int size = mRecyclerView.getStretchedSize();
+            mImageView.setLayoutParams(new FrameLayout.LayoutParams(size, size));
         }
 
         public void bindDrawable(Drawable drawable) {
@@ -147,6 +156,10 @@ public class SelectionFragment extends Fragment {
         protected void onPostExecute(List<Show> shows) {
             mShows = shows;
             setupAdapter();
+
+            if (shows == null) {
+                return;
+            }
 
             for (Show show: mShows) {
                 mCoverArtDownloader.queueDownload(show, show.getCoverArtUrl());
