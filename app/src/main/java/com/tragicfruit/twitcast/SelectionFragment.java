@@ -1,5 +1,6 @@
 package com.tragicfruit.twitcast;
 
+import android.app.Dialog;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -7,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,6 +32,7 @@ public class SelectionFragment extends Fragment {
     private AutofitRecyclerView mRecyclerView;
     private List<Show> mShows;
     private CoverArtDownloader<Show> mCoverArtDownloader;
+    private UpdatingShowsFragment mLoadingDialog;
 
     public static SelectionFragment newInstance() {
         return new SelectionFragment();
@@ -46,7 +49,7 @@ public class SelectionFragment extends Fragment {
         mCoverArtDownloader.setCoverArtDownloadListener(new CoverArtDownloader.CoverArtDownloadListener<Show>() {
             @Override
             public void onCoverArtDownloaded(Show show, Bitmap coverArt) {
-                if (isAdded()) {
+                if (isAdded() && mRecyclerView.getAdapter() != null) {
                     show.setCoverArt(new BitmapDrawable(getResources(), coverArt));
                     mRecyclerView.getAdapter().notifyDataSetChanged();
                 }
@@ -57,13 +60,7 @@ public class SelectionFragment extends Fragment {
         Log.i(TAG, "CoverArtDownloader thread started");
     }
 
-    private UpdatingShowsFragment mLoadingDialog;
-
     private void updateShows() {
-        mLoadingDialog = UpdatingShowsFragment.newInstance();
-        FragmentManager fm = getFragmentManager();
-        mLoadingDialog.show(fm, DIALOG_UPDATING_SHOWS);
-
         new FetchShowsTask().execute(); // TODO: handle no internet connection
     }
 
@@ -73,13 +70,13 @@ public class SelectionFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_selection, container, false);
 
         mRecyclerView = (AutofitRecyclerView) v.findViewById(R.id.fragment_selection_recycler_view);
+        setupAdapter();
 
         return v;
     }
 
     private void setupAdapter() {
         if (isAdded()) {
-            mLoadingDialog.dismiss();
             if (mShows != null) {
                 mRecyclerView.setAdapter(new ShowAdapter(mShows));
             } else {
@@ -146,6 +143,13 @@ public class SelectionFragment extends Fragment {
     }
 
     private class FetchShowsTask extends AsyncTask<Void, Void, List<Show>> {
+        @Override
+        protected void onPreExecute() {
+            // show loading dialog
+            mLoadingDialog = UpdatingShowsFragment.newInstance();
+            FragmentManager fm = getFragmentManager();
+            mLoadingDialog.show(fm, DIALOG_UPDATING_SHOWS);
+        }
 
         @Override
         protected List<Show> doInBackground(Void... params) {
@@ -156,6 +160,10 @@ public class SelectionFragment extends Fragment {
         protected void onPostExecute(List<Show> shows) {
             mShows = shows;
             setupAdapter();
+
+            // dismiss loading dialog
+            DialogFragment dialog = (DialogFragment) getFragmentManager().findFragmentByTag(DIALOG_UPDATING_SHOWS);
+            dialog.dismiss();
 
             if (shows == null) {
                 return;
