@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
@@ -25,7 +27,7 @@ import java.util.List;
 public class SelectionFragment extends Fragment {
     private static final String TAG = "SelectionFragment";
 
-    private RecyclerView mRecyclerView;
+    private AutofitRecyclerView mRecyclerView;
     private List<Show> mShows;
     private CoverArtDownloader<Show> mCoverArtDownloader;
 
@@ -60,18 +62,11 @@ public class SelectionFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_selection, container, false);
 
-        mRecyclerView = (RecyclerView) v.findViewById(R.id.fragment_selection_recycler_view);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+        mRecyclerView = (AutofitRecyclerView) v.findViewById(R.id.fragment_selection_recycler_view);
 
         setupAdapter();
 
         return v;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        mCoverArtDownloader.clearQueue();
     }
 
     private void setupAdapter() {
@@ -93,24 +88,19 @@ public class SelectionFragment extends Fragment {
 
     private class ShowHolder extends RecyclerView.ViewHolder {
         private ImageView mImageView;
-        private Show mShow;
 
         public ShowHolder(View itemView) {
             super(itemView);
 
             mImageView = (ImageView) itemView.findViewById(R.id.fragment_selection_image_view);
-        }
 
-        public void bindShow(Show show) {
-            mShow = show;
+            // stretch image if not wide enough
+            int columnWidth = mRecyclerView.getStretchedColumnWidth();
+            mImageView.setLayoutParams(new FrameLayout.LayoutParams(columnWidth, columnWidth));
         }
 
         public void bindDrawable(Drawable drawable) {
             mImageView.setImageDrawable(drawable);
-        }
-
-        public Show getShow() {
-            return mShow;
         }
     }
 
@@ -131,7 +121,6 @@ public class SelectionFragment extends Fragment {
         @Override
         public void onBindViewHolder(ShowHolder holder, int position) {
             Show show = mShowList.get(position);
-            holder.bindShow(show);
 
             if (show.getCoverArt() == null) {
                 Drawable placeholder = getResources().getDrawable(R.drawable.cover_art_placeholder);

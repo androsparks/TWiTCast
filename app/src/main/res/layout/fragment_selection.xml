@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.RecyclerView
+<com.tragicfruit.twitcast.AutofitRecyclerView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/fragment_selection_recycler_view"
+    android:columnWidth="180dp"
     android:layout_height="match_parent"
     android:layout_width="match_parent"/>
