@@ -83,7 +83,8 @@ public class TWiTFetcher {
             newShow.setTitle(show.getString("label"));
 
             JSONObject coverArt = show.getJSONObject("coverArt");
-            newShow.setCoverArtUrl(coverArt.getString("url"));
+            JSONObject derivatives = coverArt.getJSONObject("derivatives");
+            newShow.setCoverArtUrl(derivatives.getString("twit_album_art_300x300"));
 
             showList.add(newShow);
         }

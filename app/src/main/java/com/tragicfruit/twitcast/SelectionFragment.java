@@ -15,9 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +27,7 @@ public class SelectionFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
     private List<Show> mShows;
-    private CoverArtDownloader<ShowHolder> mCoverArtDownloader;
+    private CoverArtDownloader<Show> mCoverArtDownloader;
 
     public static SelectionFragment newInstance() {
         return new SelectionFragment();
@@ -43,12 +41,12 @@ public class SelectionFragment extends Fragment {
 
         Handler responseHandler = new Handler();
         mCoverArtDownloader = new CoverArtDownloader<>(responseHandler);
-        mCoverArtDownloader.setCoverArtDownloadListener(new CoverArtDownloader.CoverArtDownloadListener<ShowHolder>() {
+        mCoverArtDownloader.setCoverArtDownloadListener(new CoverArtDownloader.CoverArtDownloadListener<Show>() {
             @Override
-            public void onCoverArtDownloaded(ShowHolder holder, Bitmap coverArt) {
+            public void onCoverArtDownloaded(Show show, Bitmap coverArt) {
                 if (isAdded()) {
-                    Drawable drawable = new BitmapDrawable(getResources(), coverArt);
-                    holder.bindDrawable(drawable);
+                    show.setCoverArt(new BitmapDrawable(getResources(), coverArt));
+                    mRecyclerView.getAdapter().notifyDataSetChanged();
                 }
             }
         });
@@ -95,6 +93,7 @@ public class SelectionFragment extends Fragment {
 
     private class ShowHolder extends RecyclerView.ViewHolder {
         private ImageView mImageView;
+        private Show mShow;
 
         public ShowHolder(View itemView) {
             super(itemView);
@@ -102,8 +101,16 @@ public class SelectionFragment extends Fragment {
             mImageView = (ImageView) itemView.findViewById(R.id.fragment_selection_image_view);
         }
 
+        public void bindShow(Show show) {
+            mShow = show;
+        }
+
         public void bindDrawable(Drawable drawable) {
             mImageView.setImageDrawable(drawable);
+        }
+
+        public Show getShow() {
+            return mShow;
         }
     }
 
@@ -124,9 +131,14 @@ public class SelectionFragment extends Fragment {
         @Override
         public void onBindViewHolder(ShowHolder holder, int position) {
             Show show = mShowList.get(position);
-            Drawable placeholder = getResources().getDrawable(R.drawable.cover_art_placeholder);
-            holder.bindDrawable(placeholder);
-            mCoverArtDownloader.queueDownload(holder, show.getCoverArtUrl());
+            holder.bindShow(show);
+
+            if (show.getCoverArt() == null) {
+                Drawable placeholder = getResources().getDrawable(R.drawable.cover_art_placeholder);
+                holder.bindDrawable(placeholder);
+            } else {
+                holder.bindDrawable(show.getCoverArt());
+            }
         }
 
         @Override
@@ -146,6 +158,10 @@ public class SelectionFragment extends Fragment {
         protected void onPostExecute(List<Show> shows) {
             mShows = shows;
             setupAdapter();
+
+            for (Show show: mShows) {
+                mCoverArtDownloader.queueDownload(show, show.getCoverArtUrl());
+            }
         }
     }
 }
