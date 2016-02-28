@@ -80,6 +80,7 @@ public class TWiTFetcher {
             JSONObject show = shows.getJSONObject(i);
 
             Show newShow = new Show();
+            newShow.setId(show.getInt("id"));
             newShow.setTitle(show.getString("label"));
 
             JSONObject coverArt = show.getJSONObject("coverArt");

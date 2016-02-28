@@ -1,6 +1,5 @@
 package com.tragicfruit.twitcast;
 
-import android.app.Dialog;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -46,7 +45,10 @@ public class SelectionFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         setRetainInstance(true);
-        updateShows();
+
+        if (mShows == null) {
+            updateShows();
+        }
 
         Handler responseHandler = new Handler();
         mCoverArtDownloader = new CoverArtDownloader<>(responseHandler);

@@ -10,6 +10,7 @@ public class Show {
     private String mTitle;
     private String mCoverArtUrl;
     private Drawable mCoverArt;
+    private int mId;
 
     public String getTitle() {
         return mTitle;
@@ -33,5 +34,13 @@ public class Show {
 
     public void setCoverArt(Drawable coverArt) {
         mCoverArt = coverArt;
+    }
+
+    public int getId() {
+        return mId;
+    }
+
+    public void setId(int id) {
+        mId = id;
     }
 }
