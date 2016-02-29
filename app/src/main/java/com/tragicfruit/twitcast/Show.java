@@ -15,6 +15,7 @@ public class Show {
     private Drawable mCoverArt;
     private int mId;
     private String mCleanPath;
+    private String mDescription;
 
     public Show() {
         mEpisodes = new ArrayList<>();
@@ -66,5 +67,13 @@ public class Show {
 
     public List<Episode> getEpisodes() {
         return mEpisodes;
+    }
+
+    public String getDescription() {
+        return mDescription;
+    }
+
+    public void setDescription(String description) {
+        mDescription = description;
     }
 }

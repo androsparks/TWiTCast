@@ -93,6 +93,7 @@ public class TWiTFetcher {
             }
 
             newShow.setTitle(show.getString("label"));
+            newShow.setDescription(show.getString("tagLine"));
             newShow.setCleanPath(show.getString("cleanPath"));
 
             JSONObject coverArt = show.getJSONObject("coverArt");

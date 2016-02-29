@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -20,6 +21,10 @@ public class EpisodeListFragment extends Fragment {
     private static final String ARG_SHOW_ID = "show_id";
 
     private RecyclerView mRecyclerView;
+    private ImageView mCoverArtImageView;
+    private TextView mTitleTextView;
+    private TextView mDescriptionTextView;
+
     private Show mShow;
     private List<Episode> mEpisodeList;
 
@@ -51,8 +56,23 @@ public class EpisodeListFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_episode_list, container, false);
 
         mRecyclerView = (RecyclerView) v.findViewById(R.id.fragment_episode_list_recycler_view);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()) {
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        });
         mRecyclerView.setAdapter(new EpisodeAdapter());
+        mRecyclerView.setFocusable(false); // to allow scroll view to start at the top
+
+        mCoverArtImageView = (ImageView) v.findViewById(R.id.show_cover_art);
+        mCoverArtImageView.setImageDrawable(mShow.getCoverArt());
+
+        mTitleTextView = (TextView) v.findViewById(R.id.show_title);
+        mTitleTextView.setText(mShow.getTitle());
+
+        mDescriptionTextView = (TextView) v.findViewById(R.id.show_description);
+        mDescriptionTextView.setText(mShow.getDescription());
 
         return v;
     }
