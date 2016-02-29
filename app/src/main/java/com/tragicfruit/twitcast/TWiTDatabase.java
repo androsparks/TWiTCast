@@ -39,6 +39,7 @@ public class TWiTDatabase {
         Show showForEpisode = getShowFromEpisode(episode);
         if (showForEpisode != null) {
             showForEpisode.addEpisode(episode);
+            mEpisodeCount += 1;
             Log.d(TAG, episode.getTitle() + " added to " + showForEpisode.getTitle());
         } else {
             Log.d(TAG, "No show found for " + episode.getTitle());

@@ -134,6 +134,10 @@ public class TWiTFetcher {
         }
 
         String nextPageUrl = json.getJSONObject("_links").getJSONObject("next").getString("href");
-
+        if (mDatabase.getEpisodeCount() < 50) {
+            fetchEpisodes(nextPageUrl);
+        } else {
+            Log.d(TAG, "Episode count: " + mDatabase.getEpisodeCount());
+        }
     }
 }
