@@ -22,6 +22,12 @@ public class TWiTFetcher {
     private static final String TAG = "TWiTFetcher";
     private static final Uri ENDPOINT = Uri.parse("https://twit.tv/api/v1.0");
 
+    private TWiTDatabase mDatabase;
+
+    public TWiTFetcher() {
+        mDatabase = TWiTDatabase.get();
+    }
+
     public byte[] getUrlBytes(String urlSpec) throws IOException {
         URL url = new URL(urlSpec);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -82,6 +88,7 @@ public class TWiTFetcher {
             Show newShow = new Show();
             newShow.setId(show.getInt("id"));
             newShow.setTitle(show.getString("label"));
+            newShow.setCleanPath(show.getString("cleanPath"));
 
             JSONObject coverArt = show.getJSONObject("coverArt");
             JSONObject derivatives = coverArt.getJSONObject("derivatives");
@@ -91,5 +98,64 @@ public class TWiTFetcher {
         }
 
         return showList;
+    }
+
+    public void fetchEpisodes(String url) {
+        try {
+            if (url == null) {
+                 url = ENDPOINT.buildUpon()
+                        .appendPath("episodes")
+                        .build()
+                        .toString();
+            }
+
+            String jsonBody = getUrlString(url);
+            JSONObject jsonObject = new JSONObject(jsonBody);
+            parseEpisodes(jsonObject);
+
+        } catch (JSONException je) {
+            Log.e(TAG, "Failed to parse JSON", je);
+//            return null;
+        } catch (IOException ioe) {
+            Log.e(TAG, "Failed to fetch episodes", ioe);
+//            return null;
+        }
+    }
+
+    private void parseEpisodes(JSONObject json) throws JSONException {
+        JSONArray episodes = json.getJSONArray("episodes");
+
+        for (int i = 0; i < episodes.length(); i++) {
+            JSONObject episodeJson = episodes.getJSONObject(i);
+
+            Episode episode = new Episode();
+            episode.setTitle(episodeJson.getString("label"));
+            episode.setCleanPath(episodeJson.getString("cleanPath"));
+
+            Show showForEpisode = getShowFromEpisode(episode);
+            if (showForEpisode != null) {
+                showForEpisode.addEpisode(episode);
+            } else {
+                Log.d(TAG, "No show found for " + episode.getTitle());
+            }
+        }
+
+        String nextPage = json.getJSONObject("_links").getJSONObject("next").getString("href");
+        Log.d(TAG, nextPage);
+    }
+
+    private Show getShowFromEpisode(Episode episode) {
+        List<Show> showList = mDatabase.getShows();
+
+        for (Show show: showList) {
+            String showCleanPath = show.getCleanPath();
+            String episodeCleanPath = episode.getCleanPath();
+
+            if (episodeCleanPath.contains(showCleanPath)) {
+                return show;
+            }
+        }
+
+        return null;
     }
 }

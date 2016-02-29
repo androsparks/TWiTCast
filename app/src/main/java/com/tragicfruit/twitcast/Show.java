@@ -1,16 +1,27 @@
 package com.tragicfruit.twitcast;
 
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Jeremy on 24/02/2016.
  */
 public class Show {
+    private static final String TAG = "Show";
+
+    private List<Episode> mEpisodes;
     private String mTitle;
     private String mCoverArtUrl;
     private Drawable mCoverArt;
     private int mId;
+    private String mCleanPath;
+
+    public Show() {
+        mEpisodes = new ArrayList<>();
+    }
 
     public String getTitle() {
         return mTitle;
@@ -42,5 +53,20 @@ public class Show {
 
     public void setId(int id) {
         mId = id;
+    }
+
+    public String getCleanPath() {
+        return mCleanPath;
+    }
+
+    public void setCleanPath(String cleanPath) {
+        mCleanPath = cleanPath;
+    }
+
+    public void addEpisode(Episode episode) {
+        if (episode != null) {
+            mEpisodes.add(episode);
+            Log.d(TAG, episode.getTitle() + " added to " + getTitle());
+        }
     }
 }

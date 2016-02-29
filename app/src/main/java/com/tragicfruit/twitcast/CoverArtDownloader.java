@@ -43,7 +43,7 @@ public class CoverArtDownloader<T> extends HandlerThread {
             public void handleMessage(Message msg) {
                 if (msg.what == MESSAGE_DOWNLOAD) {
                     T target = (T) msg.obj;
-                    Log.i(TAG, "Got a request for URL: " + mRequestMap.get(target));
+//                    Log.i(TAG, "Got a request for URL: " + mRequestMap.get(target));
                     handleRequest(target);
                 }
             }
@@ -51,7 +51,7 @@ public class CoverArtDownloader<T> extends HandlerThread {
     }
 
     public void queueDownload(T target, String url) {
-        Log.i(TAG, "Got a URL: " + url);
+//        Log.i(TAG, "Got a URL: " + url);
 
         if (url == null) {
             mRequestMap.remove(target);
@@ -87,7 +87,7 @@ public class CoverArtDownloader<T> extends HandlerThread {
                 }
             });
 
-            Log.i(TAG, "Bitmap created");
+//            Log.i(TAG, "Bitmap created");
         } catch (IOException ioe) {
             Log.e(TAG, "Error downloading image", ioe);
         }

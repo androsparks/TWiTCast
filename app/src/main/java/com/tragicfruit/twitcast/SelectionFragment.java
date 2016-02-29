@@ -32,9 +32,9 @@ public class SelectionFragment extends Fragment {
     private static final String DIALOG_UPDATING_SHOWS = "updating_shows";
 
     private AutofitRecyclerView mRecyclerView;
-    private List<Show> mShows;
     private CoverArtDownloader<Show> mCoverArtDownloader;
     private UpdatingShowsFragment mLoadingDialog;
+    private TWiTDatabase mDatabase;
 
     public static SelectionFragment newInstance() {
         return new SelectionFragment();
@@ -46,7 +46,9 @@ public class SelectionFragment extends Fragment {
         setHasOptionsMenu(true);
         setRetainInstance(true);
 
-        if (mShows == null) {
+        mDatabase = TWiTDatabase.get();
+
+        if (mDatabase.getShows() == null) {
             updateShows();
         }
 
@@ -68,6 +70,10 @@ public class SelectionFragment extends Fragment {
 
     private void updateShows() {
         new FetchShowsTask().execute(); // TODO: handle no internet connection
+    }
+
+    private void updateEpisodes() {
+        new FetchEpisodesTask().execute(); // TODO: handle no internet connection
     }
 
     @Nullable
@@ -101,8 +107,8 @@ public class SelectionFragment extends Fragment {
 
     private void setupAdapter() {
         if (isAdded()) {
-            if (mShows != null) {
-                mRecyclerView.setAdapter(new ShowAdapter(mShows));
+            if (mDatabase.getShows() != null) {
+                mRecyclerView.setAdapter(new ShowAdapter(mDatabase.getShows()));
             } else {
                 mRecyclerView.setAdapter(new ShowAdapter(new ArrayList<Show>()));
             }
@@ -166,6 +172,15 @@ public class SelectionFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        DialogFragment dialog = (DialogFragment) getFragmentManager().findFragmentByTag(DIALOG_UPDATING_SHOWS);
+        if (dialog != null && mDatabase.getShows() != null) {
+            dialog.dismiss();
+        }
+    }
+
     private class FetchShowsTask extends AsyncTask<Void, Void, List<Show>> {
         @Override
         protected void onPreExecute() {
@@ -182,22 +197,35 @@ public class SelectionFragment extends Fragment {
 
         @Override
         protected void onPostExecute(List<Show> shows) {
-            mShows = shows;
+            mDatabase.setShows(shows);
             setupAdapter();
 
             // dismiss loading dialog
             DialogFragment dialog = (DialogFragment) getFragmentManager().findFragmentByTag(DIALOG_UPDATING_SHOWS);
-            if (dialog != null) {
+            try {
                 dialog.dismiss();
+            } catch (Exception e) {
+                Log.e(TAG, "Error dismissing updating shows dialog", e);
             }
 
             if (shows == null) {
                 return;
             }
 
-            for (Show show: mShows) {
+            updateEpisodes();
+
+            for (Show show: mDatabase.getShows()) {
                 mCoverArtDownloader.queueDownload(show, show.getCoverArtUrl());
             }
+        }
+    }
+
+    private class FetchEpisodesTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            new TWiTFetcher().fetchEpisodes(null);
+            return null;
         }
     }
 }
