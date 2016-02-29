@@ -63,4 +63,8 @@ public class Show {
     public void addEpisode(Episode episode) {
         mEpisodes.add(episode);
     }
+
+    public List<Episode> getEpisodes() {
+        return mEpisodes;
+    }
 }

@@ -87,12 +87,19 @@ public class TWiTFetcher {
 
             Show newShow = new Show();
             newShow.setId(show.getInt("id"));
+
+            if (mDatabase.isExcluded(newShow)) {
+                continue;
+            }
+
             newShow.setTitle(show.getString("label"));
             newShow.setCleanPath(show.getString("cleanPath"));
 
             JSONObject coverArt = show.getJSONObject("coverArt");
             JSONObject derivatives = coverArt.getJSONObject("derivatives");
             newShow.setCoverArtUrl(derivatives.getString("twit_album_art_600x600"));
+
+            Log.d(TAG, newShow.getTitle() + ": " + newShow.getId());
 
             showList.add(newShow);
         }

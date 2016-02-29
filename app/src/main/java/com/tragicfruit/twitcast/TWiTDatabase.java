@@ -10,6 +10,11 @@ import java.util.List;
 public class TWiTDatabase {
     private static final String TAG = "TWiTDatabase";
 
+    private int[] mExcludedShows = {
+            1683, // TWiT Bits
+            1647, // Radio Leo
+            65161 // All TWiT.tv Shows
+    };
     private List<Show> mShows;
     private static TWiTDatabase sTWiTDatabase;
 
@@ -70,5 +75,17 @@ public class TWiTDatabase {
 
     public int getEpisodeCount() {
         return mEpisodeCount;
+    }
+
+    public boolean isExcluded(Show show) {
+        int showId = show.getId();
+
+        for (int excludedShowId: mExcludedShows) {
+            if (showId == excludedShowId) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
