@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -21,6 +22,7 @@ import java.util.List;
 public class TWiTFetcher {
     private static final String TAG = "TWiTFetcher";
     private static final Uri ENDPOINT = Uri.parse("https://twit.tv/api/v1.0");
+    private static final long WEEK_IN_SECONDS = 60 * 60 * 24 * 7;
 
     private TWiTDatabase mDatabase;
 
@@ -111,8 +113,15 @@ public class TWiTFetcher {
     public void fetchEpisodes(String url) {
         try {
             if (url == null) {
-                 url = ENDPOINT.buildUpon()
+                Date currentDate = new Date();
+
+                long timeNow = currentDate.getTime() / 1000;
+                long oneWeekAgo = timeNow - WEEK_IN_SECONDS;
+
+                url = ENDPOINT.buildUpon()
                         .appendPath("episodes")
+                        .appendQueryParameter("filter[airingDate][value]", String.valueOf(oneWeekAgo))
+                        .appendQueryParameter("filter[airingDate][operator]", ">=")
                         .build()
                         .toString();
             }
@@ -141,10 +150,10 @@ public class TWiTFetcher {
             mDatabase.addEpisode(episode);
         }
 
-        String nextPageUrl = json.getJSONObject("_links").getJSONObject("next").getString("href");
-        if (mDatabase.getEpisodeCount() < 50) {
+        try {
+            String nextPageUrl = json.getJSONObject("_links").getJSONObject("next").getString("href");
             fetchEpisodes(nextPageUrl);
-        } else {
+        } catch (JSONException joe) {
             Log.d(TAG, "Episode count: " + mDatabase.getEpisodeCount());
         }
     }
