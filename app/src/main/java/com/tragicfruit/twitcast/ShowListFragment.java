@@ -8,9 +8,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -158,7 +160,10 @@ public class ShowListFragment extends Fragment {
         @Override
         public void onClick(View v) {
             Intent i = EpisodeListActivity.newIntent(getActivity(), mShow.getId());
-            startActivity(i);
+
+            ActivityOptionsCompat options = ActivityOptionsCompat
+                    .makeSceneTransitionAnimation(getActivity(), v, "cover_art");
+            startActivity(i, options.toBundle());
         }
     }
 
