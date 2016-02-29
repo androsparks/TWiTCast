@@ -1,5 +1,6 @@
 package com.tragicfruit.twitcast;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -27,8 +28,8 @@ import java.util.List;
 /**
  * Created by Jeremy on 23/02/2016.
  */
-public class SelectionFragment extends Fragment {
-    private static final String TAG = "SelectionFragment";
+public class ShowListFragment extends Fragment {
+    private static final String TAG = "ShowListFragment";
     private static final String DIALOG_UPDATING_SHOWS = "updating_shows";
 
     private AutofitRecyclerView mRecyclerView;
@@ -36,8 +37,8 @@ public class SelectionFragment extends Fragment {
     private UpdatingShowsFragment mLoadingDialog;
     private TWiTDatabase mDatabase;
 
-    public static SelectionFragment newInstance() {
-        return new SelectionFragment();
+    public static ShowListFragment newInstance() {
+        return new ShowListFragment();
     }
 
     @Override
@@ -79,7 +80,7 @@ public class SelectionFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_selection, container, false);
+        View v = inflater.inflate(R.layout.fragment_show_list, container, false);
 
         mRecyclerView = (AutofitRecyclerView) v.findViewById(R.id.fragment_selection_recycler_view);
         setupAdapter();
@@ -116,19 +117,30 @@ public class SelectionFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        DialogFragment dialog = (DialogFragment) getFragmentManager().findFragmentByTag(DIALOG_UPDATING_SHOWS);
+        if (dialog != null && mDatabase.getShows() != null) {
+            dialog.dismiss();
+        }
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         mCoverArtDownloader.quit();
         Log.i(TAG, "CoverArtDownloader thread destroyed");
     }
 
-    private class ShowHolder extends RecyclerView.ViewHolder {
+    private class ShowHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private Show mShow;
         private ImageView mImageView;
 
         public ShowHolder(View itemView) {
             super(itemView);
 
             mImageView = (ImageView) itemView.findViewById(R.id.fragment_selection_image_view);
+            mImageView.setOnClickListener(this);
 
             // stretch image if not wide enough
             int size = mRecyclerView.getStretchedSize();
@@ -137,6 +149,16 @@ public class SelectionFragment extends Fragment {
 
         public void bindDrawable(Drawable drawable) {
             mImageView.setImageDrawable(drawable);
+        }
+
+        public void bindShow(Show show) {
+            mShow = show;
+        }
+
+        @Override
+        public void onClick(View v) {
+            Intent i = EpisodeListActivity.newIntent(getActivity(), mShow.getId());
+            startActivity(i);
         }
     }
 
@@ -157,6 +179,7 @@ public class SelectionFragment extends Fragment {
         @Override
         public void onBindViewHolder(ShowHolder holder, int position) {
             Show show = mShowList.get(position);
+            holder.bindShow(show);
 
             if (show.getCoverArt() == null) {
                 Drawable placeholder = getResources().getDrawable(R.drawable.cover_art_placeholder);
@@ -169,15 +192,6 @@ public class SelectionFragment extends Fragment {
         @Override
         public int getItemCount() {
             return mShowList.size();
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        DialogFragment dialog = (DialogFragment) getFragmentManager().findFragmentByTag(DIALOG_UPDATING_SHOWS);
-        if (dialog != null && mDatabase.getShows() != null) {
-            dialog.dismiss();
         }
     }
 
@@ -221,7 +235,6 @@ public class SelectionFragment extends Fragment {
     }
 
     private class FetchEpisodesTask extends AsyncTask<Void, Void, Void> {
-
         @Override
         protected Void doInBackground(Void... params) {
             new TWiTFetcher().fetchEpisodes(null);

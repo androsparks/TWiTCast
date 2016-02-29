@@ -35,6 +35,15 @@ public class TWiTDatabase {
         mShows = shows;
     }
 
+    public Show getShow(int id) {
+        for (Show show: mShows) {
+            if (show.getId() == id) {
+                return show;
+            }
+        }
+        return null;
+    }
+
     public void addEpisode(Episode episode) {
         Show showForEpisode = getShowFromEpisode(episode);
         if (showForEpisode != null) {
