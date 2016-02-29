@@ -2,6 +2,7 @@ package com.tragicfruit.twitcast;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -24,6 +25,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +37,6 @@ public class ShowListFragment extends Fragment {
     private static final String DIALOG_UPDATING_SHOWS = "updating_shows";
 
     private AutofitRecyclerView mRecyclerView;
-    private CoverArtDownloader<Show> mCoverArtDownloader;
     private UpdatingShowsFragment mLoadingDialog;
     private TWiTDatabase mDatabase;
 
@@ -54,21 +55,6 @@ public class ShowListFragment extends Fragment {
         if (mDatabase.getShows() == null) {
             updateShows();
         }
-
-        Handler responseHandler = new Handler();
-        mCoverArtDownloader = new CoverArtDownloader<>(responseHandler);
-        mCoverArtDownloader.setCoverArtDownloadListener(new CoverArtDownloader.CoverArtDownloadListener<Show>() {
-            @Override
-            public void onCoverArtDownloaded(Show show, Bitmap coverArt) {
-                if (isAdded() && mRecyclerView.getAdapter() != null) {
-                    show.setCoverArt(new BitmapDrawable(getResources(), coverArt));
-                    mRecyclerView.getAdapter().notifyDataSetChanged();
-                }
-            }
-        });
-        mCoverArtDownloader.start();
-        mCoverArtDownloader.getLooper();
-        Log.i(TAG, "CoverArtDownloader thread started");
     }
 
     private void updateShows() {
@@ -100,7 +86,6 @@ public class ShowListFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.refresh_button:
-                mCoverArtDownloader.clearQueue();
                 updateShows();
                 return true;
             default:
@@ -125,13 +110,6 @@ public class ShowListFragment extends Fragment {
         if (dialog != null && mDatabase.getShows() != null) {
             dialog.dismiss();
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mCoverArtDownloader.quit();
-        Log.i(TAG, "CoverArtDownloader thread destroyed");
     }
 
     private class ShowHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -219,6 +197,43 @@ public class ShowListFragment extends Fragment {
             mDatabase.setShows(shows);
             setupAdapter();
 
+            if (mDatabase.getShows() != null) {
+                new FetchCoverArtTask().execute();
+            }
+        }
+    }
+
+    private class FetchCoverArtTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+            UpdatingShowsFragment dialog = (UpdatingShowsFragment) getFragmentManager().findFragmentByTag(DIALOG_UPDATING_SHOWS);
+            if (dialog != null) {
+                dialog.setDialogMessage(getString(R.string.downloading_cover_art_text));
+            }
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            for (Show show: mDatabase.getShows()) {
+                try {
+                    byte[] bitmapBytes = new TWiTFetcher().getUrlBytes(show.getCoverArtUrl());
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(bitmapBytes, 0, bitmapBytes.length);
+                    show.setCoverArt(new BitmapDrawable(getResources(), bitmap));
+                    publishProgress();
+                } catch (IOException e) {
+                    Log.e(TAG, "Cannot download cover art for " + show.getTitle(), e);
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            mRecyclerView.getAdapter().notifyDataSetChanged();
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
             // dismiss loading dialog
             DialogFragment dialog = (DialogFragment) getFragmentManager().findFragmentByTag(DIALOG_UPDATING_SHOWS);
             try {
@@ -227,14 +242,8 @@ public class ShowListFragment extends Fragment {
                 Log.e(TAG, "Error dismissing updating shows dialog", e);
             }
 
-            if (shows == null) {
-                return;
-            }
-
-            updateEpisodes();
-
-            for (Show show: mDatabase.getShows()) {
-                mCoverArtDownloader.queueDownload(show, show.getCoverArtUrl());
+            if (mDatabase.getShows() != null) {
+                updateEpisodes();
             }
         }
     }

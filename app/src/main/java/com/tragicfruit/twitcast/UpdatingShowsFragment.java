@@ -10,6 +10,8 @@ import android.support.v4.app.DialogFragment;
  * Created by Jeremy on 24/02/2016.
  */
 public class UpdatingShowsFragment extends DialogFragment {
+    private ProgressDialog mProgressDialog;
+
     public static UpdatingShowsFragment newInstance() {
         return new UpdatingShowsFragment();
     }
@@ -17,10 +19,14 @@ public class UpdatingShowsFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        ProgressDialog dialog = new ProgressDialog(getActivity());
-        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        dialog.setMessage(getString(R.string.updating_shows_dialog_text));
+        mProgressDialog = new ProgressDialog(getActivity());
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        mProgressDialog.setMessage(getString(R.string.updating_shows_text));
 
-        return dialog;
+        return mProgressDialog;
+    }
+
+    public void setDialogMessage(String message) {
+        mProgressDialog.setMessage(message);
     }
 }
