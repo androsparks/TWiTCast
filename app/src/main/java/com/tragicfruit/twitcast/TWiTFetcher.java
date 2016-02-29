@@ -115,10 +115,8 @@ public class TWiTFetcher {
 
         } catch (JSONException je) {
             Log.e(TAG, "Failed to parse JSON", je);
-//            return null;
         } catch (IOException ioe) {
             Log.e(TAG, "Failed to fetch episodes", ioe);
-//            return null;
         }
     }
 
@@ -132,30 +130,10 @@ public class TWiTFetcher {
             episode.setTitle(episodeJson.getString("label"));
             episode.setCleanPath(episodeJson.getString("cleanPath"));
 
-            Show showForEpisode = getShowFromEpisode(episode);
-            if (showForEpisode != null) {
-                showForEpisode.addEpisode(episode);
-            } else {
-                Log.d(TAG, "No show found for " + episode.getTitle());
-            }
+            mDatabase.addEpisode(episode);
         }
 
-        String nextPage = json.getJSONObject("_links").getJSONObject("next").getString("href");
-        Log.d(TAG, nextPage);
-    }
+        String nextPageUrl = json.getJSONObject("_links").getJSONObject("next").getString("href");
 
-    private Show getShowFromEpisode(Episode episode) {
-        List<Show> showList = mDatabase.getShows();
-
-        for (Show show: showList) {
-            String showCleanPath = show.getCleanPath();
-            String episodeCleanPath = episode.getCleanPath();
-
-            if (episodeCleanPath.contains(showCleanPath)) {
-                return show;
-            }
-        }
-
-        return null;
     }
 }

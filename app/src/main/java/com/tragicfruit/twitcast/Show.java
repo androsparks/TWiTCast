@@ -1,7 +1,6 @@
 package com.tragicfruit.twitcast;
 
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,8 +9,6 @@ import java.util.List;
  * Created by Jeremy on 24/02/2016.
  */
 public class Show {
-    private static final String TAG = "Show";
-
     private List<Episode> mEpisodes;
     private String mTitle;
     private String mCoverArtUrl;
@@ -64,9 +61,6 @@ public class Show {
     }
 
     public void addEpisode(Episode episode) {
-        if (episode != null) {
-            mEpisodes.add(episode);
-            Log.d(TAG, episode.getTitle() + " added to " + getTitle());
-        }
+        mEpisodes.add(episode);
     }
 }
