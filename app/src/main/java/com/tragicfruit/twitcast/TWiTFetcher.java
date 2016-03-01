@@ -12,9 +12,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 /**
  * Created by Jeremy on 24/02/2016.
@@ -90,19 +94,18 @@ public class TWiTFetcher {
             Show newShow = new Show();
             newShow.setId(show.getInt("id"));
 
-            if (mDatabase.isExcluded(newShow)) {
+            if (mDatabase.isExcludedShow(newShow)) {
                 continue;
             }
 
             newShow.setTitle(show.getString("label"));
             newShow.setDescription(show.getString("tagLine"));
-            newShow.setCleanPath(show.getString("cleanPath"));
 
             JSONObject coverArt = show.getJSONObject("coverArt");
             JSONObject derivatives = coverArt.getJSONObject("derivatives");
             newShow.setCoverArtUrl(derivatives.getString("twit_album_art_600x600"));
 
-            Log.d(TAG, newShow.getTitle() + ": " + newShow.getId());
+//            Log.d(TAG, newShow.getTitle() + ": " + newShow.getId());
 
             showList.add(newShow);
         }
@@ -145,7 +148,32 @@ public class TWiTFetcher {
 
             Episode episode = new Episode();
             episode.setTitle(episodeJson.getString("label"));
-            episode.setCleanPath(episodeJson.getString("cleanPath"));
+            episode.setEpisodeNumber(episodeJson.getInt("episodeNumber"));
+            episode.setAiringDate(parseDate(episodeJson.getString("airingDate")));
+            episode.setShowNotes(episodeJson.getString("showNotes"));
+
+            if (episodeJson.has("video_hd")) {
+                episode.setVideoHdUrl(episodeJson.getJSONObject("video_hd").getString("mediaUrl"));
+            }
+
+            if (episodeJson.has("video_large")) {
+                episode.setVideoLargeUrl(episodeJson.getJSONObject("video_large").getString("mediaUrl"));
+            }
+
+            if (episodeJson.has("video_small")) {
+                episode.setVideoSmallUrl(episodeJson.getJSONObject("video_small").getString("mediaUrl"));
+            }
+
+            if (episodeJson.has("video_audio")) {
+                episode.setVideoAudioUrl(episodeJson.getJSONObject("video_audio").getString("mediaUrl"));
+            }
+
+            JSONObject embedded = episodeJson.getJSONObject("_embedded");
+            JSONArray shows = embedded.getJSONArray("shows");
+            JSONObject show = shows.getJSONObject(0);
+            episode.setShowId(show.getInt("id"));
+
+            Log.d(TAG, episode.getAiringDate().toString());
 
             mDatabase.addEpisode(episode);
         }
@@ -155,6 +183,21 @@ public class TWiTFetcher {
             fetchEpisodes(nextPageUrl);
         } catch (JSONException joe) {
             Log.d(TAG, "Episode count: " + mDatabase.getEpisodeCount());
+        }
+    }
+
+    private Date parseDate(String dateString) {
+        try {
+            TimeZone timeZone = TimeZone.getTimeZone("GMT");
+            Calendar calendar = Calendar.getInstance(timeZone);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+
+            dateFormat.setCalendar(calendar);
+            calendar.setTime(dateFormat.parse(dateString));
+            return calendar.getTime();
+        } catch (ParseException pe) {
+            Log.e(TAG, "Cannot parse episode airing date", pe);
+            return null;
         }
     }
 }

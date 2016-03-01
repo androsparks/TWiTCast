@@ -62,10 +62,10 @@ public class TWiTDatabase {
 
     private Show getShowFromEpisode(Episode episode) {
         for (Show show: mShows) {
-            String showCleanPath = show.getCleanPath();
-            String episodeCleanPath = episode.getCleanPath();
+            int showId = show.getId();
+            int episodeShowId = episode.getShowId();
 
-            if (episodeCleanPath.contains(showCleanPath)) {
+            if (showId == episodeShowId) {
                 return show;
             }
         }
@@ -77,7 +77,7 @@ public class TWiTDatabase {
         return mEpisodeCount;
     }
 
-    public boolean isExcluded(Show show) {
+    public boolean isExcludedShow(Show show) {
         int showId = show.getId();
 
         for (int excludedShowId: mExcludedShows) {

@@ -14,7 +14,6 @@ public class Show {
     private String mCoverArtUrl;
     private Drawable mCoverArt;
     private int mId;
-    private String mCleanPath;
     private String mDescription;
 
     public Show() {
@@ -51,14 +50,6 @@ public class Show {
 
     public void setId(int id) {
         mId = id;
-    }
-
-    public String getCleanPath() {
-        return mCleanPath;
-    }
-
-    public void setCleanPath(String cleanPath) {
-        mCleanPath = cleanPath;
     }
 
     public void addEpisode(Episode episode) {

@@ -40,6 +40,8 @@ public class ShowListFragment extends Fragment {
     private UpdatingShowsFragment mLoadingDialog;
     private TWiTDatabase mDatabase;
 
+    private boolean mCoverArtDownloaded;
+
     public static ShowListFragment newInstance() {
         return new ShowListFragment();
     }
@@ -106,9 +108,13 @@ public class ShowListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        DialogFragment dialog = (DialogFragment) getFragmentManager().findFragmentByTag(DIALOG_UPDATING_SHOWS);
+        UpdatingShowsFragment dialog = (UpdatingShowsFragment) getFragmentManager().findFragmentByTag(DIALOG_UPDATING_SHOWS);
         if (dialog != null && mDatabase.getShows() != null) {
-            dialog.dismiss();
+            if (mCoverArtDownloaded) {
+                dialog.dismiss();
+            } else {
+                dialog.setDialogMessage(getString(R.string.downloading_cover_art_text));
+            }
         }
     }
 
@@ -234,6 +240,8 @@ public class ShowListFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Void aVoid) {
+            mCoverArtDownloaded = true;
+
             // dismiss loading dialog
             DialogFragment dialog = (DialogFragment) getFragmentManager().findFragmentByTag(DIALOG_UPDATING_SHOWS);
             try {
