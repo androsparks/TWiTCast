@@ -15,6 +15,7 @@ public class Episode {
     private String mVideoSmallUrl;
     private String mVideoAudioUrl;
     private int mShowId;
+    private int mRunningTimeInMinutes;
 
     public String getTitle() {
         return mTitle;
@@ -86,5 +87,13 @@ public class Episode {
 
     public void setShowId(int showId) {
         mShowId = showId;
+    }
+
+    public int getRunningTimeInMinutes() {
+        return mRunningTimeInMinutes;
+    }
+
+    public void setRunningTimeInMinutes(int runningTimeInMinutes) {
+        mRunningTimeInMinutes = runningTimeInMinutes;
     }
 }

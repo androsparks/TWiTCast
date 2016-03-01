@@ -39,6 +39,7 @@ public class ShowListFragment extends Fragment {
     private TWiTDatabase mDatabase;
 
     private boolean mCoverArtDownloaded;
+    private boolean mEpisodesUpdated;
 
     public static ShowListFragment newInstance() {
         return new ShowListFragment();
@@ -108,8 +109,10 @@ public class ShowListFragment extends Fragment {
         super.onResume();
         UpdatingShowsFragment dialog = (UpdatingShowsFragment) getFragmentManager().findFragmentByTag(DIALOG_UPDATING_SHOWS);
         if (dialog != null && mDatabase.getShows() != null) {
-            if (mCoverArtDownloaded) {
+            if (mEpisodesUpdated) {
                 dialog.dismiss();
+            } else if (mCoverArtDownloaded) {
+                dialog.setDialogMessage(getString(R.string.updating_episodes_text));
             } else {
                 dialog.setDialogMessage(getString(R.string.downloading_cover_art_placeholder_text));
             }
@@ -248,14 +251,6 @@ public class ShowListFragment extends Fragment {
         protected void onPostExecute(Void aVoid) {
             mCoverArtDownloaded = true;
 
-            // dismiss loading dialog
-            DialogFragment dialog = (DialogFragment) getFragmentManager().findFragmentByTag(DIALOG_UPDATING_SHOWS);
-            try {
-                dialog.dismiss();
-            } catch (Exception e) {
-                Log.e(TAG, "Error dismissing updating shows dialog", e);
-            }
-
             if (mDatabase.getShows() != null) {
                 updateEpisodes();
             }
@@ -264,9 +259,29 @@ public class ShowListFragment extends Fragment {
 
     private class FetchEpisodesTask extends AsyncTask<Void, Void, Void> {
         @Override
+        protected void onPreExecute() {
+            UpdatingShowsFragment dialog = (UpdatingShowsFragment) getFragmentManager().findFragmentByTag(DIALOG_UPDATING_SHOWS);
+            if (dialog != null) {
+                dialog.setDialogMessage(getString(R.string.updating_episodes_text));
+            }
+        }
+        @Override
         protected Void doInBackground(Void... params) {
             new TWiTFetcher().fetchEpisodes(null);
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            mEpisodesUpdated = true;
+
+            // dismiss loading dialog
+            DialogFragment dialog = (DialogFragment) getFragmentManager().findFragmentByTag(DIALOG_UPDATING_SHOWS);
+            try {
+                dialog.dismiss();
+            } catch (Exception e) {
+                Log.e(TAG, "Error dismissing updating shows dialog", e);
+            }
         }
     }
 }

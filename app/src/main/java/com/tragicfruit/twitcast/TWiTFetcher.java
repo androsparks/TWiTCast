@@ -166,6 +166,8 @@ public class TWiTFetcher {
 
             if (episodeJson.has("video_audio")) {
                 episode.setVideoAudioUrl(episodeJson.getJSONObject("video_audio").getString("mediaUrl"));
+                String runningTime = episodeJson.getJSONObject("video_audio").getString("runningTime");
+                episode.setRunningTimeInMinutes(parseRunningTime(runningTime));
             }
 
             JSONObject embedded = episodeJson.getJSONObject("_embedded");
@@ -197,5 +199,16 @@ public class TWiTFetcher {
             Log.e(TAG, "Cannot parse episode airing date", pe);
             return null;
         }
+    }
+
+    private int parseRunningTime(String runningTime) {
+        int hours = Integer.parseInt(runningTime.substring(0, 2));
+        int minutes = Integer.parseInt(runningTime.substring(3, 5));
+        int seconds = Integer.parseInt(runningTime.substring(6, 8));
+
+        int hoursToMinutes = hours * 60;
+        int secondsToMinutes = (int) Math.round((double) seconds / 60);
+
+        return hoursToMinutes + minutes + secondsToMinutes;
     }
 }

@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,16 +79,24 @@ public class EpisodeListFragment extends Fragment {
     }
 
     private class EpisodeHolder extends RecyclerView.ViewHolder {
-        private TextView mTitleTextView;
+        private TextView mNumberTitleTextView;
+        private TextView mDateTextView;
+        private TextView mRunningTimeTextView;
 
         public EpisodeHolder(View itemView) {
             super(itemView);
 
-            mTitleTextView = (TextView) itemView;
+            mNumberTitleTextView = (TextView) itemView.findViewById(R.id.episode_number_title);
+            mDateTextView = (TextView) itemView.findViewById(R.id.episode_date);
+            mRunningTimeTextView = (TextView) itemView.findViewById(R.id.episode_running_time);
         }
 
         public void bindEpisode(Episode episode) {
-            mTitleTextView.setText(episode.getTitle());
+            mNumberTitleTextView.setText(getString(R.string.episode_number_title, episode.getEpisodeNumber(), episode.getTitle()));
+            mRunningTimeTextView.setText(getString(R.string.episode_running_time, episode.getRunningTimeInMinutes()));
+
+            String dateString = DateFormat.format("EEEE, MMMM d", episode.getAiringDate()).toString();
+            mDateTextView.setText(dateString);
         }
     }
 
@@ -96,7 +105,7 @@ public class EpisodeListFragment extends Fragment {
         @Override
         public EpisodeHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(getActivity());
-            View view = inflater.inflate(android.R.layout.simple_list_item_1, parent, false);
+            View view = inflater.inflate(R.layout.list_item_episode, parent, false);
             return new EpisodeHolder(view);
         }
 
