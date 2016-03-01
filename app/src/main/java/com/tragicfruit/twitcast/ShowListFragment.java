@@ -7,13 +7,11 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -113,7 +111,7 @@ public class ShowListFragment extends Fragment {
             if (mCoverArtDownloaded) {
                 dialog.dismiss();
             } else {
-                dialog.setDialogMessage(getString(R.string.downloading_cover_art_text));
+                dialog.setDialogMessage(getString(R.string.downloading_cover_art_placeholder_text));
             }
         }
     }
@@ -209,33 +207,41 @@ public class ShowListFragment extends Fragment {
         }
     }
 
-    private class FetchCoverArtTask extends AsyncTask<Void, Void, Void> {
+    private class FetchCoverArtTask extends AsyncTask<Void, Integer, Void> {
         @Override
         protected void onPreExecute() {
             UpdatingShowsFragment dialog = (UpdatingShowsFragment) getFragmentManager().findFragmentByTag(DIALOG_UPDATING_SHOWS);
             if (dialog != null) {
-                dialog.setDialogMessage(getString(R.string.downloading_cover_art_text));
+                dialog.setDialogMessage(getString(R.string.downloading_cover_art_placeholder_text));
+                dialog.setMaxProgress(mDatabase.getShows().size());
             }
         }
 
         @Override
         protected Void doInBackground(Void... params) {
-            for (Show show: mDatabase.getShows()) {
+            for (int i = 0; i < mDatabase.getShows().size(); i++) {
+                Show show = mDatabase.getShows().get(i);
                 try {
                     byte[] bitmapBytes = new TWiTFetcher().getUrlBytes(show.getCoverArtUrl());
                     Bitmap bitmap = BitmapFactory.decodeByteArray(bitmapBytes, 0, bitmapBytes.length);
                     show.setCoverArt(new BitmapDrawable(getResources(), bitmap));
-                    publishProgress();
                 } catch (IOException e) {
                     Log.e(TAG, "Cannot download cover art for " + show.getTitle(), e);
                 }
+                publishProgress(i + 1);
             }
             return null;
         }
 
         @Override
-        protected void onProgressUpdate(Void... values) {
+        protected void onProgressUpdate(Integer... values) {
             mRecyclerView.getAdapter().notifyDataSetChanged();
+
+            if (mLoadingDialog == null) {
+                return;
+            }
+
+            mLoadingDialog.setProgress(values[0]);
         }
 
         @Override

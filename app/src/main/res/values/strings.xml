@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">TWiT Cast</string>
-    <string name="updating_shows_text">Updating shows…</string>
-    <string name="downloading_cover_art_text">Downloading cover art…</string>
+    <string name="updating_shows_text">Updating shows.</string>
+    <string name="downloading_cover_art_placeholder_text">Downloading cover art.</string>
+    <string name="downloading_cover_art_text">Downloading cover art (%1$s/%2$s).</string>
     <string name="refresh_button">Refresh shows</string>
 </resources>

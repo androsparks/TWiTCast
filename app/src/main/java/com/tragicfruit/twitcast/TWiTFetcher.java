@@ -173,8 +173,6 @@ public class TWiTFetcher {
             JSONObject show = shows.getJSONObject(0);
             episode.setShowId(show.getInt("id"));
 
-            Log.d(TAG, episode.getAiringDate().toString());
-
             mDatabase.addEpisode(episode);
         }
 

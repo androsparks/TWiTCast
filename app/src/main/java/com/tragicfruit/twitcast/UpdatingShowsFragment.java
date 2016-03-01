@@ -11,6 +11,7 @@ import android.support.v4.app.DialogFragment;
  */
 public class UpdatingShowsFragment extends DialogFragment {
     private ProgressDialog mProgressDialog;
+    private int mMaxProgress;
 
     public static UpdatingShowsFragment newInstance() {
         return new UpdatingShowsFragment();
@@ -28,5 +29,13 @@ public class UpdatingShowsFragment extends DialogFragment {
 
     public void setDialogMessage(String message) {
         mProgressDialog.setMessage(message);
+    }
+
+    public void setMaxProgress(int max) {
+        mMaxProgress = max;
+    }
+
+    public void setProgress(int progress) {
+        setDialogMessage(getString(R.string.downloading_cover_art_text, progress, mMaxProgress));
     }
 }
