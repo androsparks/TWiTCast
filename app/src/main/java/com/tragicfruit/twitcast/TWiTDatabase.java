@@ -19,6 +19,7 @@ public class TWiTDatabase {
     private static TWiTDatabase sTWiTDatabase;
 
     private int mEpisodeCount;
+    private long mTimeLastUpdated; // in unix time
 
     public static TWiTDatabase get() {
         if (sTWiTDatabase == null) {
@@ -29,7 +30,7 @@ public class TWiTDatabase {
     }
 
     private TWiTDatabase() {
-
+        mTimeLastUpdated = -1;
     }
 
     public List<Show> getShows() {
@@ -87,5 +88,13 @@ public class TWiTDatabase {
         }
 
         return false;
+    }
+
+    public long getTimeLastUpdated() {
+        return mTimeLastUpdated;
+    }
+
+    public void setTimeLastUpdated(long timeLastUpdated) {
+        mTimeLastUpdated = timeLastUpdated;
     }
 }

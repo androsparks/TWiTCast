@@ -121,12 +121,22 @@ public class TWiTFetcher {
                 long timeNow = currentDate.getTime() / 1000;
                 long oneWeekAgo = timeNow - WEEK_IN_SECONDS;
 
+                long timeToUpdateFrom;
+                // if no episodes fetched, or last fetched over a week ago
+                if (mDatabase.getTimeLastUpdated() < 0 || mDatabase.getTimeLastUpdated() < oneWeekAgo) {
+                    timeToUpdateFrom = oneWeekAgo;
+                } else {
+                    timeToUpdateFrom = mDatabase.getTimeLastUpdated();
+                }
+
                 url = ENDPOINT.buildUpon()
                         .appendPath("episodes")
-                        .appendQueryParameter("filter[airingDate][value]", String.valueOf(oneWeekAgo))
+                        .appendQueryParameter("filter[airingDate][value]", String.valueOf(timeToUpdateFrom))
                         .appendQueryParameter("filter[airingDate][operator]", ">=")
                         .build()
                         .toString();
+
+                mDatabase.setTimeLastUpdated(timeNow);
             }
 
             String jsonBody = getUrlString(url);

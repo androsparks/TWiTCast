@@ -55,6 +55,8 @@ public class ShowListFragment extends Fragment {
 
         if (mDatabase.getShows() == null) {
             updateShows();
+        } else {
+            updateEpisodes();
         }
     }
 
