@@ -19,17 +19,31 @@
             android:layout_height="wrap_content"/>
 
         <TextView
-            android:id="@+id/episode_date"
-            tools:text="March 1, 2016"
+            android:id="@+id/episode_description"
+            tools:text="Episode description goes here"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/episode_running_time"
-        tools:text="75 min"
+    <LinearLayout
+        android:gravity="center_vertical|end"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/episode_running_time"
+            tools:text="75 min"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/episode_date"
+            tools:text="Mar 1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
 
 </LinearLayout>

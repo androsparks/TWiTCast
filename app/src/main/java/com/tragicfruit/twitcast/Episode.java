@@ -15,6 +15,7 @@ public class Episode {
     private String mVideoSmallUrl;
     private String mVideoAudioUrl;
     private String mRunningTime;
+    private Show mShow;
 
     public String getTitle() {
         return mTitle;
@@ -86,5 +87,17 @@ public class Episode {
 
     public void setRunningTime(String runningTime) {
         mRunningTime = runningTime;
+    }
+
+    public Show getShow() {
+        return mShow;
+    }
+
+    public void setShow(Show show) {
+        mShow = show;
+    }
+
+    public String getDisplayTitle() {
+        return mTitle.replace(mShow.getTitle(), "").substring(1);
     }
 }

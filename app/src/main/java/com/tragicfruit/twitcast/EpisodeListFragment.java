@@ -82,6 +82,7 @@ public class EpisodeListFragment extends Fragment {
         private TextView mNumberTitleTextView;
         private TextView mDateTextView;
         private TextView mRunningTimeTextView;
+        private TextView mDescriptionTextView;
 
         public EpisodeHolder(View itemView) {
             super(itemView);
@@ -89,13 +90,15 @@ public class EpisodeListFragment extends Fragment {
             mNumberTitleTextView = (TextView) itemView.findViewById(R.id.episode_number_title);
             mDateTextView = (TextView) itemView.findViewById(R.id.episode_date);
             mRunningTimeTextView = (TextView) itemView.findViewById(R.id.episode_running_time);
+            mDescriptionTextView = (TextView) itemView.findViewById(R.id.episode_description);
         }
 
         public void bindEpisode(Episode episode) {
-            mNumberTitleTextView.setText(episode.getTitle());
+            mNumberTitleTextView.setText(episode.getDisplayTitle());
             mRunningTimeTextView.setText(episode.getRunningTime());
+            mDescriptionTextView.setText(episode.getSubtitle());
 
-            String dateString = DateFormat.format("EEEE, MMMM d", episode.getPublicationDate()).toString();
+            String dateString = DateFormat.format("MMM d", episode.getPublicationDate()).toString();
             mDateTextView.setText(dateString);
         }
     }
