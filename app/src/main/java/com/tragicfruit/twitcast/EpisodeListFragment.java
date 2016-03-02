@@ -92,10 +92,10 @@ public class EpisodeListFragment extends Fragment {
         }
 
         public void bindEpisode(Episode episode) {
-            mNumberTitleTextView.setText(getString(R.string.episode_number_title, episode.getEpisodeNumber(), episode.getTitle()));
-            mRunningTimeTextView.setText(getString(R.string.episode_running_time, episode.getRunningTimeInMinutes()));
+            mNumberTitleTextView.setText(episode.getTitle());
+            mRunningTimeTextView.setText(episode.getRunningTime());
 
-            String dateString = DateFormat.format("EEEE, MMMM d", episode.getAiringDate()).toString();
+            String dateString = DateFormat.format("EEEE, MMMM d", episode.getPublicationDate()).toString();
             mDateTextView.setText(dateString);
         }
     }

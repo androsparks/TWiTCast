@@ -15,6 +15,10 @@ public class Show {
     private Drawable mCoverArt;
     private int mId;
     private String mDescription;
+    private String mVideoHdFeed;
+    private String mVideoLargeFeed;
+    private String mVideoSmallFeed;
+    private String mAudioFeed;
 
     public Show() {
         mEpisodes = new ArrayList<>();
@@ -52,12 +56,12 @@ public class Show {
         mId = id;
     }
 
-    public void addEpisode(Episode episode) {
-        mEpisodes.add(episode);
-    }
-
     public List<Episode> getEpisodes() {
         return mEpisodes;
+    }
+
+    public void addEpisode(Episode episode) {
+        mEpisodes.add(episode);
     }
 
     public String getDescription() {
@@ -66,5 +70,37 @@ public class Show {
 
     public void setDescription(String description) {
         mDescription = description;
+    }
+
+    public String getVideoHdFeed() {
+        return mVideoHdFeed;
+    }
+
+    public void setVideoHdFeed(String videoHdFeed) {
+        mVideoHdFeed = videoHdFeed;
+    }
+
+    public String getVideoLargeFeed() {
+        return mVideoLargeFeed;
+    }
+
+    public void setVideoLargeFeed(String videoLargeFeed) {
+        mVideoLargeFeed = videoLargeFeed;
+    }
+
+    public String getVideoSmallFeed() {
+        return mVideoSmallFeed;
+    }
+
+    public void setVideoSmallFeed(String videoSmallFeed) {
+        mVideoSmallFeed = videoSmallFeed;
+    }
+
+    public String getAudioFeed() {
+        return mAudioFeed;
+    }
+
+    public void setAudioFeed(String audioFeed) {
+        mAudioFeed = audioFeed;
     }
 }

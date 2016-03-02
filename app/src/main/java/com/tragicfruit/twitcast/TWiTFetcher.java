@@ -1,24 +1,32 @@
 package com.tragicfruit.twitcast;
 
+import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.TimeZone;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 /**
  * Created by Jeremy on 24/02/2016.
@@ -26,12 +34,45 @@ import java.util.TimeZone;
 public class TWiTFetcher {
     private static final String TAG = "TWiTFetcher";
     private static final Uri ENDPOINT = Uri.parse("https://twit.tv/api/v1.0");
-    private static final long WEEK_IN_SECONDS = 60 * 60 * 24 * 7;
+    private static final String BRICKHOUSE_AUDIO_FEED = "http://feeds.twit.tv/brickhouse.xml";
+    private static final String BRICKHOUSE_VIDEO_SMALL_FEED = "http://feeds.twit.tv/brickhouse_video_small.xml";
+    private static final String BRICKHOUSE_VIDEO_LARGE_FEED = "http://feeds.twit.tv/brickhouse_video_large.xml";
+    private static final String BRICKHOUSE_VIDEO_HD_FEED = "http://feeds.twit.tv/brickhouse_video_hd.xml";
 
     private TWiTDatabase mDatabase;
+    private Context mContext;
 
-    public TWiTFetcher() {
+    private enum Feed {
+        AUDIO, VIDEO_SMALL, VIDEO_LARGE, VIDEO_HD
+    }
+
+    public TWiTFetcher(Context context) {
+        mContext = context;
         mDatabase = TWiTDatabase.get();
+    }
+
+    public String readRssFeed(String urlSpec) throws IOException {
+        URL url = new URL(urlSpec);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+        try {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            InputStream in = connection.getInputStream();
+
+            if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                throw new IOException(connection.getResponseMessage() + ": with " + urlSpec);
+            }
+
+            int bytesRead = 0;
+            byte[] buffer = new byte[1024];
+            while ((bytesRead = in.read(buffer)) > 0) {
+                out.write(buffer, 0, bytesRead);
+            }
+            out.close();
+            return new String(out.toByteArray());
+        } finally {
+            connection.disconnect();
+        }
     }
 
     public byte[] getUrlBytes(String urlSpec) throws IOException {
@@ -64,7 +105,7 @@ public class TWiTFetcher {
         return new String(getUrlBytes(urlSpec));
     }
 
-    public List<Show> fetchShows() {
+    public boolean fetchShows() {
         try {
             Uri uri = ENDPOINT.buildUpon()
                     .appendPath("shows")
@@ -73,14 +114,15 @@ public class TWiTFetcher {
 
             String jsonBody = getUrlString(uri.toString());
             JSONObject jsonObject = new JSONObject(jsonBody);
-            return parseShows(jsonObject);
+            mDatabase.setShows(parseShows(jsonObject));
+            return true;
 
         } catch (JSONException je) {
             Log.e(TAG, "Failed to parse JSON", je);
-            return null;
+            return false;
         } catch (IOException ioe) {
             Log.e(TAG, "Failed to fetch shows", ioe);
-            return null;
+            return false;
         }
     }
 
@@ -105,7 +147,17 @@ public class TWiTFetcher {
             JSONObject derivatives = coverArt.getJSONObject("derivatives");
             newShow.setCoverArtUrl(derivatives.getString("twit_album_art_600x600"));
 
-//            Log.d(TAG, newShow.getTitle() + ": " + newShow.getId());
+            JSONArray hdVideoArray = show.getJSONArray("hdVideoSubscriptionOptions");
+            newShow.setVideoHdFeed(getRSSFeedFromJSONArray(hdVideoArray));
+
+            JSONArray sdVideoLarge = show.getJSONArray("sdVideoLargeSubscriptionOptions");
+            newShow.setVideoLargeFeed(getRSSFeedFromJSONArray(sdVideoLarge));
+
+            JSONArray sdVideoSmall = show.getJSONArray("sdVideoSmallSubscriptionOptions");
+            newShow.setVideoSmallFeed(getRSSFeedFromJSONArray(sdVideoSmall));
+
+            JSONArray audio = show.getJSONArray("audioSubscriptionOptions");
+            newShow.setAudioFeed(getRSSFeedFromJSONArray(audio));
 
             showList.add(newShow);
         }
@@ -113,97 +165,138 @@ public class TWiTFetcher {
         return showList;
     }
 
-    public void fetchEpisodes(String url) {
-        try {
-            if (url == null) {
-                Date currentDate = new Date();
+    private String getRSSFeedFromJSONArray(JSONArray subscriptionOptions) {
+        for (int i = subscriptionOptions.length() - 1; i >= 0; i--) {
+            try {
+                JSONObject option = subscriptionOptions.getJSONObject(i);
+                JSONObject feedProvider = option.getJSONObject("feedProvider");
+                String label = feedProvider.getString("label");
 
-                long timeNow = currentDate.getTime() / 1000;
-                long oneWeekAgo = timeNow - WEEK_IN_SECONDS;
-
-                long timeToUpdateFrom;
-                // if no episodes fetched, or last fetched over a week ago
-                if (mDatabase.getTimeLastUpdated() < 0 || mDatabase.getTimeLastUpdated() < oneWeekAgo) {
-                    timeToUpdateFrom = oneWeekAgo;
-                } else {
-                    timeToUpdateFrom = mDatabase.getTimeLastUpdated();
+                if (label.equals("RSS")) {
+                    return option.getString("url");
                 }
-
-                url = ENDPOINT.buildUpon()
-                        .appendPath("episodes")
-                        .appendQueryParameter("filter[airingDate][value]", String.valueOf(timeToUpdateFrom))
-                        .appendQueryParameter("filter[airingDate][operator]", ">=")
-                        .build()
-                        .toString();
-
-                mDatabase.setTimeLastUpdated(timeNow);
+            } catch (JSONException je) {
+                // Continue to next iteration
             }
+        }
 
-            String jsonBody = getUrlString(url);
-            JSONObject jsonObject = new JSONObject(jsonBody);
-            parseEpisodes(jsonObject);
+        return null;
+    }
 
-        } catch (JSONException je) {
-            Log.e(TAG, "Failed to parse JSON", je);
-        } catch (IOException ioe) {
-            Log.e(TAG, "Failed to fetch episodes", ioe);
+    public void fetchEpisodes() {
+        List<Episode> episodeList = getEpisodeListFromFeed(BRICKHOUSE_AUDIO_FEED);
+        addVideoFeed(episodeList, BRICKHOUSE_VIDEO_SMALL_FEED, Feed.VIDEO_SMALL);
+        addVideoFeed(episodeList, BRICKHOUSE_VIDEO_LARGE_FEED, Feed.VIDEO_LARGE);
+        addVideoFeed(episodeList, BRICKHOUSE_VIDEO_HD_FEED, Feed.VIDEO_HD);
+        Log.d(TAG, "Fetched video feeds");
+
+        mDatabase.addEpisodes(episodeList);
+        Log.d(TAG, "Episode count: " + mDatabase.getEpisodeCount());
+    }
+
+    private void addVideoFeed(List<Episode> episodeList, String feedUrl, Feed feedType) {
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            String feed = readRssFeed(feedUrl);
+            Document document = builder.parse(new InputSource(new StringReader(feed)));
+
+            NodeList episodeNodeList = document.getElementsByTagName("item");
+            int episodeListStartingIndex = findFirstMatchingIndex(episodeList, (Element) episodeNodeList.item(0));
+
+            // i is index for video feed, j is index for episode list (built from audio feed)
+            for (int i = 0, j = episodeListStartingIndex; i < episodeNodeList.getLength(); i++, j++) {
+                Episode episode = episodeList.get(j);
+
+                Element episodeElement = (Element) episodeNodeList.item(i);
+                String link = episodeElement.getElementsByTagName("link").item(0).getTextContent();
+
+                switch (feedType) {
+                    case VIDEO_SMALL:
+                        episode.setVideoSmallUrl(link);
+                        break;
+                    case VIDEO_LARGE:
+                        episode.setVideoLargeUrl(link);
+                        break;
+                    case VIDEO_HD:
+                        episode.setVideoHdUrl(link);
+                        break;
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Cannot add video feed: " + feedUrl, e);
         }
     }
 
-    private void parseEpisodes(JSONObject json) throws JSONException {
-        JSONArray episodes = json.getJSONArray("episodes");
+    private int findFirstMatchingIndex(List<Episode> episodeList, Element firstXmlItem) {
+        String firstXmlItemTitle = firstXmlItem.getElementsByTagName("title").item(0).getTextContent();
 
-        for (int i = 0; i < episodes.length(); i++) {
-            JSONObject episodeJson = episodes.getJSONObject(i);
-
-            Episode episode = new Episode();
-            episode.setTitle(episodeJson.getString("label"));
-            episode.setEpisodeNumber(episodeJson.getInt("episodeNumber"));
-            episode.setAiringDate(parseDate(episodeJson.getString("airingDate")));
-            episode.setShowNotes(episodeJson.getString("showNotes"));
-
-            if (episodeJson.has("video_hd")) {
-                episode.setVideoHdUrl(episodeJson.getJSONObject("video_hd").getString("mediaUrl"));
+        for (int i = 0; i < episodeList.size(); i++) {
+            String episodeTitle = episodeList.get(0).getTitle();
+            if (firstXmlItemTitle.equals(episodeTitle)) {
+                return i;
             }
-
-            if (episodeJson.has("video_large")) {
-                episode.setVideoLargeUrl(episodeJson.getJSONObject("video_large").getString("mediaUrl"));
-            }
-
-            if (episodeJson.has("video_small")) {
-                episode.setVideoSmallUrl(episodeJson.getJSONObject("video_small").getString("mediaUrl"));
-            }
-
-            if (episodeJson.has("video_audio")) {
-                episode.setVideoAudioUrl(episodeJson.getJSONObject("video_audio").getString("mediaUrl"));
-                String runningTime = episodeJson.getJSONObject("video_audio").getString("runningTime");
-                episode.setRunningTimeInMinutes(parseRunningTime(runningTime));
-            }
-
-            JSONObject embedded = episodeJson.getJSONObject("_embedded");
-            JSONArray shows = embedded.getJSONArray("shows");
-            JSONObject show = shows.getJSONObject(0);
-            episode.setShowId(show.getInt("id"));
-
-            mDatabase.addEpisode(episode);
         }
 
+        return -1;
+    }
+
+    private List<Episode> getEpisodeListFromFeed(String feedUrl) {
         try {
-            String nextPageUrl = json.getJSONObject("_links").getJSONObject("next").getString("href");
-            fetchEpisodes(nextPageUrl);
-        } catch (JSONException joe) {
-            Log.d(TAG, "Episode count: " + mDatabase.getEpisodeCount());
+            List<Episode> episodeList = new ArrayList<>();
+
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            String feed = readRssFeed(feedUrl);
+            Document document = builder.parse(new InputSource(new StringReader(feed)));
+
+            NodeList episodeNodeList = document.getElementsByTagName("item");
+            Log.d(TAG, "Raw episode count: " + episodeNodeList.getLength());
+            for (int i = 0; i < episodeNodeList.getLength(); i++) {
+                Episode episode = new Episode();
+
+                Element episodeElement = (Element) episodeNodeList.item(i);
+                String title = episodeElement.getElementsByTagName("title").item(0).getTextContent();
+                episode.setTitle(title);
+
+                String pubDate = episodeElement.getElementsByTagName("pubDate").item(0).getTextContent();
+                episode.setPublicationDate(parseDate(pubDate));
+
+                String subtitle = episodeElement.getElementsByTagName("itunes:subtitle").item(0).getTextContent();
+                episode.setSubtitle(subtitle);
+
+                String showNotes = episodeElement.getElementsByTagName("itunes:summary").item(0).getTextContent();
+                episode.setShowNotes(showNotes);
+
+                String duration = episodeElement.getElementsByTagName("itunes:duration").item(0).getTextContent();
+                episode.setRunningTime(parseRunningTime(duration));
+
+                String audioLink = episodeElement.getElementsByTagName("link").item(0).getTextContent();
+                episode.setVideoAudioUrl(audioLink);
+
+                episodeList.add(episode);
+            }
+
+            Log.d(TAG, "Fetched audio feeds");
+
+            return episodeList;
+
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to fetch episodes", e);
+            return null;
         }
     }
 
     private Date parseDate(String dateString) {
         try {
-            TimeZone timeZone = TimeZone.getTimeZone("GMT");
-            Calendar calendar = Calendar.getInstance(timeZone);
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+//            TimeZone timeZone = TimeZone.getTimeZone("GMT");
+//            Calendar calendar = Calendar.getInstance(timeZone);
+            GregorianCalendar calendar = new GregorianCalendar();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy k:m:s ZZZ");
 
             dateFormat.setCalendar(calendar);
             calendar.setTime(dateFormat.parse(dateString));
+
             return calendar.getTime();
         } catch (ParseException pe) {
             Log.e(TAG, "Cannot parse episode airing date", pe);
@@ -211,14 +304,19 @@ public class TWiTFetcher {
         }
     }
 
-    private int parseRunningTime(String runningTime) {
-        int hours = Integer.parseInt(runningTime.substring(0, 2));
-        int minutes = Integer.parseInt(runningTime.substring(3, 5));
-        int seconds = Integer.parseInt(runningTime.substring(6, 8));
+    private String parseRunningTime(String runningTime) {
+        int hours = Integer.parseInt(runningTime.substring(0, 1));
+        int minutes = Integer.parseInt(runningTime.substring(2, 4));
+        int seconds = Integer.parseInt(runningTime.substring(5, 7));
 
-        int hoursToMinutes = hours * 60;
+//        int hoursToMinutes = hours * 60;
         int secondsToMinutes = (int) Math.round((double) seconds / 60);
+        minutes += secondsToMinutes;
 
-        return hoursToMinutes + minutes + secondsToMinutes;
+        if (hours > 0) {
+            return mContext.getString(R.string.episode_running_time_long, hours, minutes);
+        } else {
+            return mContext.getString(R.string.episode_running_time_short, minutes);
+        }
     }
 }

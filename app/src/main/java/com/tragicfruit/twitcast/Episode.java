@@ -7,15 +7,14 @@ import java.util.Date;
  */
 public class Episode {
     private String mTitle;
-    private int mEpisodeNumber;
-    private Date mAiringDate;
+    private Date mPublicationDate;
+    private String mSubtitle;
     private String mShowNotes;
     private String mVideoHdUrl;
     private String mVideoLargeUrl;
     private String mVideoSmallUrl;
     private String mVideoAudioUrl;
-    private int mShowId;
-    private int mRunningTimeInMinutes;
+    private String mRunningTime;
 
     public String getTitle() {
         return mTitle;
@@ -25,20 +24,20 @@ public class Episode {
         mTitle = title;
     }
 
-    public int getEpisodeNumber() {
-        return mEpisodeNumber;
+    public Date getPublicationDate() {
+        return mPublicationDate;
     }
 
-    public void setEpisodeNumber(int episodeNumber) {
-        mEpisodeNumber = episodeNumber;
+    public void setPublicationDate(Date publicationDate) {
+        mPublicationDate = publicationDate;
     }
 
-    public Date getAiringDate() {
-        return mAiringDate;
+    public String getSubtitle() {
+        return mSubtitle;
     }
 
-    public void setAiringDate(Date airingDate) {
-        mAiringDate = airingDate;
+    public void setSubtitle(String subtitle) {
+        mSubtitle = subtitle;
     }
 
     public String getShowNotes() {
@@ -81,19 +80,11 @@ public class Episode {
         mVideoAudioUrl = videoAudioUrl;
     }
 
-    public int getShowId() {
-        return mShowId;
+    public String getRunningTime() {
+        return mRunningTime;
     }
 
-    public void setShowId(int showId) {
-        mShowId = showId;
-    }
-
-    public int getRunningTimeInMinutes() {
-        return mRunningTimeInMinutes;
-    }
-
-    public void setRunningTimeInMinutes(int runningTimeInMinutes) {
-        mRunningTimeInMinutes = runningTimeInMinutes;
+    public void setRunningTime(String runningTime) {
+        mRunningTime = runningTime;
     }
 }

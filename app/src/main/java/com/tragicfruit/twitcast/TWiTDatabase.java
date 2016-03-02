@@ -50,23 +50,25 @@ public class TWiTDatabase {
         return null;
     }
 
-    public void addEpisode(Episode episode) {
-        Show showForEpisode = getShowFromEpisode(episode);
-        if (showForEpisode != null) {
-            showForEpisode.addEpisode(episode);
-            mEpisodeCount += 1;
-            Log.d(TAG, episode.getTitle() + " added to " + showForEpisode.getTitle());
-        } else {
-            Log.d(TAG, "No show found for " + episode.getTitle());
+    public void addEpisodes(List<Episode> episodeList) {
+        for (Episode episode : episodeList) {
+            Show showForEpisode = getShowFromEpisode(episode);
+            if (showForEpisode != null) {
+                showForEpisode.addEpisode(episode);
+                mEpisodeCount += 1;
+                Log.d(TAG, episode.getTitle() + " added to " + showForEpisode.getTitle());
+            } else {
+                Log.d(TAG, "No show found for " + episode.getTitle());
+            }
         }
     }
 
     private Show getShowFromEpisode(Episode episode) {
         for (Show show: mShows) {
-            int showId = show.getId();
-            int episodeShowId = episode.getShowId();
+            String episodeTitle = episode.getTitle();
+            String showTitle = show.getTitle();
 
-            if (showId == episodeShowId) {
+            if (episodeTitle.contains(showTitle)) {
                 return show;
             }
         }

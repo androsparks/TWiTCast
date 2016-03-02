@@ -5,7 +5,7 @@
     <string name="downloading_cover_art_text">Downloading cover art (%1$s/%2$s)</string>
     <string name="updating_episodes_text">Updating episodes</string>
     <string name="refresh_button">Refresh shows</string>
-    <string name="episode_number_title">%1$s: %2$s</string>
-    <string name="episode_running_time">%1$s min</string>
+    <string name="episode_running_time_long">%1$s hr %2$s min</string>
+    <string name="episode_running_time_short">%1$s min</string>
     <string name="media_route_menu_title">Cast</string>
 </resources>

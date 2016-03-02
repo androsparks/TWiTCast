@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -185,7 +186,7 @@ public class ShowListFragment extends Fragment {
         }
     }
 
-    private class FetchShowsTask extends AsyncTask<Void, Void, List<Show>> {
+    private class FetchShowsTask extends AsyncTask<Void, Void, Boolean> {
         @Override
         protected void onPreExecute() {
             // show loading dialog
@@ -195,17 +196,20 @@ public class ShowListFragment extends Fragment {
         }
 
         @Override
-        protected List<Show> doInBackground(Void... params) {
-            return new TWiTFetcher().fetchShows();
+        protected Boolean doInBackground(Void... params) {
+            return new TWiTFetcher(getActivity()).fetchShows();
         }
 
         @Override
-        protected void onPostExecute(List<Show> shows) {
-            mDatabase.setShows(shows);
-            setupAdapter();
-
-            if (mDatabase.getShows() != null) {
+        protected void onPostExecute(Boolean successfulFetch) {
+            if (successfulFetch) {
+                setupAdapter();
                 new FetchCoverArtTask().execute();
+            } else {
+                if (mLoadingDialog != null && mLoadingDialog.isAdded()) {
+                    mLoadingDialog.dismiss();
+                }
+                Toast.makeText(getActivity(), "Cannot fetch episodes. Please try again later.", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -224,7 +228,7 @@ public class ShowListFragment extends Fragment {
             for (int i = 0; i < mDatabase.getShows().size(); i++) {
                 Show show = mDatabase.getShows().get(i);
                 try {
-                    byte[] bitmapBytes = new TWiTFetcher().getUrlBytes(show.getCoverArtUrl());
+                    byte[] bitmapBytes = new TWiTFetcher(getActivity()).getUrlBytes(show.getCoverArtUrl());
                     Bitmap bitmap = BitmapFactory.decodeByteArray(bitmapBytes, 0, bitmapBytes.length);
                     show.setCoverArt(new BitmapDrawable(getResources(), bitmap));
                 } catch (IOException e) {
@@ -247,10 +251,7 @@ public class ShowListFragment extends Fragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             mCoverArtDownloaded = true;
-
-            if (mDatabase.getShows() != null) {
-                updateEpisodes();
-            }
+            updateEpisodes();
         }
     }
 
@@ -263,7 +264,7 @@ public class ShowListFragment extends Fragment {
         }
         @Override
         protected Void doInBackground(Void... params) {
-            new TWiTFetcher().fetchEpisodes(null);
+            new TWiTFetcher(getActivity()).fetchEpisodes();
             return null;
         }
 
