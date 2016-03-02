@@ -9,7 +9,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
@@ -109,14 +108,13 @@ public class ShowListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        UpdatingShowsFragment dialog = (UpdatingShowsFragment) getFragmentManager().findFragmentByTag(DIALOG_UPDATING_SHOWS);
-        if (dialog != null && mDatabase.getShows() != null) {
+        if (mLoadingDialog != null && mDatabase.getShows() != null) {
             if (mEpisodesUpdated) {
-                dialog.dismiss();
+                mLoadingDialog.dismiss();
             } else if (mCoverArtDownloaded) {
-                dialog.setDialogMessage(getString(R.string.updating_episodes_text));
+                mLoadingDialog.setDialogMessage(getString(R.string.updating_episodes_text));
             } else {
-                dialog.setDialogMessage(getString(R.string.downloading_cover_art_placeholder_text));
+                mLoadingDialog.setDialogMessage(getString(R.string.downloading_cover_art_placeholder_text));
             }
         }
     }
@@ -215,10 +213,9 @@ public class ShowListFragment extends Fragment {
     private class FetchCoverArtTask extends AsyncTask<Void, Integer, Void> {
         @Override
         protected void onPreExecute() {
-            UpdatingShowsFragment dialog = (UpdatingShowsFragment) getFragmentManager().findFragmentByTag(DIALOG_UPDATING_SHOWS);
-            if (dialog != null) {
-                dialog.setDialogMessage(getString(R.string.downloading_cover_art_placeholder_text));
-                dialog.setMaxProgress(mDatabase.getShows().size());
+            if (mLoadingDialog != null && mLoadingDialog.isAdded()) {
+                mLoadingDialog.setDialogMessage(getString(R.string.downloading_cover_art_placeholder_text));
+                mLoadingDialog.setMaxProgress(mDatabase.getShows().size());
             }
         }
 
@@ -242,11 +239,9 @@ public class ShowListFragment extends Fragment {
         protected void onProgressUpdate(Integer... values) {
             mRecyclerView.getAdapter().notifyDataSetChanged();
 
-            if (mLoadingDialog == null) {
-                return;
+            if (mLoadingDialog != null && mLoadingDialog.isAdded()) {
+                mLoadingDialog.setProgress(values[0]);
             }
-
-            mLoadingDialog.setProgress(values[0]);
         }
 
         @Override
@@ -262,9 +257,8 @@ public class ShowListFragment extends Fragment {
     private class FetchEpisodesTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
-            UpdatingShowsFragment dialog = (UpdatingShowsFragment) getFragmentManager().findFragmentByTag(DIALOG_UPDATING_SHOWS);
-            if (dialog != null) {
-                dialog.setDialogMessage(getString(R.string.updating_episodes_text));
+            if (mLoadingDialog != null && mLoadingDialog.isAdded()) {
+                mLoadingDialog.setDialogMessage(getString(R.string.updating_episodes_text));
             }
         }
         @Override
@@ -278,11 +272,10 @@ public class ShowListFragment extends Fragment {
             mEpisodesUpdated = true;
 
             // dismiss loading dialog
-            DialogFragment dialog = (DialogFragment) getFragmentManager().findFragmentByTag(DIALOG_UPDATING_SHOWS);
             try {
-                dialog.dismiss();
+                mLoadingDialog.dismiss();
             } catch (Exception e) {
-                Log.e(TAG, "Error dismissing updating shows dialog", e);
+                Log.e(TAG, "Cannot dismiss dialog", e);
             }
         }
     }
