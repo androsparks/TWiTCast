@@ -11,7 +11,9 @@ import java.util.List;
 public class Show {
     private List<Episode> mEpisodes;
     private String mTitle;
+    private String mCoverArtSmallUrl;
     private String mCoverArtUrl;
+    private String mCoverArtLargeUrl;
     private Drawable mCoverArt;
     private int mId;
     private String mDescription;
@@ -32,12 +34,28 @@ public class Show {
         mTitle = title;
     }
 
+    public String getCoverArtSmallUrl() {
+        return mCoverArtSmallUrl;
+    }
+
+    public void setCoverArtSmallUrl(String coverArtSmallUrl) {
+        mCoverArtSmallUrl = coverArtSmallUrl;
+    }
+
     public String getCoverArtUrl() {
         return mCoverArtUrl;
     }
 
     public void setCoverArtUrl(String coverArtUrl) {
         mCoverArtUrl = coverArtUrl;
+    }
+
+    public String getCoverArtLargeUrl() {
+        return mCoverArtLargeUrl;
+    }
+
+    public void setCoverArtLargeUrl(String coverArtLargeUrl) {
+        mCoverArtLargeUrl = coverArtLargeUrl;
     }
 
     public Drawable getCoverArt() {

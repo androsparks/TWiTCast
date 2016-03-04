@@ -338,16 +338,16 @@ public class VideoCastNotificationService extends Service {
         NotificationCompat.Builder builder
                 = (NotificationCompat.Builder) new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_stat_action_notification)
-                .setContentTitle(metadata.getString(MediaMetadata.KEY_TITLE))
-                .setContentText(castingTo)
-                .setContentIntent(getContentIntent(info))
-                .setLargeIcon(bitmap)
-                .setStyle(new NotificationCompat.MediaStyle()
-                        .setShowActionsInCompactView(mNotificationCompactActionsArray)
-                        .setMediaSession(mCastManager.getMediaSessionCompatToken()))
-                .setOngoing(true)
-                .setShowWhen(false)
-                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+                .setContentTitle(metadata.getString(MediaMetadata.KEY_TITLE) + " " + metadata.getString(MediaMetadata.KEY_SUBTITLE))
+                        .setContentText(castingTo)
+                        .setContentIntent(getContentIntent(info))
+                        .setLargeIcon(bitmap)
+                        .setStyle(new NotificationCompat.MediaStyle()
+                                .setShowActionsInCompactView(mNotificationCompactActionsArray)
+                                .setMediaSession(mCastManager.getMediaSessionCompatToken()))
+                        .setOngoing(true)
+                        .setShowWhen(false)
+                        .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
 
         for (Integer notificationType : mNotificationActions) {
             switch (notificationType) {

@@ -66,15 +66,18 @@ public abstract class GoogleCastActivity extends SingleFragmentActivity implemen
 
     @Override
     public void playVideo(Episode episode) {
-        MediaMetadata mediaMetadata = new MediaMetadata( MediaMetadata.MEDIA_TYPE_MOVIE );
-        String displayTitle = episode.getTitle().length() <= 50 ? episode.getTitle() : episode.getTitle().substring(0, 50);
-        mediaMetadata.putString( MediaMetadata.KEY_TITLE, displayTitle );
-        mediaMetadata.addImage(new WebImage(Uri.parse(episode.getShow().getCoverArtUrl())));
+        MediaMetadata mediaMetadata = new MediaMetadata(MediaMetadata.MEDIA_TYPE_MOVIE);
+        mediaMetadata.putString(MediaMetadata.KEY_TITLE, episode.getShow().getTitle());
+        mediaMetadata.putString(MediaMetadata.KEY_SUBTITLE, episode.getDisplayTitle());
+        mediaMetadata.putString(MediaMetadata.KEY_STUDIO, getString(R.string.studio_name));
+        mediaMetadata.addImage(new WebImage(Uri.parse(episode.getShow().getCoverArtSmallUrl())));
+        mediaMetadata.addImage(new WebImage(Uri.parse(episode.getShow().getCoverArtLargeUrl())));
 
-        MediaInfo mediaInfo = new MediaInfo.Builder( episode.getVideoHdUrl() )
-                .setContentType( "video/mp4" )
-                .setStreamType( MediaInfo.STREAM_TYPE_BUFFERED )
-                .setMetadata( mediaMetadata )
+        // TODO: change for different stream qualities
+        MediaInfo mediaInfo = new MediaInfo.Builder(episode.getVideoHdUrl())
+                .setContentType("video/mp4")
+                .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
+                .setMetadata(mediaMetadata)
                 .build();
 
         if (mCastManager.isConnected()) {
