@@ -19,7 +19,8 @@
         </activity>
         <activity android:name=".EpisodeListActivity"/>
         <service android:name="com.google.android.libraries.cast.companionlibrary.notification.VideoCastNotificationService"/>
-        <activity android:name="com.google.android.libraries.cast.companionlibrary.cast.player.VideoCastControllerActivity"/>
+        <activity android:name="com.google.android.libraries.cast.companionlibrary.cast.player.VideoCastControllerActivity"
+            android:theme="@style/Theme.CastVideosTheme"/>
         <receiver android:name="com.google.android.libraries.cast.companionlibrary.remotecontrol.VideoIntentReceiver"/>
         <service android:name="com.google.android.libraries.cast.companionlibrary.cast.reconnection.ReconnectionService"/>
     </application>

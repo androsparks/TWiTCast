@@ -98,6 +98,7 @@ public class VideoCastControllerActivity extends AppCompatActivity implements
     private ImageButton mSkipNext;
     private ImageButton mSkipPrevious;
     private View mPlaybackControls;
+    private Toolbar mToolbar;
     private int mNextPreviousVisibilityPolicy
             = CastConfiguration.NEXT_PREV_VISIBILITY_POLICY_DISABLED;
     private boolean mImmersive;
@@ -289,9 +290,12 @@ public class VideoCastControllerActivity extends AppCompatActivity implements
     }
 
     private void setUpActionBar() {
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+        mToolbar.setPadding(0, getStatusBarHeight(), 0, 0);
     }
 
     @Override
@@ -443,14 +447,22 @@ public class VideoCastControllerActivity extends AppCompatActivity implements
 
     @Override
     public void setTitle(String text) {
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(text);
-        }
+        mToolbar.setTitle(text);
     }
 
     @Override
     public void setSubTitle(String text) {
         mLine2.setText(text);
+    }
+
+    // A method to find height of the status bar
+    public int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
     }
 
     @Override
