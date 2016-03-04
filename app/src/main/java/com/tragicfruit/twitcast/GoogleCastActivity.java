@@ -11,6 +11,8 @@ import com.google.android.gms.common.images.WebImage;
 import com.google.android.libraries.cast.companionlibrary.cast.BaseCastManager;
 import com.google.android.libraries.cast.companionlibrary.cast.CastConfiguration;
 import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
+import com.google.android.libraries.cast.companionlibrary.cast.player.VideoCastControllerActivity;
+import com.google.android.libraries.cast.companionlibrary.utils.Utils;
 
 /**
  * Created by Jeremy on 4/03/2016.
@@ -27,10 +29,15 @@ public abstract class GoogleCastActivity extends SingleFragmentActivity implemen
 
         CastConfiguration options = new CastConfiguration.Builder(SecretConstants.GOOGLE_CAST_APP_ID)
                 .enableAutoReconnect()
-                .enableCaptionManagement()
                 .enableDebug()
                 .enableLockScreen()
                 .enableWifiReconnection()
+                .enableNotification()
+                .addNotificationAction(CastConfiguration.NOTIFICATION_ACTION_SKIP_PREVIOUS, false)
+                .addNotificationAction(CastConfiguration.NOTIFICATION_ACTION_SKIP_NEXT, false)
+                .addNotificationAction(CastConfiguration.NOTIFICATION_ACTION_REWIND, true)
+                .addNotificationAction(CastConfiguration.NOTIFICATION_ACTION_PLAY_PAUSE, true)
+                .addNotificationAction(CastConfiguration.NOTIFICATION_ACTION_DISCONNECT, true)
                 .build();
 
         VideoCastManager.initialize(this, options);
@@ -60,7 +67,8 @@ public abstract class GoogleCastActivity extends SingleFragmentActivity implemen
     @Override
     public void playVideo(Episode episode) {
         MediaMetadata mediaMetadata = new MediaMetadata( MediaMetadata.MEDIA_TYPE_MOVIE );
-        mediaMetadata.putString( MediaMetadata.KEY_TITLE, episode.getTitle().substring(0, 50) );
+        String displayTitle = episode.getTitle().length() <= 50 ? episode.getTitle() : episode.getTitle().substring(0, 50);
+        mediaMetadata.putString( MediaMetadata.KEY_TITLE, displayTitle );
         mediaMetadata.addImage(new WebImage(Uri.parse(episode.getShow().getCoverArtUrl())));
 
         MediaInfo mediaInfo = new MediaInfo.Builder( episode.getVideoHdUrl() )
@@ -72,6 +80,7 @@ public abstract class GoogleCastActivity extends SingleFragmentActivity implemen
         if (mCastManager.isConnected()) {
             try {
                 mCastManager.loadMedia(mediaInfo, true, 0);
+                mCastManager.startVideoCastControllerActivity(this, mediaInfo, 0, true);
             } catch (Exception e) {
                 Log.e(TAG, "Cannot load video", e);
             }

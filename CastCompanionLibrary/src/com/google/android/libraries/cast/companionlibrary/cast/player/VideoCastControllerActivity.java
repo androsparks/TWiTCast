@@ -98,7 +98,6 @@ public class VideoCastControllerActivity extends AppCompatActivity implements
     private ImageButton mSkipNext;
     private ImageButton mSkipPrevious;
     private View mPlaybackControls;
-    private Toolbar mToolbar;
     private int mNextPreviousVisibilityPolicy
             = CastConfiguration.NEXT_PREV_VISIBILITY_POLICY_DISABLED;
     private boolean mImmersive;
@@ -109,7 +108,8 @@ public class VideoCastControllerActivity extends AppCompatActivity implements
         setContentView(R.layout.cast_activity);
         loadAndSetupViews();
         mCastManager = VideoCastManager.getInstance();
-        mImmersive = mCastManager.getCastConfiguration().isCastControllerImmersive();
+//        mImmersive = mCastManager.getCastConfiguration().isCastControllerImmersive();
+        mImmersive = false; // activity never immersive
         mVolumeIncrement = mCastManager.getVolumeStep();
 
         Bundle extras = getIntent().getExtras();
@@ -289,8 +289,6 @@ public class VideoCastControllerActivity extends AppCompatActivity implements
     }
 
     private void setUpActionBar() {
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
@@ -445,7 +443,9 @@ public class VideoCastControllerActivity extends AppCompatActivity implements
 
     @Override
     public void setTitle(String text) {
-        mToolbar.setTitle(text);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(text);
+        }
     }
 
     @Override
