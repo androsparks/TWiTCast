@@ -1,16 +1,16 @@
 package com.tragicfruit.twitcast;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 
-import com.google.android.gms.cast.LaunchOptions;
 import com.google.android.gms.cast.MediaInfo;
 import com.google.android.gms.cast.MediaMetadata;
+import com.google.android.gms.common.images.WebImage;
 import com.google.android.libraries.cast.companionlibrary.cast.BaseCastManager;
 import com.google.android.libraries.cast.companionlibrary.cast.CastConfiguration;
 import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
-import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCastConsumerImpl;
 
 /**
  * Created by Jeremy on 4/03/2016.
@@ -19,27 +19,21 @@ public abstract class GoogleCastActivity extends SingleFragmentActivity implemen
     private static final String TAG = "GoogleCastActivity";
 
     private VideoCastManager mCastManager;
-    private VideoCastConsumerImpl mCastConsumer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         BaseCastManager.checkGooglePlayServices(this);
 
-        final CastConfiguration options = new CastConfiguration.Builder(SecretConstants.GOOGLE_CAST_APP_ID)
+        CastConfiguration options = new CastConfiguration.Builder(SecretConstants.GOOGLE_CAST_APP_ID)
                 .enableAutoReconnect()
                 .enableCaptionManagement()
                 .enableDebug()
                 .enableLockScreen()
                 .enableWifiReconnection()
-                .enableNotification()
-                .addNotificationAction(CastConfiguration.NOTIFICATION_ACTION_PLAY_PAUSE, true)
-                .addNotificationAction(CastConfiguration.NOTIFICATION_ACTION_DISCONNECT, true)
                 .build();
 
         VideoCastManager.initialize(this, options);
-
-        mCastConsumer = new VideoCastConsumerImpl();
     }
 
     @Override
@@ -55,22 +49,21 @@ public abstract class GoogleCastActivity extends SingleFragmentActivity implemen
         super.onResume();
         mCastManager = VideoCastManager.getInstance();
         mCastManager.incrementUiCounter();
-        mCastManager.addVideoCastConsumer(mCastConsumer);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         mCastManager.decrementUiCounter();
-        mCastManager.removeVideoCastConsumer(mCastConsumer);
     }
 
     @Override
-    public void playVideo(String videoTitle, String videoUrl) {
+    public void playVideo(Episode episode) {
         MediaMetadata mediaMetadata = new MediaMetadata( MediaMetadata.MEDIA_TYPE_MOVIE );
-        mediaMetadata.putString( MediaMetadata.KEY_TITLE, videoTitle );
+        mediaMetadata.putString( MediaMetadata.KEY_TITLE, episode.getTitle() );
+        mediaMetadata.addImage(new WebImage(Uri.parse(episode.getShow().getCoverArtUrl())));
 
-        MediaInfo mediaInfo = new MediaInfo.Builder( videoUrl )
+        MediaInfo mediaInfo = new MediaInfo.Builder( episode.getVideoHdUrl() )
                 .setContentType( "video/mp4" )
                 .setStreamType( MediaInfo.STREAM_TYPE_BUFFERED )
                 .setMetadata( mediaMetadata )

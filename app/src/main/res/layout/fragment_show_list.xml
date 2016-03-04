@@ -5,19 +5,19 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent">
 
-    <com.tragicfruit.twitcast.AutofitRecyclerView
-        android:id="@+id/fragment_selection_recycler_view"
-        android:columnWidth="180dp"
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"/>
-
     <com.google.android.libraries.cast.companionlibrary.widgets.MiniController
         android:id="@+id/miniController"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/shadow7"
         app:auto_setup="true"
         android:visibility="gone"/>
+
+    <com.tragicfruit.twitcast.AutofitRecyclerView
+        android:id="@+id/fragment_selection_recycler_view"
+        android:layout_above="@id/miniController"
+        android:columnWidth="180dp"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"/>
 
 </RelativeLayout>

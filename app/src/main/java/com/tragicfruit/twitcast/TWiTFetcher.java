@@ -34,17 +34,9 @@ import javax.xml.parsers.DocumentBuilderFactory;
 public class TWiTFetcher {
     private static final String TAG = "TWiTFetcher";
     private static final Uri ENDPOINT = Uri.parse("https://twit.tv/api/v1.0");
-    private static final String BRICKHOUSE_AUDIO_FEED = "http://feeds.twit.tv/brickhouse.xml";
-    private static final String BRICKHOUSE_VIDEO_SMALL_FEED = "http://feeds.twit.tv/brickhouse_video_small.xml";
-    private static final String BRICKHOUSE_VIDEO_LARGE_FEED = "http://feeds.twit.tv/brickhouse_video_large.xml";
-    private static final String BRICKHOUSE_VIDEO_HD_FEED = "http://feeds.twit.tv/brickhouse_video_hd.xml";
 
     private TWiTDatabase mDatabase;
     private Context mContext;
-
-    private enum Feed {
-        AUDIO, VIDEO_SMALL, VIDEO_LARGE, VIDEO_HD
-    }
 
     public TWiTFetcher(Context context) {
         mContext = context;
@@ -184,10 +176,10 @@ public class TWiTFetcher {
     }
 
     public void fetchEpisodes() {
-        List<Episode> episodeList = getEpisodeListFromFeed(BRICKHOUSE_AUDIO_FEED);
-        addVideoFeed(episodeList, BRICKHOUSE_VIDEO_SMALL_FEED, Feed.VIDEO_SMALL);
-        addVideoFeed(episodeList, BRICKHOUSE_VIDEO_LARGE_FEED, Feed.VIDEO_LARGE);
-        addVideoFeed(episodeList, BRICKHOUSE_VIDEO_HD_FEED, Feed.VIDEO_HD);
+        List<Episode> episodeList = getEpisodeListFromFeed(Constants.BRICKHOUSE_AUDIO_FEED);
+        addVideoFeed(episodeList, Constants.BRICKHOUSE_VIDEO_SMALL_FEED, Feed.VIDEO_SMALL);
+        addVideoFeed(episodeList, Constants.BRICKHOUSE_VIDEO_LARGE_FEED, Feed.VIDEO_LARGE);
+        addVideoFeed(episodeList, Constants.BRICKHOUSE_VIDEO_HD_FEED, Feed.VIDEO_HD);
         Log.d(TAG, "Fetched video feeds");
 
         mDatabase.addEpisodes(episodeList);
@@ -205,7 +197,7 @@ public class TWiTFetcher {
             int episodeListStartingIndex = findFirstMatchingIndex(episodeList, (Element) episodeNodeList.item(0));
 
             // i is index for video feed, j is index for episode list (built from audio feed)
-            for (int i = 0, j = episodeListStartingIndex; i < episodeNodeList.getLength(); i++, j++) {
+            for (int i = 0, j = episodeListStartingIndex; j < episodeList.size(); i++, j++) {
                 Episode episode = episodeList.get(j);
 
                 Element episodeElement = (Element) episodeNodeList.item(i);
@@ -232,7 +224,7 @@ public class TWiTFetcher {
         String firstXmlItemTitle = firstXmlItem.getElementsByTagName("title").item(0).getTextContent();
 
         for (int i = 0; i < episodeList.size(); i++) {
-            String episodeTitle = episodeList.get(0).getTitle();
+            String episodeTitle = episodeList.get(i).getTitle();
             if (firstXmlItemTitle.equals(episodeTitle)) {
                 return i;
             }

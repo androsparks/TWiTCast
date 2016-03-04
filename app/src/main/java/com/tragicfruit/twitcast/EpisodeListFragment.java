@@ -33,7 +33,7 @@ public class EpisodeListFragment extends Fragment {
     private Callbacks mCallbacks;
 
     public interface Callbacks {
-        void playVideo(String videoTitle, String videoUrl);
+        void playVideo(Episode episode);
     }
 
     @Override
@@ -126,7 +126,7 @@ public class EpisodeListFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            mCallbacks.playVideo(mEpisode.getTitle(), mEpisode.getVideoHdUrl());
+            mCallbacks.playVideo(mEpisode);
         }
     }
 

@@ -5,11 +5,19 @@
              android:layout_width="match_parent"
              android:layout_height="match_parent">
 
+    <com.google.android.libraries.cast.companionlibrary.widgets.MiniController
+        android:id="@+id/miniController"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:auto_setup="true"
+        android:visibility="gone"/>
+
     <ScrollView android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_above="@id/miniController">
 
         <RelativeLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -55,14 +63,5 @@
         </RelativeLayout>
 
     </ScrollView>
-
-    <com.google.android.libraries.cast.companionlibrary.widgets.MiniController
-        android:id="@+id/miniController"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/shadow7"
-        app:auto_setup="true"
-        android:visibility="gone"/>
 
 </RelativeLayout>
