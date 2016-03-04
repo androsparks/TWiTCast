@@ -1,5 +1,6 @@
 package com.tragicfruit.twitcast;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -28,6 +29,24 @@ public class EpisodeListFragment extends Fragment {
 
     private Show mShow;
     private List<Episode> mEpisodeList;
+
+    private Callbacks mCallbacks;
+
+    public interface Callbacks {
+        void playVideo(String videoTitle, String videoUrl);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mCallbacks = (Callbacks) context;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallbacks = null;
+    }
 
     public static EpisodeListFragment newInstance(int showId) {
         Bundle args = new Bundle();
@@ -78,7 +97,8 @@ public class EpisodeListFragment extends Fragment {
         return v;
     }
 
-    private class EpisodeHolder extends RecyclerView.ViewHolder {
+    private class EpisodeHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private Episode mEpisode;
         private TextView mNumberTitleTextView;
         private TextView mDateTextView;
         private TextView mRunningTimeTextView;
@@ -86,6 +106,7 @@ public class EpisodeListFragment extends Fragment {
 
         public EpisodeHolder(View itemView) {
             super(itemView);
+            itemView.setOnClickListener(this);
 
             mNumberTitleTextView = (TextView) itemView.findViewById(R.id.episode_number_title);
             mDateTextView = (TextView) itemView.findViewById(R.id.episode_date);
@@ -94,12 +115,18 @@ public class EpisodeListFragment extends Fragment {
         }
 
         public void bindEpisode(Episode episode) {
+            mEpisode = episode;
             mNumberTitleTextView.setText(episode.getDisplayTitle());
             mRunningTimeTextView.setText(episode.getRunningTime());
             mDescriptionTextView.setText(episode.getSubtitle());
 
             String dateString = DateFormat.format("MMM d", episode.getPublicationDate()).toString();
             mDateTextView.setText(dateString);
+        }
+
+        @Override
+        public void onClick(View v) {
+            mCallbacks.playVideo(mEpisode.getTitle(), mEpisode.getVideoHdUrl());
         }
     }
 
