@@ -60,7 +60,7 @@ public abstract class GoogleCastActivity extends SingleFragmentActivity implemen
     @Override
     public void playVideo(Episode episode) {
         MediaMetadata mediaMetadata = new MediaMetadata( MediaMetadata.MEDIA_TYPE_MOVIE );
-        mediaMetadata.putString( MediaMetadata.KEY_TITLE, episode.getTitle() );
+        mediaMetadata.putString( MediaMetadata.KEY_TITLE, episode.getTitle().substring(0, 50) );
         mediaMetadata.addImage(new WebImage(Uri.parse(episode.getShow().getCoverArtUrl())));
 
         MediaInfo mediaInfo = new MediaInfo.Builder( episode.getVideoHdUrl() )
