@@ -1,6 +1,7 @@
 package com.tragicfruit.twitcast;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,6 +29,7 @@ public class EpisodeListFragment extends Fragment {
     private ImageView mCoverArtImageView;
     private TextView mTitleTextView;
     private TextView mDescriptionTextView;
+    private Button mMoreEpisodesButton;
 
     private Show mShow;
     private List<Episode> mEpisodeList;
@@ -107,7 +110,33 @@ public class EpisodeListFragment extends Fragment {
         mDescriptionTextView = (TextView) v.findViewById(R.id.show_description);
         mDescriptionTextView.setText(mShow.getDescription());
 
+        mMoreEpisodesButton = (Button) v.findViewById(R.id.more_episodes_button);
+        if (mShow.hasLoadedAllEpisodes()) {
+            mMoreEpisodesButton.setVisibility(View.GONE);
+        }
+        mMoreEpisodesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new FetchMoreEpisodesTask().execute();
+            }
+        });
+
         return v;
+    }
+
+    private class FetchMoreEpisodesTask extends AsyncTask<Void, Void, List<Episode>> {
+
+        @Override
+        protected List<Episode> doInBackground(Void... params) {
+            return new TWiTFetcher(getActivity()).fetchEpisodes(mShow);
+        }
+
+        @Override
+        protected void onPostExecute(List<Episode> episodeList) {
+            TWiTDatabase.get().addEpisodes(episodeList, mShow);
+            mRecyclerView.getAdapter().notifyDataSetChanged();
+            mMoreEpisodesButton.setVisibility(View.GONE);
+        }
     }
 
     private class EpisodeHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

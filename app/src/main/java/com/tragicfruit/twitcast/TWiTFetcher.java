@@ -176,11 +176,24 @@ public class TWiTFetcher {
         return null;
     }
 
-    public List<Episode> fetchEpisodes() {
-        List<Episode> episodeList = getEpisodeListFromFeed(Constants.BRICKHOUSE_AUDIO_FEED);
-        addVideoFeed(episodeList, Constants.BRICKHOUSE_VIDEO_SMALL_FEED, Feed.VIDEO_SMALL);
-        addVideoFeed(episodeList, Constants.BRICKHOUSE_VIDEO_LARGE_FEED, Feed.VIDEO_LARGE);
-        addVideoFeed(episodeList, Constants.BRICKHOUSE_VIDEO_HD_FEED, Feed.VIDEO_HD);
+    public List<Episode> fetchAllEpisodes() {
+        return fetchEpisodes(null);
+    }
+
+    public List<Episode> fetchEpisodes(Show show) {
+        List<Episode> episodeList;
+        if (show == null) {
+            episodeList = getEpisodeListFromFeed(Constants.BRICKHOUSE_AUDIO_FEED);
+            addVideoFeed(episodeList, Constants.BRICKHOUSE_VIDEO_SMALL_FEED, Feed.VIDEO_SMALL);
+            addVideoFeed(episodeList, Constants.BRICKHOUSE_VIDEO_LARGE_FEED, Feed.VIDEO_LARGE);
+            addVideoFeed(episodeList, Constants.BRICKHOUSE_VIDEO_HD_FEED, Feed.VIDEO_HD);
+        } else {
+            episodeList = getEpisodeListFromFeed(show.getAudioFeed());
+            addVideoFeed(episodeList, show.getVideoSmallFeed(), Feed.VIDEO_SMALL);
+            addVideoFeed(episodeList, show.getVideoLargeFeed(), Feed.VIDEO_LARGE);
+            addVideoFeed(episodeList, show.getVideoHdFeed(), Feed.VIDEO_HD);
+        }
+
         Log.d(TAG, "Fetched video feeds");
 
         return episodeList;

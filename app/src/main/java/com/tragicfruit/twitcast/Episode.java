@@ -98,7 +98,21 @@ public class Episode {
     }
 
     public String getDisplayTitle() {
-        return mTitle.replace(mShow.getTitle(), "").substring(1);
+        return mTitle.replace(mShow.getTitle() + " ", "");
+    }
+
+    public void cleanTitle() {
+        int indexOfFirstDigit = 0;
+
+        for (int i = 0; i < mTitle.length(); i++) {
+            char c = mTitle.charAt(i);
+            if (Character.isDigit(c)) {
+                indexOfFirstDigit = i;
+                break;
+            }
+        }
+
+        mTitle = mShow.getTitle() + " " + mTitle.substring(indexOfFirstDigit);
     }
 
     @Override

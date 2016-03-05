@@ -42,7 +42,7 @@
                     tools:text="Show title"
                     android:id="@+id/show_title"
                     android:textSize="20sp"
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/show_page_show_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 
@@ -57,6 +57,13 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/fragment_episode_list_recycler_view"
                 android:layout_below="@id/show_cover_art"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <Button
+                android:id="@+id/more_episodes_button"
+                android:layout_below="@id/fragment_episode_list_recycler_view"
+                android:text="Load more episodes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 

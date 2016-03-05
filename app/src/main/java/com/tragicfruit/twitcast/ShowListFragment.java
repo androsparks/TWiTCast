@@ -25,7 +25,6 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -76,6 +75,7 @@ public class ShowListFragment extends Fragment {
     }
 
     private void updateEpisodes() {
+        // TODO: if oldest server episode is newer than newest local episode then wipe episodes & reset
         mFetchEpisodesTask.execute(); // TODO: handle no internet connection
     }
 
@@ -305,7 +305,7 @@ public class ShowListFragment extends Fragment {
 
         @Override
         protected List<Episode> doInBackground(Void... params) {
-            return new TWiTFetcher(getActivity()).fetchEpisodes();
+            return new TWiTFetcher(getActivity()).fetchAllEpisodes();
         }
 
         @Override

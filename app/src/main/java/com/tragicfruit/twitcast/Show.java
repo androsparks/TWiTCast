@@ -21,6 +21,7 @@ public class Show {
     private String mVideoLargeFeed;
     private String mVideoSmallFeed;
     private String mAudioFeed;
+    private boolean mLoadedAllEpisodes;
 
     public Show() {
         mEpisodes = new ArrayList<>();
@@ -120,5 +121,13 @@ public class Show {
 
     public void setAudioFeed(String audioFeed) {
         mAudioFeed = audioFeed;
+    }
+
+    public boolean hasLoadedAllEpisodes() {
+        return mLoadedAllEpisodes;
+    }
+
+    public void setLoadedAllEpisodes(boolean loadedAllEpisodes) {
+        mLoadedAllEpisodes = loadedAllEpisodes;
     }
 }

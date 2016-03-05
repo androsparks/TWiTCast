@@ -74,6 +74,23 @@ public class TWiTDatabase {
         // TODO: clean up old shows
     }
 
+    public void addEpisodes(List<Episode> episodeList, Show show) {
+        for (Episode episode : episodeList) {
+            episode.setShow(show);
+            episode.cleanTitle();
+
+            if (episodeAlreadyExists(episode)) {
+                continue;
+            }
+
+            mEpisodes.add(episode);
+            show.addEpisode(episode);
+            show.setLoadedAllEpisodes(true);
+            mEpisodeCount += 1;
+            Log.d(TAG, episode.getTitle() + " added to " + show.getTitle());
+        }
+    }
+
     private boolean episodeAlreadyExists(Episode episode) {
         return mEpisodes.contains(episode) && episodeHasAllUrls(episode);
     }
