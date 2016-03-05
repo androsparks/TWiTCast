@@ -39,7 +39,8 @@ public class ShowListFragment extends Fragment {
     private TWiTDatabase mDatabase;
     private FetchShowsTask mFetchShowsTask;
     private FetchCoverArtTask mFetchCoverArtTask;
-    private FetchEpisodesTask mFetchEpisodesTask;
+
+    private boolean mRefreshingShows;
 
     public static ShowListFragment newInstance() {
         return new ShowListFragment();
@@ -54,11 +55,14 @@ public class ShowListFragment extends Fragment {
         mDatabase = TWiTDatabase.get();
         mFetchCoverArtTask = new FetchCoverArtTask();
         mFetchShowsTask = new FetchShowsTask();
-        mFetchEpisodesTask = new FetchEpisodesTask();
 
         if (mDatabase.getShows() == null) {
+            mRefreshingShows = true;
+            getActivity().invalidateOptionsMenu();
             updateShows();
         } else if (!isCoverArtDownloaded()) {
+            mRefreshingShows = true;
+            getActivity().invalidateOptionsMenu();
             updateCoverArt();
         } else {
             updateEpisodes();
@@ -66,17 +70,23 @@ public class ShowListFragment extends Fragment {
     }
 
     private void updateShows() {
+        if (mFetchShowsTask.getStatus() == AsyncTask.Status.FINISHED) {
+            mFetchShowsTask = new FetchShowsTask();
+        }
         mFetchShowsTask.execute();
         // TODO: handle no internet connection
     }
 
     private void updateCoverArt() {
+        if (mFetchCoverArtTask.getStatus() == AsyncTask.Status.FINISHED) {
+            mFetchCoverArtTask = new FetchCoverArtTask();
+        }
         mFetchCoverArtTask.execute();
     }
 
     private void updateEpisodes() {
         // TODO: if oldest server episode is newer than newest local episode then wipe episodes & reset
-        mFetchEpisodesTask.execute(); // TODO: handle no internet connection
+        new FetchEpisodesTask().execute(); // TODO: handle no internet connection
     }
 
     private boolean isCoverArtDownloaded() {
@@ -103,6 +113,8 @@ public class ShowListFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_selection, menu);
+        MenuItem refreshButton = menu.findItem(R.id.refresh_button);
+        refreshButton.setEnabled(!mRefreshingShows);
     }
 
     @Override
@@ -110,6 +122,8 @@ public class ShowListFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.refresh_button:
                 updateShows();
+                mRefreshingShows = true;
+                getActivity().invalidateOptionsMenu();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -227,7 +241,7 @@ public class ShowListFragment extends Fragment {
                 Log.d(TAG, "Fetched shows");
                 mDatabase.setShows(showList);
                 setupAdapter();
-                mFetchCoverArtTask.execute();
+                updateCoverArt();
             } else {
                 if (mLoadingDialog != null && mLoadingDialog.isAdded()) {
                     mLoadingDialog.dismiss();
@@ -292,6 +306,9 @@ public class ShowListFragment extends Fragment {
             } catch (Exception e) {
                 Log.e(TAG, "Cannot dismiss dialog", e);
             }
+
+            mRefreshingShows = false;
+            getActivity().invalidateOptionsMenu();
 
             updateEpisodes();
         }
