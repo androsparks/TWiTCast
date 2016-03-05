@@ -338,7 +338,7 @@ public class VideoCastNotificationService extends Service {
         NotificationCompat.Builder builder
                 = (NotificationCompat.Builder) new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_twit)
-                .setContentTitle(metadata.getString(MediaMetadata.KEY_TITLE) + " " + metadata.getString(MediaMetadata.KEY_SUBTITLE))
+                .setContentTitle(metadata.getString(MediaMetadata.KEY_SUBTITLE))
                         .setContentText(castingTo)
                         .setContentIntent(getContentIntent(info))
                         .setLargeIcon(bitmap)

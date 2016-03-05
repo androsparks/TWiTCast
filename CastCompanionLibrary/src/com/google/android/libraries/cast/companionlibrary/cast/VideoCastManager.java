@@ -285,7 +285,7 @@ public class VideoCastManager extends BaseCastManager
             controller.setPlaybackStatus(mState, mIdleReason);
             controller.setSubtitle(mContext.getResources().getString(R.string.ccl_casting_to_device,
                     mDeviceName));
-            controller.setTitle(mm.getString(MediaMetadata.KEY_TITLE) + " " + mm.getString(MediaMetadata.KEY_SUBTITLE));
+            controller.setTitle(mm.getString(MediaMetadata.KEY_SUBTITLE));
             controller.setIcon(Utils.getImageUri(mediaInfo, 0));
         }
     }

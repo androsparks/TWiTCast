@@ -420,8 +420,7 @@ public class VideoCastControllerFragment extends Fragment implements
             return;
         }
         MediaMetadata mm = mSelectedMedia.getMetadata();
-        String toolbarTitle = mm.getString(MediaMetadata.KEY_TITLE) + " " + mm.getString(MediaMetadata.KEY_SUBTITLE);
-        mCastController.setTitle(toolbarTitle);
+        mCastController.setTitle(mm.getString(MediaMetadata.KEY_SUBTITLE));
         boolean isLive = mSelectedMedia.getStreamType() == MediaInfo.STREAM_TYPE_LIVE;
         mCastController.adjustControllersForLiveStream(isLive);
     }

@@ -136,10 +136,6 @@ public class ShowListFragment extends Fragment {
         if (mFetchCoverArtTask != null) {
             mFetchCoverArtTask.cancel(false);
         }
-
-        if (mFetchEpisodesTask != null) {
-            mFetchEpisodesTask.cancel(false);
-        }
     }
 
     private void showLoadingDialog(String message) {
@@ -288,20 +284,20 @@ public class ShowListFragment extends Fragment {
                 return;
             }
 
-            updateEpisodes();
             Log.d(TAG, "Fetched cover art");
+
+            // dismiss loading dialog
+            try {
+                mLoadingDialog.dismiss();
+            } catch (Exception e) {
+                Log.e(TAG, "Cannot dismiss dialog", e);
+            }
+
+            updateEpisodes();
         }
     }
 
     private class FetchEpisodesTask extends AsyncTask<Void, Void, List<Episode>> {
-        @Override
-        protected void onPreExecute() {
-            if (mLoadingDialog == null || !mLoadingDialog.isAdded()) {
-                showLoadingDialog(getString(R.string.updating_episodes_text));
-            } else {
-                mLoadingDialog.setDialogMessage(getString(R.string.updating_episodes_text));
-            }
-        }
 
         @Override
         protected List<Episode> doInBackground(Void... params) {
@@ -310,20 +306,10 @@ public class ShowListFragment extends Fragment {
 
         @Override
         protected void onPostExecute(List<Episode> episodeList) {
-            if (isCancelled()) {
-                return;
-            }
 
             mDatabase.addEpisodes(episodeList);
 //            mDatabase.setTimeLastUpdated(new Date().getTime());
             Log.d(TAG, "Episode count: " + mDatabase.getEpisodeCount());
-
-            // dismiss loading dialog
-            try {
-                mLoadingDialog.dismiss();
-            } catch (Exception e) {
-                Log.e(TAG, "Cannot dismiss dialog", e);
-            }
         }
     }
 }
