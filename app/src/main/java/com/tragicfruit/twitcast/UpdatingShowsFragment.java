@@ -13,8 +13,16 @@ public class UpdatingShowsFragment extends DialogFragment {
     private ProgressDialog mProgressDialog;
     private int mMaxProgress;
 
-    public static UpdatingShowsFragment newInstance() {
-        return new UpdatingShowsFragment();
+    private static final String ARG_MESSAGE = "message";
+
+    public static UpdatingShowsFragment newInstance(String message) {
+        Bundle args = new Bundle();
+        args.putString(ARG_MESSAGE, message);
+
+        UpdatingShowsFragment fragment = new UpdatingShowsFragment();
+        fragment.setArguments(args);
+
+        return fragment;
     }
 
     @NonNull
@@ -22,7 +30,7 @@ public class UpdatingShowsFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         mProgressDialog = new ProgressDialog(getActivity());
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        mProgressDialog.setMessage(getString(R.string.updating_shows_text));
+        mProgressDialog.setMessage(getArguments().getString(ARG_MESSAGE));
 
         return mProgressDialog;
     }

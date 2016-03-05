@@ -37,9 +37,9 @@ public class ShowListFragment extends Fragment {
     private AutofitRecyclerView mRecyclerView;
     private UpdatingShowsFragment mLoadingDialog;
     private TWiTDatabase mDatabase;
-
-    private boolean mCoverArtDownloaded;
-    private boolean mEpisodesUpdated;
+    private FetchShowsTask mFetchShowsTask;
+    private FetchCoverArtTask mFetchCoverArtTask;
+    private FetchEpisodesTask mFetchEpisodesTask;
 
     public static ShowListFragment newInstance() {
         return new ShowListFragment();
@@ -52,20 +52,39 @@ public class ShowListFragment extends Fragment {
         setRetainInstance(true);
 
         mDatabase = TWiTDatabase.get();
+        mFetchCoverArtTask = new FetchCoverArtTask();
+        mFetchShowsTask = new FetchShowsTask();
+        mFetchEpisodesTask = new FetchEpisodesTask();
 
         if (mDatabase.getShows() == null) {
             updateShows();
+        } else if (!isCoverArtDownloaded()) {
+            updateCoverArt();
         } else {
             updateEpisodes();
         }
     }
 
     private void updateShows() {
-        new FetchShowsTask().execute(); // TODO: handle no internet connection
+        mFetchShowsTask.execute();
+        // TODO: handle no internet connection
+    }
+
+    private void updateCoverArt() {
+        mFetchCoverArtTask.execute();
     }
 
     private void updateEpisodes() {
-        new FetchEpisodesTask().execute(); // TODO: handle no internet connection
+        mFetchEpisodesTask.execute(); // TODO: handle no internet connection
+    }
+
+    private boolean isCoverArtDownloaded() {
+        for (Show show : mDatabase.getShows()) {
+            if (show.getCoverArt() == null) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Nullable
@@ -107,17 +126,25 @@ public class ShowListFragment extends Fragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        if (mLoadingDialog != null && mDatabase.getShows() != null) {
-            if (mEpisodesUpdated) {
-                mLoadingDialog.dismiss();
-            } else if (mCoverArtDownloaded) {
-                mLoadingDialog.setDialogMessage(getString(R.string.updating_episodes_text));
-            } else {
-                mLoadingDialog.setDialogMessage(getString(R.string.downloading_cover_art_placeholder_text));
-            }
+    public void onDestroy() {
+        super.onDestroy();
+        if (mFetchShowsTask != null) {
+            mFetchShowsTask.cancel(false);
         }
+
+        if (mFetchCoverArtTask != null) {
+            mFetchCoverArtTask.cancel(false);
+        }
+
+        if (mFetchEpisodesTask != null) {
+            mFetchEpisodesTask.cancel(false);
+        }
+    }
+
+    private void showLoadingDialog(String message) {
+        mLoadingDialog = UpdatingShowsFragment.newInstance(message);
+        FragmentManager fm = getFragmentManager();
+        mLoadingDialog.show(fm, DIALOG_UPDATING_SHOWS);
     }
 
     private class ShowHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -186,25 +213,24 @@ public class ShowListFragment extends Fragment {
         }
     }
 
-    private class FetchShowsTask extends AsyncTask<Void, Void, Boolean> {
+    private class FetchShowsTask extends AsyncTask<Void, Void, List<Show>> {
         @Override
         protected void onPreExecute() {
-            // show loading dialog
-            mLoadingDialog = UpdatingShowsFragment.newInstance();
-            FragmentManager fm = getFragmentManager();
-            mLoadingDialog.show(fm, DIALOG_UPDATING_SHOWS);
+            showLoadingDialog(getString(R.string.updating_shows_text));
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
+        protected List<Show> doInBackground(Void... params) {
             return new TWiTFetcher(getActivity()).fetchShows();
         }
 
         @Override
-        protected void onPostExecute(Boolean successfulFetch) {
-            if (successfulFetch) {
+        protected void onPostExecute(List<Show> showList) {
+            if (showList != null && !isCancelled()) {
+                Log.d(TAG, "Fetched shows");
+                mDatabase.setShows(showList);
                 setupAdapter();
-                new FetchCoverArtTask().execute();
+                mFetchCoverArtTask.execute();
             } else {
                 if (mLoadingDialog != null && mLoadingDialog.isAdded()) {
                     mLoadingDialog.dismiss();
@@ -217,10 +243,12 @@ public class ShowListFragment extends Fragment {
     private class FetchCoverArtTask extends AsyncTask<Void, Integer, Void> {
         @Override
         protected void onPreExecute() {
-            if (mLoadingDialog != null && mLoadingDialog.isAdded()) {
+            if (mLoadingDialog == null || !mLoadingDialog.isAdded()) {
+                showLoadingDialog(getString(R.string.downloading_cover_art_placeholder_text));
+            } else {
                 mLoadingDialog.setDialogMessage(getString(R.string.downloading_cover_art_placeholder_text));
-                mLoadingDialog.setMaxProgress(mDatabase.getShows().size());
             }
+            mLoadingDialog.setMaxProgress(mDatabase.getShows().size());
         }
 
         @Override
@@ -229,6 +257,11 @@ public class ShowListFragment extends Fragment {
                 Show show = mDatabase.getShows().get(i);
                 try {
                     byte[] bitmapBytes = new TWiTFetcher(getActivity()).getUrlBytes(show.getCoverArtUrl());
+
+                    if (isCancelled()) {
+                        break;
+                    }
+
                     Bitmap bitmap = BitmapFactory.decodeByteArray(bitmapBytes, 0, bitmapBytes.length);
                     show.setCoverArt(new BitmapDrawable(getResources(), bitmap));
                 } catch (IOException e) {
@@ -250,27 +283,38 @@ public class ShowListFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            mCoverArtDownloaded = true;
+            if (isCancelled()) {
+                return;
+            }
+
             updateEpisodes();
+            Log.d(TAG, "Fetched cover art");
         }
     }
 
-    private class FetchEpisodesTask extends AsyncTask<Void, Void, Void> {
+    private class FetchEpisodesTask extends AsyncTask<Void, Void, List<Episode>> {
         @Override
         protected void onPreExecute() {
-            if (mLoadingDialog != null && mLoadingDialog.isAdded()) {
+            if (mLoadingDialog == null || !mLoadingDialog.isAdded()) {
+                showLoadingDialog(getString(R.string.updating_episodes_text));
+            } else {
                 mLoadingDialog.setDialogMessage(getString(R.string.updating_episodes_text));
             }
         }
+
         @Override
-        protected Void doInBackground(Void... params) {
-            new TWiTFetcher(getActivity()).fetchEpisodes();
-            return null;
+        protected List<Episode> doInBackground(Void... params) {
+            return new TWiTFetcher(getActivity()).fetchEpisodes();
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
-            mEpisodesUpdated = true;
+        protected void onPostExecute(List<Episode> episodeList) {
+            if (isCancelled()) {
+                return;
+            }
+
+            mDatabase.addEpisodes(episodeList);
+            Log.d(TAG, "Episode count: " + mDatabase.getEpisodeCount());
 
             // dismiss loading dialog
             try {

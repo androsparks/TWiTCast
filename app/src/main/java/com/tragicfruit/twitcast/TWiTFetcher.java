@@ -97,7 +97,7 @@ public class TWiTFetcher {
         return new String(getUrlBytes(urlSpec));
     }
 
-    public boolean fetchShows() {
+    public List<Show> fetchShows() {
         try {
             Uri uri = ENDPOINT.buildUpon()
                     .appendPath("shows")
@@ -106,15 +106,14 @@ public class TWiTFetcher {
 
             String jsonBody = getUrlString(uri.toString());
             JSONObject jsonObject = new JSONObject(jsonBody);
-            mDatabase.setShows(parseShows(jsonObject));
-            return true;
+            return parseShows(jsonObject);
 
         } catch (JSONException je) {
             Log.e(TAG, "Failed to parse JSON", je);
-            return false;
+            return null;
         } catch (IOException ioe) {
             Log.e(TAG, "Failed to fetch shows", ioe);
-            return false;
+            return null;
         }
     }
 
@@ -177,15 +176,14 @@ public class TWiTFetcher {
         return null;
     }
 
-    public void fetchEpisodes() {
+    public List<Episode> fetchEpisodes() {
         List<Episode> episodeList = getEpisodeListFromFeed(Constants.BRICKHOUSE_AUDIO_FEED);
         addVideoFeed(episodeList, Constants.BRICKHOUSE_VIDEO_SMALL_FEED, Feed.VIDEO_SMALL);
         addVideoFeed(episodeList, Constants.BRICKHOUSE_VIDEO_LARGE_FEED, Feed.VIDEO_LARGE);
         addVideoFeed(episodeList, Constants.BRICKHOUSE_VIDEO_HD_FEED, Feed.VIDEO_HD);
         Log.d(TAG, "Fetched video feeds");
 
-        mDatabase.addEpisodes(episodeList);
-        Log.d(TAG, "Episode count: " + mDatabase.getEpisodeCount());
+        return episodeList;
     }
 
     private void addVideoFeed(List<Episode> episodeList, String feedUrl, Feed feedType) {
