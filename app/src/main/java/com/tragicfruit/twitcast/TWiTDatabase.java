@@ -129,6 +129,11 @@ public class TWiTDatabase {
         return false;
     }
 
+    public void resetEpisodes() {
+        mEpisodes = new ArrayList<>();
+        mEpisodeCount = 0;
+    }
+
     public long getTimeLastUpdated() {
         return mTimeLastUpdated;
     }

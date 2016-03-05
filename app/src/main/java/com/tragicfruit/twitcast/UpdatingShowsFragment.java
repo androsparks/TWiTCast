@@ -2,7 +2,6 @@ package com.tragicfruit.twitcast;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -12,18 +11,9 @@ import android.support.v4.app.DialogFragment;
  */
 public class UpdatingShowsFragment extends DialogFragment {
     private ProgressDialog mProgressDialog;
-    private int mMaxProgress;
 
-    private static final String ARG_MESSAGE = "message";
-
-    public static UpdatingShowsFragment newInstance(String message) {
-        Bundle args = new Bundle();
-        args.putString(ARG_MESSAGE, message);
-
-        UpdatingShowsFragment fragment = new UpdatingShowsFragment();
-        fragment.setArguments(args);
-
-        return fragment;
+    public static UpdatingShowsFragment newInstance() {
+        return new UpdatingShowsFragment();
     }
 
     @NonNull
@@ -31,20 +21,8 @@ public class UpdatingShowsFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         mProgressDialog = new ProgressDialog(getActivity());
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        mProgressDialog.setMessage(getArguments().getString(ARG_MESSAGE));
+        mProgressDialog.setMessage(getString(R.string.updating_shows_text));
 
         return mProgressDialog;
-    }
-
-    public void setDialogMessage(String message) {
-        mProgressDialog.setMessage(message);
-    }
-
-    public void setMaxProgress(int max) {
-        mMaxProgress = max;
-    }
-
-    public void setProgress(int progress) {
-        setDialogMessage(getString(R.string.downloading_cover_art_text, progress, mMaxProgress));
     }
 }

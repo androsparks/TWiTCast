@@ -39,6 +39,7 @@ public class ShowListFragment extends Fragment {
     private TWiTDatabase mDatabase;
     private FetchShowsTask mFetchShowsTask;
     private FetchCoverArtTask mFetchCoverArtTask;
+    private FetchEpisodesTask mFetchEpisodesTask;
 
     private boolean mRefreshingShows;
 
@@ -53,8 +54,6 @@ public class ShowListFragment extends Fragment {
         setRetainInstance(true);
 
         mDatabase = TWiTDatabase.get();
-        mFetchCoverArtTask = new FetchCoverArtTask();
-        mFetchShowsTask = new FetchShowsTask();
 
         if (mDatabase.getShows() == null) {
             mRefreshingShows = true;
@@ -70,23 +69,20 @@ public class ShowListFragment extends Fragment {
     }
 
     private void updateShows() {
-        if (mFetchShowsTask.getStatus() == AsyncTask.Status.FINISHED) {
-            mFetchShowsTask = new FetchShowsTask();
-        }
+        mFetchShowsTask = new FetchShowsTask();
         mFetchShowsTask.execute();
         // TODO: handle no internet connection
     }
 
     private void updateCoverArt() {
-        if (mFetchCoverArtTask.getStatus() == AsyncTask.Status.FINISHED) {
-            mFetchCoverArtTask = new FetchCoverArtTask();
-        }
+        mFetchCoverArtTask = new FetchCoverArtTask();
         mFetchCoverArtTask.execute();
     }
 
     private void updateEpisodes() {
         // TODO: if oldest server episode is newer than newest local episode then wipe episodes & reset
-        new FetchEpisodesTask().execute(); // TODO: handle no internet connection
+        mFetchEpisodesTask = new FetchEpisodesTask();
+        mFetchEpisodesTask.execute(); // TODO: handle no internet connection
     }
 
     private boolean isCoverArtDownloaded() {
@@ -121,6 +117,7 @@ public class ShowListFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.refresh_button:
+                mDatabase.resetEpisodes();
                 updateShows();
                 mRefreshingShows = true;
                 getActivity().invalidateOptionsMenu();
@@ -131,11 +128,21 @@ public class ShowListFragment extends Fragment {
     }
 
     private void setupAdapter() {
-        if (isAdded()) {
+        if (isAdded() && !mRefreshingShows) {
             if (mDatabase.getShows() != null) {
                 mRecyclerView.setAdapter(new ShowAdapter(mDatabase.getShows()));
             } else {
                 mRecyclerView.setAdapter(new ShowAdapter(new ArrayList<Show>()));
+            }
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (mRefreshingShows) {
+            if (mLoadingDialog == null || !mLoadingDialog.isAdded()) {
+                showLoadingDialog();
             }
         }
     }
@@ -150,10 +157,14 @@ public class ShowListFragment extends Fragment {
         if (mFetchCoverArtTask != null) {
             mFetchCoverArtTask.cancel(false);
         }
+
+        if (mFetchEpisodesTask != null) {
+            mFetchEpisodesTask.cancel(false);
+        }
     }
 
-    private void showLoadingDialog(String message) {
-        mLoadingDialog = UpdatingShowsFragment.newInstance(message);
+    private void showLoadingDialog() {
+        mLoadingDialog = UpdatingShowsFragment.newInstance();
         FragmentManager fm = getFragmentManager();
         mLoadingDialog.show(fm, DIALOG_UPDATING_SHOWS);
     }
@@ -211,8 +222,7 @@ public class ShowListFragment extends Fragment {
             holder.bindShow(show);
 
             if (show.getCoverArt() == null) {
-                Drawable placeholder = getResources().getDrawable(R.drawable.cover_art_placeholder);
-                holder.bindDrawable(placeholder);
+                holder.bindDrawable(null);
             } else {
                 holder.bindDrawable(show.getCoverArt());
             }
@@ -227,7 +237,9 @@ public class ShowListFragment extends Fragment {
     private class FetchShowsTask extends AsyncTask<Void, Void, List<Show>> {
         @Override
         protected void onPreExecute() {
-            showLoadingDialog(getString(R.string.updating_shows_text));
+            if (mLoadingDialog == null || !mLoadingDialog.isAdded()) {
+                showLoadingDialog();
+            }
         }
 
         @Override
@@ -240,7 +252,6 @@ public class ShowListFragment extends Fragment {
             if (showList != null && !isCancelled()) {
                 Log.d(TAG, "Fetched shows");
                 mDatabase.setShows(showList);
-                setupAdapter();
                 updateCoverArt();
             } else {
                 if (mLoadingDialog != null && mLoadingDialog.isAdded()) {
@@ -252,16 +263,6 @@ public class ShowListFragment extends Fragment {
     }
 
     private class FetchCoverArtTask extends AsyncTask<Void, Integer, Void> {
-        @Override
-        protected void onPreExecute() {
-            if (mLoadingDialog == null || !mLoadingDialog.isAdded()) {
-                showLoadingDialog(getString(R.string.downloading_cover_art_placeholder_text));
-            } else {
-                mLoadingDialog.setDialogMessage(getString(R.string.downloading_cover_art_placeholder_text));
-            }
-            mLoadingDialog.setMaxProgress(mDatabase.getShows().size());
-        }
-
         @Override
         protected Void doInBackground(Void... params) {
             for (int i = 0; i < mDatabase.getShows().size(); i++) {
@@ -278,18 +279,8 @@ public class ShowListFragment extends Fragment {
                 } catch (IOException e) {
                     Log.e(TAG, "Cannot download cover art for " + show.getTitle(), e);
                 }
-                publishProgress(i + 1);
             }
             return null;
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-            mRecyclerView.getAdapter().notifyDataSetChanged();
-
-            if (mLoadingDialog != null && mLoadingDialog.isAdded()) {
-                mLoadingDialog.setProgress(values[0]);
-            }
         }
 
         @Override
@@ -297,18 +288,12 @@ public class ShowListFragment extends Fragment {
             if (isCancelled()) {
                 return;
             }
-
             Log.d(TAG, "Fetched cover art");
-
-            // dismiss loading dialog
-            try {
-                mLoadingDialog.dismiss();
-            } catch (Exception e) {
-                Log.e(TAG, "Cannot dismiss dialog", e);
-            }
 
             mRefreshingShows = false;
             getActivity().invalidateOptionsMenu();
+
+            setupAdapter();
 
             updateEpisodes();
         }
@@ -323,10 +308,20 @@ public class ShowListFragment extends Fragment {
 
         @Override
         protected void onPostExecute(List<Episode> episodeList) {
+            if (isCancelled()) {
+                return;
+            }
 
             mDatabase.addEpisodes(episodeList);
 //            mDatabase.setTimeLastUpdated(new Date().getTime());
             Log.d(TAG, "Episode count: " + mDatabase.getEpisodeCount());
+
+            // dismiss loading dialog
+            try {
+                mLoadingDialog.dismiss();
+            } catch (Exception e) {
+                Log.e(TAG, "Cannot dismiss dialog");
+            }
         }
     }
 }
