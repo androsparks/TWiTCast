@@ -100,4 +100,15 @@ public class Episode {
     public String getDisplayTitle() {
         return mTitle.replace(mShow.getTitle(), "").substring(1);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Episode) {
+            Episode otherEpisode = (Episode) o;
+
+            return mTitle.equals(otherEpisode.getTitle());
+        } else {
+            return false;
+        }
+    }
 }

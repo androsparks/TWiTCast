@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -314,6 +315,7 @@ public class ShowListFragment extends Fragment {
             }
 
             mDatabase.addEpisodes(episodeList);
+//            mDatabase.setTimeLastUpdated(new Date().getTime());
             Log.d(TAG, "Episode count: " + mDatabase.getEpisodeCount());
 
             // dismiss loading dialog

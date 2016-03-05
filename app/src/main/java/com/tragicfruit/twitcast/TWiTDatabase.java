@@ -2,6 +2,8 @@ package com.tragicfruit.twitcast;
 
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -16,6 +18,7 @@ public class TWiTDatabase {
             65161 // All TWiT.tv Shows
     };
     private List<Show> mShows;
+    private List<Episode> mEpisodes;
     private static TWiTDatabase sTWiTDatabase;
 
     private int mEpisodeCount;
@@ -30,7 +33,8 @@ public class TWiTDatabase {
     }
 
     private TWiTDatabase() {
-        mTimeLastUpdated = -1;
+        mTimeLastUpdated = 0;
+        mEpisodes = new ArrayList<>();
     }
 
     public List<Show> getShows() {
@@ -52,8 +56,13 @@ public class TWiTDatabase {
 
     public void addEpisodes(List<Episode> episodeList) {
         for (Episode episode : episodeList) {
+            if (episodeAlreadyExists(episode)) {
+                continue;
+            }
+
             Show showForEpisode = getShowFromEpisode(episode);
             if (showForEpisode != null) {
+                mEpisodes.add(episode);
                 showForEpisode.addEpisode(episode);
                 episode.setShow(showForEpisode);
                 mEpisodeCount += 1;
@@ -62,6 +71,16 @@ public class TWiTDatabase {
                 Log.d(TAG, "No show found for " + episode.getTitle());
             }
         }
+        // TODO: clean up old shows
+    }
+
+    private boolean episodeAlreadyExists(Episode episode) {
+        return mEpisodes.contains(episode) && episodeHasAllUrls(episode);
+    }
+
+    private boolean episodeHasAllUrls(Episode episode) {
+        return episode.getVideoHdUrl() != null && episode.getVideoLargeUrl() != null &&
+                episode.getVideoSmallUrl() != null && episode.getVideoAudioUrl() != null;
     }
 
     private Show getShowFromEpisode(Episode episode) {
