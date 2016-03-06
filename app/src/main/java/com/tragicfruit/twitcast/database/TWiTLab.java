@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.tragicfruit.twitcast.Constants;
@@ -29,9 +30,6 @@ public class TWiTLab implements TWiTDatabase {
     private Context mContext;
     private SQLiteDatabase mSQLiteDatabase;
 
-    private int mEpisodeCount;
-    private long mTimeLastUpdated; // in unix time
-
     public static TWiTLab get(Context context) {
         if (sTWiTLab == null) {
             sTWiTLab = new TWiTLab(context);
@@ -43,8 +41,6 @@ public class TWiTLab implements TWiTDatabase {
     private TWiTLab(Context context) {
         mContext = context.getApplicationContext();
         mSQLiteDatabase = new TWiTBaseHelper(mContext).getWritableDatabase();
-
-        mTimeLastUpdated = 0;
 
         try {
             mShows = loadShows();
@@ -105,7 +101,6 @@ public class TWiTLab implements TWiTDatabase {
                 mEpisodes.add(episode);
                 showForEpisode.addEpisode(episode);
                 episode.setShow(showForEpisode);
-                mEpisodeCount += 1;
                 Log.d(TAG, episode.getTitle() + " added to " + showForEpisode.getTitle());
             } else {
                 Log.d(TAG, "No show found for " + episode.getTitle());
@@ -126,7 +121,6 @@ public class TWiTLab implements TWiTDatabase {
             mEpisodes.add(episode);
             show.addEpisode(episode);
             show.setLoadedAllEpisodes(true);
-            mEpisodeCount += 1;
             Log.d(TAG, episode.getTitle() + " added to " + show.getTitle());
         }
     }
@@ -153,10 +147,6 @@ public class TWiTLab implements TWiTDatabase {
         return null;
     }
 
-    public int getEpisodeCount() {
-        return mEpisodeCount;
-    }
-
     public boolean isExcludedShow(Show show) {
         int showId = show.getId();
 
@@ -171,15 +161,6 @@ public class TWiTLab implements TWiTDatabase {
 
     public void resetEpisodes() {
         mEpisodes = new ArrayList<>();
-        mEpisodeCount = 0;
-    }
-
-    public long getTimeLastUpdated() {
-        return mTimeLastUpdated;
-    }
-
-    public void setTimeLastUpdated(long timeLastUpdated) {
-        mTimeLastUpdated = timeLastUpdated;
     }
 
     public List<Show> loadShows() {
@@ -202,14 +183,20 @@ public class TWiTLab implements TWiTDatabase {
     }
 
     public void saveShows() {
-        mSQLiteDatabase.delete(ShowTable.NAME, null, null);
-        for (Show show : mShows) {
-            ContentValues values = getContentValues(show);
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                mSQLiteDatabase.delete(ShowTable.NAME, null, null);
+                for (Show show : mShows) {
+                    ContentValues values = getContentValues(show);
 
-            mSQLiteDatabase.insert(ShowTable.NAME, null, values);
-        }
+                    mSQLiteDatabase.insert(ShowTable.NAME, null, values);
+                }
 
-        Log.i(TAG, "Saved shows to database");
+                Log.i(TAG, "Saved shows to database");
+                return null;
+            }
+        }.execute();
     }
 
     private ShowCursorWrapper queryShows(String whereClause, String[] whereArgs) {
@@ -260,14 +247,20 @@ public class TWiTLab implements TWiTDatabase {
     }
 
     public void saveEpisodes() {
-        mSQLiteDatabase.delete(EpisodeTable.NAME, null, null);
-        for (Episode episode : mEpisodes) {
-            ContentValues values = getContentValues(episode);
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                mSQLiteDatabase.delete(EpisodeTable.NAME, null, null);
+                for (Episode episode : mEpisodes) {
+                    ContentValues values = getContentValues(episode);
 
-            mSQLiteDatabase.insert(EpisodeTable.NAME, null, values);
-        }
+                    mSQLiteDatabase.insert(EpisodeTable.NAME, null, values);
+                }
 
-        Log.i(TAG, "Saved episodes to database");
+                Log.i(TAG, "Saved episodes to database");
+                return null;
+            }
+        }.execute();
     }
 
     private static ContentValues getContentValues(Show show) {

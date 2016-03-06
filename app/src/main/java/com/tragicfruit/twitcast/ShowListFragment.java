@@ -319,8 +319,6 @@ public class ShowListFragment extends Fragment {
             }
 
             mDatabase.addEpisodes(episodeList);
-//            mDatabase.setTimeLastUpdated(new Date().getTime());
-            Log.d(TAG, "Episode count: " + mDatabase.getEpisodeCount());
 
             // dismiss loading dialog
             try {
