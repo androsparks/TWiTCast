@@ -94,6 +94,10 @@ public class Show {
         mEpisodes.add(episode);
     }
 
+    public void removeEpisode(Episode episode) {
+        mEpisodes.remove(episode);
+    }
+
     public String getDescription() {
         return mDescription;
     }

@@ -15,6 +15,8 @@ import com.tragicfruit.twitcast.database.TWiTDbSchema.EpisodeTable;
 import com.tragicfruit.twitcast.database.TWiTDbSchema.ShowTable;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -92,19 +94,29 @@ public class TWiTLab implements TWiTDatabase {
 
     public void addEpisodes(List<Episode> episodeList) {
         for (Episode episode : episodeList) {
-            if (episodeAlreadyExists(episode)) {
-                continue;
+            Show showForEpisode = getShowFromEpisode(episode);
+
+            if (showForEpisode == null) {
+                Log.d(TAG, "No show found for " + episode.getTitle());
+                return;
             }
 
-            Show showForEpisode = getShowFromEpisode(episode);
-            if (showForEpisode != null) {
-                mEpisodes.add(episode);
-                showForEpisode.addEpisode(episode);
-                episode.setShow(showForEpisode);
-                Log.d(TAG, episode.getTitle() + " added to " + showForEpisode.getTitle());
-            } else {
-                Log.d(TAG, "No show found for " + episode.getTitle());
+            if (mEpisodes.contains(episode)) {
+                if (episodeHasAllUrls(episode)) {
+                    continue;
+                } else {
+                    mEpisodes.remove(episode);
+                    showForEpisode.removeEpisode(episode);
+                }
             }
+
+            mEpisodes.add(episode);
+            showForEpisode.addEpisode(episode);
+            episode.setShow(showForEpisode);
+            Log.d(TAG, episode.getTitle() + " added to " + showForEpisode.getTitle());
+
+            sortEpisodes(mEpisodes);
+            sortEpisodes(showForEpisode.getEpisodes());
         }
         // TODO: clean up old shows
     }
@@ -114,8 +126,13 @@ public class TWiTLab implements TWiTDatabase {
             episode.setShow(show);
             episode.cleanTitle();
 
-            if (episodeAlreadyExists(episode)) {
-                continue;
+            if (mEpisodes.contains(episode)) {
+                if (episodeHasAllUrls(episode)) {
+                    continue;
+                } else {
+                    mEpisodes.remove(episode);
+                    show.removeEpisode(episode);
+                }
             }
 
             mEpisodes.add(episode);
@@ -123,10 +140,21 @@ public class TWiTLab implements TWiTDatabase {
             show.setLoadedAllEpisodes(true);
             Log.d(TAG, episode.getTitle() + " added to " + show.getTitle());
         }
+
+        sortEpisodes(mEpisodes);
+        sortEpisodes(show.getEpisodes());
     }
 
-    private boolean episodeAlreadyExists(Episode episode) {
-        return mEpisodes.contains(episode) && episodeHasAllUrls(episode);
+    private void sortEpisodes(List<Episode> episodes) {
+        Collections.sort(episodes, new Comparator<Episode>() {
+            @Override
+            public int compare(Episode lhs, Episode rhs) {
+                long firstDate = lhs.getPublicationDate().getTime();
+                long secondDate = rhs.getPublicationDate().getTime();
+
+                return firstDate > secondDate ? -1 : (lhs == rhs ? 0 : 1);
+            }
+        });
     }
 
     private boolean episodeHasAllUrls(Episode episode) {
