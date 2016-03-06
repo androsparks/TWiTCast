@@ -13,4 +13,5 @@
     <string name="quality_audio">Audio</string>
     <string name="error_playing_video_toast">Cannot play video, please try again later.</string>
     <string name="cast_not_ready_toast">Cast device not ready. Please try again once connected.</string>
+    <string name="load_more_episodes_button">Load more episodes</string>
 </resources>

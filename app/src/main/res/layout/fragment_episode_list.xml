@@ -13,62 +13,72 @@
         app:auto_setup="true"
         android:visibility="gone"/>
 
-    <ScrollView android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_above="@id/miniController">
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/fragment_episode_list_swipe_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/miniController">
 
-        <RelativeLayout
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ImageView
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:transitionName="cover_art"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:id="@+id/show_cover_art"/>
-
-            <LinearLayout
-                android:padding="8dp"
-                android:layout_toRightOf="@id/show_cover_art"
-                android:layout_toEndOf="@id/show_cover_art"
-                android:orientation="vertical"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <TextView
-                    tools:text="Show title"
-                    android:id="@+id/show_title"
-                    android:textSize="20sp"
-                    android:textColor="@color/show_page_show_title"
+                <ImageView
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:transitionName="cover_art"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:id="@+id/show_cover_art"/>
+
+                <LinearLayout
+                    android:padding="8dp"
+                    android:layout_toRightOf="@id/show_cover_art"
+                    android:layout_toEndOf="@id/show_cover_art"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        tools:text="Show title"
+                        android:id="@+id/show_title"
+                        android:textSize="20sp"
+                        android:textColor="@color/show_page_show_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        tools:text="Show description"
+                        android:id="@+id/show_description"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/fragment_episode_list_recycler_view"
+                    android:layout_below="@id/show_cover_art"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 
-                <TextView
-                    tools:text="Show description"
-                    android:id="@+id/show_description"
-                    android:layout_width="match_parent"
+                <ProgressBar
+                    android:id="@+id/loading_more_episodes_progress_bar"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@id/fragment_episode_list_recycler_view"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
-            </LinearLayout>
+            </RelativeLayout>
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/fragment_episode_list_recycler_view"
-                android:layout_below="@id/show_cover_art"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+        </ScrollView>
 
-            <Button
-                android:id="@+id/more_episodes_button"
-                android:layout_below="@id/fragment_episode_list_recycler_view"
-                android:text="Load more episodes"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
-        </RelativeLayout>
-
-    </ScrollView>
 
 </RelativeLayout>

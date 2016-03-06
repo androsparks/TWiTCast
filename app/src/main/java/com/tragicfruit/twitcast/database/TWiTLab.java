@@ -121,7 +121,8 @@ public class TWiTLab implements TWiTDatabase {
         // TODO: clean up old shows
     }
 
-    public void addEpisodes(List<Episode> episodeList, Show show) {
+    public boolean addEpisodes(List<Episode> episodeList, Show show) {
+        boolean newEpisodes = false;
         for (Episode episode : episodeList) {
             episode.setShow(show);
             episode.cleanTitle();
@@ -135,6 +136,7 @@ public class TWiTLab implements TWiTDatabase {
                 }
             }
 
+            newEpisodes = true;
             mEpisodes.add(episode);
             show.addEpisode(episode);
             show.setLoadedAllEpisodes(true);
@@ -143,6 +145,8 @@ public class TWiTLab implements TWiTDatabase {
 
         sortEpisodes(mEpisodes);
         sortEpisodes(show.getEpisodes());
+
+        return newEpisodes;
     }
 
     private void sortEpisodes(List<Episode> episodes) {

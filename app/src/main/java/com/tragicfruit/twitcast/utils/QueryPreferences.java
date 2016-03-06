@@ -3,6 +3,7 @@ package com.tragicfruit.twitcast.utils;
 import android.content.Context;
 import android.preference.PreferenceManager;
 
+import com.tragicfruit.twitcast.constants.Constants;
 import com.tragicfruit.twitcast.episode.StreamQuality;
 
 /**
@@ -13,7 +14,7 @@ public class QueryPreferences {
 
     public static StreamQuality getStreamQuality(Context context) {
         String streamQualityValue = PreferenceManager.getDefaultSharedPreferences(context)
-                .getString(PREF_STREAM_QUALITY, StreamQuality.VIDEO_HD.toString());
+                .getString(PREF_STREAM_QUALITY, Constants.DEFAULT_QUALITY.toString());
         return StreamQuality.valueOf(streamQualityValue);
     }
 

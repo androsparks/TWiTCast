@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tragicfruit.twitcast.utils.QueryPreferences;
@@ -44,6 +46,8 @@ public class EpisodeListFragment extends Fragment {
     private TextView mTitleTextView;
     private TextView mDescriptionTextView;
     private Button mMoreEpisodesButton;
+    private ProgressBar mLoadingProgressBar;
+    private SwipeRefreshLayout mSwipeRefresh;
 
     private Show mShow;
     private List<Episode> mEpisodeList;
@@ -90,6 +94,10 @@ public class EpisodeListFragment extends Fragment {
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         if (activity.getSupportActionBar() != null) {
             activity.getSupportActionBar().setTitle(mShow.getTitle());
+        }
+
+        if (!mShow.hasLoadedAllEpisodes()) {
+            new FetchMoreEpisodesTask().execute();
         }
     }
 
@@ -141,13 +149,16 @@ public class EpisodeListFragment extends Fragment {
         mDescriptionTextView = (TextView) v.findViewById(R.id.show_description);
         mDescriptionTextView.setText(mShow.getDescription());
 
-        mMoreEpisodesButton = (Button) v.findViewById(R.id.more_episodes_button);
+        mLoadingProgressBar = (ProgressBar) v.findViewById(R.id.loading_more_episodes_progress_bar);
         if (mShow.hasLoadedAllEpisodes()) {
-            mMoreEpisodesButton.setVisibility(View.GONE);
+            mLoadingProgressBar.setVisibility(View.GONE);
         }
-        mMoreEpisodesButton.setOnClickListener(new View.OnClickListener() {
+
+        mSwipeRefresh = (SwipeRefreshLayout) v.findViewById(R.id.fragment_episode_list_swipe_refresh);
+        mSwipeRefresh.setColorSchemeResources(R.color.colorAccent);
+        mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onClick(View v) {
+            public void onRefresh() {
                 new FetchMoreEpisodesTask().execute();
             }
         });
@@ -176,12 +187,16 @@ public class EpisodeListFragment extends Fragment {
 
         @Override
         protected void onPostExecute(List<Episode> episodeList) {
-            mTWiTLab.addEpisodes(episodeList, mShow);
-            mRecyclerView.getAdapter().notifyDataSetChanged();
-            mMoreEpisodesButton.setVisibility(View.GONE);
+            boolean newShows = mTWiTLab.addEpisodes(episodeList, mShow);
 
-            mTWiTLab.saveShows();
-            mTWiTLab.saveEpisodes();
+            mRecyclerView.getAdapter().notifyDataSetChanged();
+            mLoadingProgressBar.setVisibility(View.GONE);
+            mSwipeRefresh.setRefreshing(false);
+
+            if (newShows) {
+                mTWiTLab.saveShows();
+                mTWiTLab.saveEpisodes();
+            }
         }
     }
 
