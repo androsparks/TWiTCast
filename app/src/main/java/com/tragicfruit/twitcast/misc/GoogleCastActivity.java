@@ -105,6 +105,7 @@ public abstract class GoogleCastActivity extends SingleFragmentActivity implemen
             }
         } else {
             // TODO: prompt user to select cast device
+            Toast.makeText(this, "No cast device detected.", Toast.LENGTH_SHORT).show();
         }
     }
 
