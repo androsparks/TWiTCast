@@ -1,9 +1,6 @@
 package com.tragicfruit.twitcast;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -23,6 +20,9 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.tragicfruit.twitcast.database.TWiTLab;
+
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +36,7 @@ public class ShowListFragment extends Fragment {
 
     private AutofitRecyclerView mRecyclerView;
     private UpdatingShowsFragment mLoadingDialog;
-    private TWiTDatabase mDatabase;
+    private TWiTLab mDatabase;
     private FetchShowsTask mFetchShowsTask;
     private FetchCoverArtTask mFetchCoverArtTask;
     private FetchEpisodesTask mFetchEpisodesTask;
@@ -53,9 +53,9 @@ public class ShowListFragment extends Fragment {
         setHasOptionsMenu(true);
         setRetainInstance(true);
 
-        mDatabase = TWiTDatabase.get();
+        mDatabase = TWiTLab.get(getActivity());
 
-        if (mDatabase.getShows() == null) {
+        if (mDatabase.getShows().size() == 0) {
             mRefreshingShows = true;
             getActivity().invalidateOptionsMenu();
             updateShows();
@@ -129,12 +129,19 @@ public class ShowListFragment extends Fragment {
 
     private void setupAdapter() {
         if (isAdded() && !mRefreshingShows) {
-            if (mDatabase.getShows() != null) {
+            if (mDatabase.getShows().size() > 0) {
                 mRecyclerView.setAdapter(new ShowAdapter(mDatabase.getShows()));
             } else {
                 mRecyclerView.setAdapter(new ShowAdapter(new ArrayList<Show>()));
             }
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        TWiTLab.get(getActivity()).saveShows();
+        TWiTLab.get(getActivity()).saveEpisodes();
     }
 
     @Override
@@ -184,12 +191,9 @@ public class ShowListFragment extends Fragment {
             mImageView.setLayoutParams(new FrameLayout.LayoutParams(size, size));
         }
 
-        public void bindDrawable(Drawable drawable) {
-            mImageView.setImageDrawable(drawable);
-        }
-
         public void bindShow(Show show) {
             mShow = show;
+            mImageView.setImageDrawable(show.getCoverArt());
         }
 
         @Override
@@ -220,12 +224,6 @@ public class ShowListFragment extends Fragment {
         public void onBindViewHolder(ShowHolder holder, int position) {
             Show show = mShowList.get(position);
             holder.bindShow(show);
-
-            if (show.getCoverArt() == null) {
-                holder.bindDrawable(null);
-            } else {
-                holder.bindDrawable(show.getCoverArt());
-            }
         }
 
         @Override
@@ -265,17 +263,16 @@ public class ShowListFragment extends Fragment {
     private class FetchCoverArtTask extends AsyncTask<Void, Integer, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-            for (int i = 0; i < mDatabase.getShows().size(); i++) {
-                Show show = mDatabase.getShows().get(i);
+            for (Show show : mDatabase.getShows()) {
                 try {
-                    byte[] bitmapBytes = new TWiTFetcher(getActivity()).getUrlBytes(show.getCoverArtUrl());
+                    File coverArtFile = new TWiTFetcher(getActivity()).getCoverArt(show);
 
                     if (isCancelled()) {
                         break;
                     }
 
-                    Bitmap bitmap = BitmapFactory.decodeByteArray(bitmapBytes, 0, bitmapBytes.length);
-                    show.setCoverArt(new BitmapDrawable(getResources(), bitmap));
+                    show.setCoverArt(Drawable.createFromPath(coverArtFile.getAbsolutePath()));
+                    show.setCoverArtLocalPath(coverArtFile.getAbsolutePath());
                 } catch (IOException e) {
                     Log.e(TAG, "Cannot download cover art for " + show.getTitle(), e);
                 }
@@ -292,9 +289,7 @@ public class ShowListFragment extends Fragment {
 
             mRefreshingShows = false;
             getActivity().invalidateOptionsMenu();
-
             setupAdapter();
-
             updateEpisodes();
         }
     }

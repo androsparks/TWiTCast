@@ -13,7 +13,7 @@ public class Episode {
     private String mVideoHdUrl;
     private String mVideoLargeUrl;
     private String mVideoSmallUrl;
-    private String mVideoAudioUrl;
+    private String mAudioUrl;
     private String mRunningTime;
     private Show mShow;
 
@@ -73,12 +73,12 @@ public class Episode {
         mVideoSmallUrl = videoSmallUrl;
     }
 
-    public String getVideoAudioUrl() {
-        return mVideoAudioUrl;
+    public String getAudioUrl() {
+        return mAudioUrl;
     }
 
-    public void setVideoAudioUrl(String videoAudioUrl) {
-        mVideoAudioUrl = videoAudioUrl;
+    public void setAudioUrl(String audioUrl) {
+        mAudioUrl = audioUrl;
     }
 
     public String getRunningTime() {

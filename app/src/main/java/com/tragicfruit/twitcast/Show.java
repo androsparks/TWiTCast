@@ -14,6 +14,7 @@ public class Show {
     private String mCoverArtSmallUrl;
     private String mCoverArtUrl;
     private String mCoverArtLargeUrl;
+    private String mCoverArtLocalPath;
     private Drawable mCoverArt;
     private int mId;
     private String mDescription;
@@ -57,6 +58,14 @@ public class Show {
 
     public void setCoverArtLargeUrl(String coverArtLargeUrl) {
         mCoverArtLargeUrl = coverArtLargeUrl;
+    }
+
+    public String getCoverArtLocalPath() {
+        return mCoverArtLocalPath;
+    }
+
+    public void setCoverArtLocalPath(String coverArtLocalPath) {
+        mCoverArtLocalPath = coverArtLocalPath;
     }
 
     public Drawable getCoverArt() {

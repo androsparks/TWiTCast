@@ -17,6 +17,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tragicfruit.twitcast.database.TWiTLab;
+
 import java.util.List;
 
 /**
@@ -67,8 +69,9 @@ public class EpisodeListFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
+        TWiTLab database = TWiTLab.get(getActivity());
         int showId = getArguments().getInt(ARG_SHOW_ID);
-        mShow = TWiTDatabase.get().getShow(showId);
+        mShow = database.getShow(showId);
         mEpisodeList = mShow.getEpisodes();
 
         AppCompatActivity activity = (AppCompatActivity) getActivity();
@@ -124,6 +127,13 @@ public class EpisodeListFragment extends Fragment {
         return v;
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        TWiTLab.get(getActivity()).saveShows();
+        TWiTLab.get(getActivity()).saveEpisodes();
+    }
+
     private class FetchMoreEpisodesTask extends AsyncTask<Void, Void, List<Episode>> {
 
         @Override
@@ -133,7 +143,7 @@ public class EpisodeListFragment extends Fragment {
 
         @Override
         protected void onPostExecute(List<Episode> episodeList) {
-            TWiTDatabase.get().addEpisodes(episodeList, mShow);
+            TWiTLab.get(getActivity()).addEpisodes(episodeList, mShow);
             mRecyclerView.getAdapter().notifyDataSetChanged();
             mMoreEpisodesButton.setVisibility(View.GONE);
         }

@@ -4,6 +4,8 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
+import com.tragicfruit.twitcast.database.TWiTLab;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,9 +15,14 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.StringReader;
+import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.ParseException;
@@ -35,12 +42,12 @@ public class TWiTFetcher {
     private static final String TAG = "TWiTFetcher";
     private static final Uri ENDPOINT = Uri.parse("https://twit.tv/api/v1.0");
 
-    private TWiTDatabase mDatabase;
+    private TWiTLab mDatabase;
     private Context mContext;
 
     public TWiTFetcher(Context context) {
         mContext = context;
-        mDatabase = TWiTDatabase.get();
+        mDatabase = TWiTLab.get(context);
     }
 
     public String readRssFeed(String urlSpec) throws IOException {
@@ -64,6 +71,40 @@ public class TWiTFetcher {
             return new String(out.toByteArray());
         } finally {
             connection.disconnect();
+        }
+    }
+
+    public File getCoverArt(Show show) throws IOException {
+        URL url = new URL(show.getCoverArtUrl());
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+        Writer writer = null;
+        File file;
+        try {
+            InputStream in = connection.getInputStream();
+
+            if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                throw new IOException(connection.getResponseMessage() + ": with " + url);
+            }
+
+            file = new File(mContext.getFilesDir(), show.getTitle() + ".jpg");
+
+            OutputStream out = new FileOutputStream(file);
+            writer = new OutputStreamWriter(out);
+
+            int read;
+            byte[] bytes = new byte[1024];
+            while ((read = in.read(bytes)) != -1) {
+                out.write(bytes, 0, read);
+            }
+
+            Log.i(TAG, "File saved to: " + file.getAbsolutePath());
+
+            return file;
+        } finally {
+            if (writer != null) {
+                writer.close();
+            }
         }
     }
 
@@ -277,7 +318,7 @@ public class TWiTFetcher {
                 episode.setRunningTime(parseRunningTime(duration));
 
                 String audioLink = episodeElement.getElementsByTagName("link").item(0).getTextContent();
-                episode.setVideoAudioUrl(audioLink);
+                episode.setAudioUrl(audioLink);
 
                 episodeList.add(episode);
             }

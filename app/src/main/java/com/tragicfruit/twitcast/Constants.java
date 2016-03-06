@@ -8,4 +8,10 @@ public class Constants {
     public static final String BRICKHOUSE_VIDEO_SMALL_FEED = "http://feeds.twit.tv/brickhouse_video_small.xml";
     public static final String BRICKHOUSE_VIDEO_LARGE_FEED = "http://feeds.twit.tv/brickhouse_video_large.xml";
     public static final String BRICKHOUSE_VIDEO_HD_FEED = "http://feeds.twit.tv/brickhouse_video_hd.xml";
+
+    public static final int[] EXCLUDED_SHOWS = {
+            1683, // TWiT Bits
+            1647, // Radio Leo
+            65161 // All TWiT.tv Shows
+    };
 }
