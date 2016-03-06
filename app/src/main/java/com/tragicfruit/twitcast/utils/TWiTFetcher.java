@@ -1,9 +1,15 @@
-package com.tragicfruit.twitcast;
+package com.tragicfruit.twitcast.utils;
 
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
+import com.tragicfruit.twitcast.episode.Episode;
+import com.tragicfruit.twitcast.R;
+import com.tragicfruit.twitcast.show.Show;
+import com.tragicfruit.twitcast.episode.StreamQuality;
+import com.tragicfruit.twitcast.constants.Constants;
+import com.tragicfruit.twitcast.constants.SecretConstants;
 import com.tragicfruit.twitcast.database.TWiTLab;
 
 import org.json.JSONArray;

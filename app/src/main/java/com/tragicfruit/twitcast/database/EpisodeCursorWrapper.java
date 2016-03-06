@@ -3,8 +3,8 @@ package com.tragicfruit.twitcast.database;
 import android.database.Cursor;
 import android.database.CursorWrapper;
 
-import com.tragicfruit.twitcast.Episode;
-import com.tragicfruit.twitcast.Show;
+import com.tragicfruit.twitcast.episode.Episode;
+import com.tragicfruit.twitcast.show.Show;
 import com.tragicfruit.twitcast.database.TWiTDbSchema.EpisodeTable;
 
 import java.util.Date;

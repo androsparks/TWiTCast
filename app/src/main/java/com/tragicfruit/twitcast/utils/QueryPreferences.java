@@ -1,7 +1,9 @@
-package com.tragicfruit.twitcast;
+package com.tragicfruit.twitcast.utils;
 
 import android.content.Context;
 import android.preference.PreferenceManager;
+
+import com.tragicfruit.twitcast.episode.StreamQuality;
 
 /**
  * Created by Jeremy on 6/03/2016.

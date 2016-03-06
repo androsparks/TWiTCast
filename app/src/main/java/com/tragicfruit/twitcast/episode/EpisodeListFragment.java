@@ -1,4 +1,4 @@
-package com.tragicfruit.twitcast;
+package com.tragicfruit.twitcast.episode;
 
 import android.app.Activity;
 import android.content.Context;
@@ -22,7 +22,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tragicfruit.twitcast.utils.QueryPreferences;
+import com.tragicfruit.twitcast.R;
+import com.tragicfruit.twitcast.show.Show;
+import com.tragicfruit.twitcast.utils.TWiTFetcher;
 import com.tragicfruit.twitcast.database.TWiTLab;
+import com.tragicfruit.twitcast.dialogs.ChooseQualityFragment;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package com.tragicfruit.twitcast.database;
 
-import com.tragicfruit.twitcast.Episode;
-import com.tragicfruit.twitcast.Show;
+import com.tragicfruit.twitcast.episode.Episode;
+import com.tragicfruit.twitcast.show.Show;
 
 import java.util.List;
 

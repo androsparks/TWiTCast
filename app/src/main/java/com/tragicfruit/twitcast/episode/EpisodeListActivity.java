@@ -1,8 +1,10 @@
-package com.tragicfruit.twitcast;
+package com.tragicfruit.twitcast.episode;
 
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
+
+import com.tragicfruit.twitcast.misc.GoogleCastActivity;
 
 /**
  * Created by Jeremy on 29/02/2016.

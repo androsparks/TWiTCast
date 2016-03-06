@@ -20,7 +20,7 @@
         <meta-data android:name="com.google.android.gms.version"
                    android:value="@integer/google_play_services_version" />
         <activity
-            android:name=".SplashActivity"
+            android:name=".misc.SplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,16 +28,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ShowListActivity"/>
-        <activity android:name=".EpisodeListActivity"
-            android:parentActivityName=".ShowListActivity"/>
+        <activity android:name=".show.ShowListActivity"/>
+        <activity android:name=".episode.EpisodeListActivity"
+            android:parentActivityName=".show.ShowListActivity"/>
         <service android:name="com.google.android.libraries.cast.companionlibrary.notification.VideoCastNotificationService"/>
         <activity
             android:name="com.google.android.libraries.cast.companionlibrary.cast.player.VideoCastControllerActivity"
             android:screenOrientation="portrait"
             android:label="@string/app_name"
             android:launchMode="singleTask"
-            android:parentActivityName=".ShowListActivity"
+            android:parentActivityName=".show.ShowListActivity"
             android:theme="@style/Theme.CastVideosTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

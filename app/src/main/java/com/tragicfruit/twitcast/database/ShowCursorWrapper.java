@@ -2,9 +2,8 @@ package com.tragicfruit.twitcast.database;
 
 import android.database.Cursor;
 import android.database.CursorWrapper;
-import android.graphics.drawable.Drawable;
 
-import com.tragicfruit.twitcast.Show;
+import com.tragicfruit.twitcast.show.Show;
 import com.tragicfruit.twitcast.database.TWiTDbSchema.ShowTable;
 
 /**

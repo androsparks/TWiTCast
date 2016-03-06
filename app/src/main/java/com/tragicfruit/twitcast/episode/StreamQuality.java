@@ -1,4 +1,4 @@
-package com.tragicfruit.twitcast;
+package com.tragicfruit.twitcast.episode;
 
 /**
  * Created by Jeremy on 4/03/2016.

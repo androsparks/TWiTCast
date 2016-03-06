@@ -1,4 +1,4 @@
-package com.tragicfruit.twitcast;
+package com.tragicfruit.twitcast.show;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -21,6 +21,15 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.tragicfruit.twitcast.dialogs.ChooseQualityFragment;
+import com.tragicfruit.twitcast.constants.Constants;
+import com.tragicfruit.twitcast.episode.Episode;
+import com.tragicfruit.twitcast.episode.EpisodeListActivity;
+import com.tragicfruit.twitcast.utils.QueryPreferences;
+import com.tragicfruit.twitcast.R;
+import com.tragicfruit.twitcast.episode.StreamQuality;
+import com.tragicfruit.twitcast.utils.TWiTFetcher;
+import com.tragicfruit.twitcast.dialogs.UpdatingShowsFragment;
 import com.tragicfruit.twitcast.database.TWiTLab;
 
 import java.io.File;

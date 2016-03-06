@@ -1,4 +1,4 @@
-package com.tragicfruit.twitcast;
+package com.tragicfruit.twitcast.misc;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,8 +13,12 @@ import com.google.android.libraries.cast.companionlibrary.cast.BaseCastManager;
 import com.google.android.libraries.cast.companionlibrary.cast.CastConfiguration;
 import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
 import com.google.android.libraries.cast.companionlibrary.cast.dialog.video.VideoMediaRouteDialogFactory;
-import com.google.android.libraries.cast.companionlibrary.cast.player.VideoCastControllerActivity;
-import com.google.android.libraries.cast.companionlibrary.utils.Utils;
+import com.tragicfruit.twitcast.R;
+import com.tragicfruit.twitcast.constants.Constants;
+import com.tragicfruit.twitcast.constants.SecretConstants;
+import com.tragicfruit.twitcast.episode.Episode;
+import com.tragicfruit.twitcast.episode.EpisodeListFragment;
+import com.tragicfruit.twitcast.utils.QueryPreferences;
 
 /**
  * Created by Jeremy on 4/03/2016.
@@ -97,7 +101,7 @@ public abstract class GoogleCastActivity extends SingleFragmentActivity implemen
                 mCastManager.startVideoCastControllerActivity(this, mediaInfo, 0, true);
             } catch (Exception e) {
                 Log.e(TAG, "Cannot load video", e);
-                Toast.makeText(this, R.string.error_playing_video_toast, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.cast_not_ready_toast, Toast.LENGTH_SHORT).show();
             }
         } else {
             // TODO: prompt user to select cast device

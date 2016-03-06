@@ -8,9 +8,9 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.tragicfruit.twitcast.Constants;
-import com.tragicfruit.twitcast.Episode;
-import com.tragicfruit.twitcast.Show;
+import com.tragicfruit.twitcast.constants.Constants;
+import com.tragicfruit.twitcast.episode.Episode;
+import com.tragicfruit.twitcast.show.Show;
 import com.tragicfruit.twitcast.database.TWiTDbSchema.EpisodeTable;
 import com.tragicfruit.twitcast.database.TWiTDbSchema.ShowTable;
 

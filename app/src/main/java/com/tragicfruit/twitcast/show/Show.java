@@ -1,6 +1,8 @@
-package com.tragicfruit.twitcast;
+package com.tragicfruit.twitcast.show;
 
 import android.graphics.drawable.Drawable;
+
+import com.tragicfruit.twitcast.episode.Episode;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,6 +1,8 @@
-package com.tragicfruit.twitcast;
+package com.tragicfruit.twitcast.show;
 
 import android.support.v4.app.Fragment;
+
+import com.tragicfruit.twitcast.misc.GoogleCastActivity;
 
 public class ShowListActivity extends GoogleCastActivity {
 

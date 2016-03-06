@@ -1,4 +1,6 @@
-package com.tragicfruit.twitcast;
+package com.tragicfruit.twitcast.episode;
+
+import com.tragicfruit.twitcast.show.Show;
 
 import java.util.Date;
 
