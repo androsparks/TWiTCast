@@ -12,6 +12,7 @@ import com.google.android.gms.common.images.WebImage;
 import com.google.android.libraries.cast.companionlibrary.cast.BaseCastManager;
 import com.google.android.libraries.cast.companionlibrary.cast.CastConfiguration;
 import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
+import com.google.android.libraries.cast.companionlibrary.cast.dialog.video.VideoMediaRouteDialogFactory;
 import com.google.android.libraries.cast.companionlibrary.cast.player.VideoCastControllerActivity;
 import com.google.android.libraries.cast.companionlibrary.utils.Utils;
 
@@ -39,6 +40,7 @@ public abstract class GoogleCastActivity extends SingleFragmentActivity implemen
                 .addNotificationAction(CastConfiguration.NOTIFICATION_ACTION_REWIND, true)
                 .addNotificationAction(CastConfiguration.NOTIFICATION_ACTION_PLAY_PAUSE, true)
                 .addNotificationAction(CastConfiguration.NOTIFICATION_ACTION_DISCONNECT, true)
+                .setMediaRouteDialogFactory(new VideoMediaRouteDialogFactory())
                 .build();
 
         VideoCastManager.initialize(this, options);
