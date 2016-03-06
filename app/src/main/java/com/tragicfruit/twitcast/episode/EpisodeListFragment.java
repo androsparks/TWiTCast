@@ -102,7 +102,7 @@ public class EpisodeListFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.home:
+            case android.R.id.home:
                 // maintain transition animation
                 getActivity().onBackPressed();
                 return true;
