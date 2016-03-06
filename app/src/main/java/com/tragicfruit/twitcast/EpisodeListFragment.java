@@ -35,6 +35,7 @@ public class EpisodeListFragment extends Fragment {
 
     private Show mShow;
     private List<Episode> mEpisodeList;
+    private TWiTLab mTWiTLab;
 
     private Callbacks mCallbacks;
 
@@ -69,9 +70,9 @@ public class EpisodeListFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-        TWiTLab database = TWiTLab.get(getActivity());
+        mTWiTLab = TWiTLab.get(getActivity());
         int showId = getArguments().getInt(ARG_SHOW_ID);
-        mShow = database.getShow(showId);
+        mShow = mTWiTLab.getShow(showId);
         mEpisodeList = mShow.getEpisodes();
 
         AppCompatActivity activity = (AppCompatActivity) getActivity();
@@ -127,13 +128,6 @@ public class EpisodeListFragment extends Fragment {
         return v;
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        TWiTLab.get(getActivity()).saveShows();
-        TWiTLab.get(getActivity()).saveEpisodes();
-    }
-
     private class FetchMoreEpisodesTask extends AsyncTask<Void, Void, List<Episode>> {
 
         @Override
@@ -143,9 +137,12 @@ public class EpisodeListFragment extends Fragment {
 
         @Override
         protected void onPostExecute(List<Episode> episodeList) {
-            TWiTLab.get(getActivity()).addEpisodes(episodeList, mShow);
+            mTWiTLab.addEpisodes(episodeList, mShow);
             mRecyclerView.getAdapter().notifyDataSetChanged();
             mMoreEpisodesButton.setVisibility(View.GONE);
+
+            mTWiTLab.saveShows();
+            mTWiTLab.saveEpisodes();
         }
     }
 

@@ -138,13 +138,6 @@ public class ShowListFragment extends Fragment {
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        TWiTLab.get(getActivity()).saveShows();
-        TWiTLab.get(getActivity()).saveEpisodes();
-    }
-
-    @Override
     public void onStart() {
         super.onStart();
         if (mRefreshingShows) {
@@ -326,6 +319,9 @@ public class ShowListFragment extends Fragment {
             } catch (Exception e) {
                 Log.e(TAG, "Cannot dismiss dialog");
             }
+
+            TWiTLab.get(getActivity()).saveShows();
+            TWiTLab.get(getActivity()).saveEpisodes();
         }
     }
 }

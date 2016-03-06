@@ -302,7 +302,6 @@ public class TWiTFetcher {
             Document document = builder.parse(new InputSource(new StringReader(feed)));
 
             NodeList episodeNodeList = document.getElementsByTagName("item");
-            Log.d(TAG, "Raw episode count: " + episodeNodeList.getLength());
             for (int i = 0; i < episodeNodeList.getLength(); i++) {
                 Episode episode = new Episode();
 
