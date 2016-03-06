@@ -87,7 +87,12 @@ public class TWiTFetcher {
                 throw new IOException(connection.getResponseMessage() + ": with " + url);
             }
 
-            file = new File(mContext.getFilesDir(), show.getTitle() + ".jpg");
+            File coverArtFolder = new File(mContext.getFilesDir() + "/" + Constants.COVER_ART_FOLDER);
+            if (!coverArtFolder.exists()) {
+                coverArtFolder.mkdir();
+            }
+
+            file = new File(mContext.getFilesDir() + "/" + Constants.COVER_ART_FOLDER, show.getTitle() + ".jpg");
 
             OutputStream out = new FileOutputStream(file);
             writer = new OutputStreamWriter(out);

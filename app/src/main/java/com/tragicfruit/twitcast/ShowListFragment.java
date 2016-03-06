@@ -263,6 +263,17 @@ public class ShowListFragment extends Fragment {
     private class FetchCoverArtTask extends AsyncTask<Void, Integer, Void> {
         @Override
         protected Void doInBackground(Void... params) {
+            // delete old cover art
+            File coverArtFolder = new File(getActivity().getFilesDir() + "/" + Constants.COVER_ART_FOLDER);
+            if (coverArtFolder.exists()) {
+                File[] files = coverArtFolder.listFiles();
+                for (File file : files) {
+                    file.delete();
+                    Log.d(TAG, "Deleted " + file.getAbsolutePath());
+                }
+            }
+
+            // download new cover art
             for (Show show : mDatabase.getShows()) {
                 try {
                     File coverArtFile = new TWiTFetcher(getActivity()).getCoverArt(show);
