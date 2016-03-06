@@ -19,13 +19,16 @@
         android:theme="@style/AppTheme">
         <meta-data android:name="com.google.android.gms.version"
                    android:value="@integer/google_play_services_version" />
-        <activity android:name=".ShowListActivity">
+        <activity
+            android:name=".SplashActivity"
+            android:theme="@style/SplashTheme">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ShowListActivity"/>
         <activity android:name=".EpisodeListActivity"
             android:parentActivityName=".ShowListActivity"/>
         <service android:name="com.google.android.libraries.cast.companionlibrary.notification.VideoCastNotificationService"/>
@@ -36,9 +39,6 @@
             android:launchMode="singleTask"
             android:parentActivityName=".ShowListActivity"
             android:theme="@style/Theme.CastVideosTheme">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ShowListActivity" />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
