@@ -28,7 +28,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".show.MenuPagerActivity"/>
+        <activity android:name=".show.MenuPagerActivity"
+            android:theme="@style/AppTheme.Tabbed"/>
         <activity android:name=".episode.EpisodeListActivity"
             android:parentActivityName=".show.MenuPagerActivity"/>
         <service android:name="com.google.android.libraries.cast.companionlibrary.notification.VideoCastNotificationService"/>

@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
+import android.support.design.widget.TabLayout;
 
 import com.tragicfruit.twitcast.LatestEpisodesFragment;
 import com.tragicfruit.twitcast.R;
@@ -15,12 +17,22 @@ public class MenuPagerActivity extends GoogleCastActivity implements LatestEpiso
             LatestEpisodesFragment.newInstance()
     };
 
+    private static final int[] mFragmentTitles = {
+            R.string.show_list_fragment_tab_title,
+            R.string.latest_episodes_tab_title
+    };
+
     private ViewPager mViewPager;
+    private Toolbar mToolbar;
+    private TabLayout mTabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_pager);
+
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
 
         mViewPager = (ViewPager) findViewById(R.id.activity_menu_pager_view_pager);
         mViewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
@@ -33,6 +45,14 @@ public class MenuPagerActivity extends GoogleCastActivity implements LatestEpiso
             public int getCount() {
                 return mFragments.length;
             }
+
+            @Override
+            public CharSequence getPageTitle(int position) {
+                return getString(mFragmentTitles[position]);
+            }
         });
+
+        mTabLayout = (TabLayout) findViewById(R.id.tabs);
+        mTabLayout.setupWithViewPager(mViewPager);
     }
 }

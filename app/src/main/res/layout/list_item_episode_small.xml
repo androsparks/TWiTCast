@@ -14,7 +14,7 @@
     <TextView
         android:paddingLeft="8dp"
         android:paddingStart="8dp"
-        android:textColor="@color/show_page_episode_title"
+        android:textColor="@color/textColourTitles"
         android:id="@+id/episode_number_title"
         tools:text="11: Episode title"
         android:gravity="center_vertical"
