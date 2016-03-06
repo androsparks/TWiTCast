@@ -1,4 +1,4 @@
-package com.tragicfruit.twitcast;
+package com.tragicfruit.twitcast.episode;
 
 import android.app.Activity;
 import android.content.Context;
@@ -12,6 +12,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,10 +22,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tragicfruit.twitcast.R;
 import com.tragicfruit.twitcast.database.TWiTLab;
 import com.tragicfruit.twitcast.dialogs.ChooseQualityFragment;
-import com.tragicfruit.twitcast.episode.Episode;
-import com.tragicfruit.twitcast.episode.StreamQuality;
 import com.tragicfruit.twitcast.utils.QueryPreferences;
 import com.tragicfruit.twitcast.utils.TWiTFetcher;
 
@@ -34,6 +34,7 @@ import java.util.List;
  * Created by Jeremy on 6/03/2016.
  */
 public class LatestEpisodesFragment extends Fragment {
+    private static final String TAG = "LatestEpisodesFragment";
     private static final String DIALOG_CHOOSE_QUALITY = "choose_quality";
     private static final int REQUEST_QUALITY = 0;
 
@@ -77,7 +78,7 @@ public class LatestEpisodesFragment extends Fragment {
         mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new FetchMoreEpisodesTask().execute();
+                new FetchEpisodesTask().execute();
             }
         });
 
@@ -114,6 +115,12 @@ public class LatestEpisodesFragment extends Fragment {
             StreamQuality quality = ChooseQualityFragment.getStreamQuality(data);
             QueryPreferences.setStreamQuality(getActivity(), quality);
         }
+    }
+
+    public void updateList() {
+        Log.d(TAG, "Updating latest episode list");
+        mEpisodes = mTWiTLab.getEpisodes();
+        mRecyclerView.getAdapter().notifyDataSetChanged();
     }
 
     @Override
@@ -162,7 +169,6 @@ public class LatestEpisodesFragment extends Fragment {
     }
 
     private class EpisodeAdapter extends RecyclerView.Adapter<EpisodeHolder> {
-
         @Override
         public EpisodeHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(getActivity());
@@ -182,7 +188,7 @@ public class LatestEpisodesFragment extends Fragment {
         }
     }
 
-    private class FetchMoreEpisodesTask extends AsyncTask<Void, Void, List<Episode>> {
+    private class FetchEpisodesTask extends AsyncTask<Void, Void, List<Episode>> {
 
         @Override
         protected List<Episode> doInBackground(Void... params) {

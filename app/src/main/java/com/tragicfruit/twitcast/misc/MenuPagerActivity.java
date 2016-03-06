@@ -1,4 +1,4 @@
-package com.tragicfruit.twitcast.show;
+package com.tragicfruit.twitcast.misc;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,11 +7,12 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.support.design.widget.TabLayout;
 
-import com.tragicfruit.twitcast.LatestEpisodesFragment;
+import com.tragicfruit.twitcast.episode.LatestEpisodesFragment;
 import com.tragicfruit.twitcast.R;
-import com.tragicfruit.twitcast.misc.GoogleCastActivity;
+import com.tragicfruit.twitcast.show.ShowListFragment;
 
-public class MenuPagerActivity extends GoogleCastActivity implements LatestEpisodesFragment.Callbacks {
+public class MenuPagerActivity extends GoogleCastActivity
+        implements LatestEpisodesFragment.Callbacks, ShowListFragment.Callbacks {
     private static final Fragment[] mFragments = {
             ShowListFragment.newInstance(),
             LatestEpisodesFragment.newInstance()
@@ -54,5 +55,20 @@ public class MenuPagerActivity extends GoogleCastActivity implements LatestEpiso
 
         mTabLayout = (TabLayout) findViewById(R.id.tabs);
         mTabLayout.setupWithViewPager(mViewPager);
+    }
+
+    @Override
+    public void refreshShows() {
+        LatestEpisodesFragment latestEpisodesFragment = null;
+        for (Fragment fragment : mFragments) {
+            if (fragment instanceof LatestEpisodesFragment) {
+                latestEpisodesFragment = (LatestEpisodesFragment) fragment;
+                break;
+            }
+        }
+
+        if (latestEpisodesFragment != null) {
+            latestEpisodesFragment.updateList();
+        }
     }
 }

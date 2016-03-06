@@ -193,6 +193,7 @@ public class EpisodeListFragment extends Fragment {
             mSwipeRefresh.setRefreshing(false);
 
             if (newShows) {
+                getActivity().setResult(Activity.RESULT_OK);
                 mTWiTLab.saveShows();
                 mTWiTLab.saveEpisodes();
             }

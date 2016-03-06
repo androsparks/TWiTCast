@@ -1,6 +1,7 @@
 package com.tragicfruit.twitcast.show;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -45,6 +46,7 @@ public class ShowListFragment extends Fragment {
     private static final String DIALOG_UPDATING_SHOWS = "updating_shows";
     private static final String DIALOG_CHOOSE_QUALITY = "choose_quality";
     private static final int REQUEST_QUALITY = 0;
+    private static final int REQUEST_SHOW_EPISODES = 1;
 
     private AutofitRecyclerView mRecyclerView;
     private UpdatingShowsFragment mLoadingDialog;
@@ -54,6 +56,12 @@ public class ShowListFragment extends Fragment {
     private FetchEpisodesTask mFetchEpisodesTask;
 
     private boolean mRefreshingShows;
+
+    private Callbacks mCallbacks;
+
+    public interface Callbacks {
+        void refreshShows();
+    }
 
     public static ShowListFragment newInstance() {
         return new ShowListFragment();
@@ -164,7 +172,21 @@ public class ShowListFragment extends Fragment {
         if (requestCode == REQUEST_QUALITY) {
             StreamQuality quality = ChooseQualityFragment.getStreamQuality(data);
             QueryPreferences.setStreamQuality(getActivity(), quality);
+        } else if (requestCode == REQUEST_SHOW_EPISODES) {
+            mCallbacks.refreshShows();
         }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mCallbacks = (Callbacks) context;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallbacks = null;
     }
 
     @Override
@@ -225,7 +247,7 @@ public class ShowListFragment extends Fragment {
 
             ActivityOptionsCompat options = ActivityOptionsCompat
                     .makeSceneTransitionAnimation(getActivity(), v, "cover_art");
-            startActivity(i, options.toBundle());
+            startActivityForResult(i, REQUEST_SHOW_EPISODES, options.toBundle());
         }
     }
 
@@ -350,6 +372,7 @@ public class ShowListFragment extends Fragment {
                 Log.e(TAG, "Cannot dismiss dialog");
             }
 
+            mCallbacks.refreshShows();
             TWiTLab.get(getActivity()).saveShows();
             TWiTLab.get(getActivity()).saveEpisodes();
         }

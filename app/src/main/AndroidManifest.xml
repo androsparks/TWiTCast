@@ -28,17 +28,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".show.MenuPagerActivity"
+        <activity android:name=".misc.MenuPagerActivity"
             android:theme="@style/AppTheme.Tabbed"/>
         <activity android:name=".episode.EpisodeListActivity"
-            android:parentActivityName=".show.MenuPagerActivity"/>
+            android:parentActivityName=".misc.MenuPagerActivity"/>
         <service android:name="com.google.android.libraries.cast.companionlibrary.notification.VideoCastNotificationService"/>
         <activity
             android:name="com.google.android.libraries.cast.companionlibrary.cast.player.VideoCastControllerActivity"
             android:screenOrientation="portrait"
             android:label="@string/app_name"
             android:launchMode="singleTask"
-            android:parentActivityName=".show.MenuPagerActivity"
+            android:parentActivityName=".misc.MenuPagerActivity"
             android:theme="@style/Theme.CastVideosTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

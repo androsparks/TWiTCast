@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import com.tragicfruit.twitcast.show.MenuPagerActivity;
-
 /**
  * Created by Jeremy on 6/03/2016.
  */
