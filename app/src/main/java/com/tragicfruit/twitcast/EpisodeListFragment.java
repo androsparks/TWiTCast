@@ -1,15 +1,20 @@
 package com.tragicfruit.twitcast;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +31,8 @@ import java.util.List;
  */
 public class EpisodeListFragment extends Fragment {
     private static final String ARG_SHOW_ID = "show_id";
+    private static final String DIALOG_CHOOSE_QUALITY = "choose_quality";
+    private static final int REQUEST_QUALITY = 0;
 
     private RecyclerView mRecyclerView;
     private ImageView mCoverArtImageView;
@@ -82,12 +89,27 @@ public class EpisodeListFragment extends Fragment {
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_episode_list, menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            getActivity().onBackPressed();
-            return true;
+        switch (item.getItemId()) {
+            case R.id.home:
+                // maintain transition animation
+                getActivity().onBackPressed();
+                return true;
+            case R.id.choose_quality:
+                FragmentManager fm = getFragmentManager();
+                ChooseQualityFragment dialog = ChooseQualityFragment.newInstance();
+                dialog.setTargetFragment(EpisodeListFragment.this, REQUEST_QUALITY);
+                dialog.show(fm, DIALOG_CHOOSE_QUALITY);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     @Nullable
@@ -126,6 +148,18 @@ public class EpisodeListFragment extends Fragment {
         });
 
         return v;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+
+        if (requestCode == REQUEST_QUALITY) {
+            StreamQuality quality = ChooseQualityFragment.getStreamQuality(data);
+            QueryPreferences.setStreamQuality(getActivity(), quality);
+        }
     }
 
     private class FetchMoreEpisodesTask extends AsyncTask<Void, Void, List<Episode>> {

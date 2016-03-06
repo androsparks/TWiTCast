@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.widget.Toast;
 
 import com.google.android.gms.cast.MediaInfo;
 import com.google.android.gms.cast.MediaMetadata;
@@ -73,9 +74,17 @@ public abstract class GoogleCastActivity extends SingleFragmentActivity implemen
         mediaMetadata.addImage(new WebImage(Uri.parse(episode.getShow().getCoverArtSmallUrl())));
         mediaMetadata.addImage(new WebImage(Uri.parse(episode.getShow().getCoverArtLargeUrl())));
 
-        // TODO: change for different stream qualities
-        MediaInfo mediaInfo = new MediaInfo.Builder(episode.getVideoHdUrl())
-                .setContentType("video/mp4")
+        String url = getMediaUrl(episode);
+        String contentType = getContentType(url);
+
+        if (url == null || contentType == null) {
+            Toast.makeText(this, R.string.error_playing_video_toast, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Log.d(TAG, "Playing from url: " + url);
+        MediaInfo mediaInfo = new MediaInfo.Builder(url)
+                .setContentType(contentType)
                 .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
                 .setMetadata(mediaMetadata)
                 .build();
@@ -86,9 +95,44 @@ public abstract class GoogleCastActivity extends SingleFragmentActivity implemen
                 mCastManager.startVideoCastControllerActivity(this, mediaInfo, 0, true);
             } catch (Exception e) {
                 Log.e(TAG, "Cannot load video", e);
+                Toast.makeText(this, R.string.error_playing_video_toast, Toast.LENGTH_SHORT).show();
             }
         } else {
             // TODO: prompt user to select cast device
+        }
+    }
+
+    private String getMediaUrl(Episode episode) {
+        String url = null;
+        switch (QueryPreferences.getStreamQuality(this)) {
+            case VIDEO_HD:
+                url = episode.getVideoHdUrl();
+                if (url != null) {
+                    break;
+                }
+            case VIDEO_LARGE:
+                url = episode.getVideoLargeUrl();
+                if (url != null) {
+                    break;
+                }
+            case VIDEO_SMALL:
+                url = episode.getVideoSmallUrl();
+                if (url != null) {
+                    break;
+                }
+            case AUDIO:
+                url = episode.getAudioUrl();
+        }
+        return url;
+    }
+
+    private String getContentType(String url) {
+        if (url.endsWith(".mp4")) {
+            return Constants.VIDEO_CONTENT_TYPE;
+        } else if (url.endsWith(".mp3")) {
+            return Constants.AUDIO_CONTENT_TYPE;
+        } else {
+            return null;
         }
     }
 }

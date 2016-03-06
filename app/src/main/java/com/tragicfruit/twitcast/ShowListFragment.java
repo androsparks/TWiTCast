@@ -1,5 +1,6 @@
 package com.tragicfruit.twitcast;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -33,6 +34,8 @@ import java.util.List;
 public class ShowListFragment extends Fragment {
     private static final String TAG = "ShowListFragment";
     private static final String DIALOG_UPDATING_SHOWS = "updating_shows";
+    private static final String DIALOG_CHOOSE_QUALITY = "choose_quality";
+    private static final int REQUEST_QUALITY = 0;
 
     private AutofitRecyclerView mRecyclerView;
     private UpdatingShowsFragment mLoadingDialog;
@@ -108,7 +111,7 @@ public class ShowListFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.fragment_selection, menu);
+        inflater.inflate(R.menu.fragment_show_list, menu);
         MenuItem refreshButton = menu.findItem(R.id.refresh_button);
         refreshButton.setEnabled(!mRefreshingShows);
     }
@@ -122,6 +125,12 @@ public class ShowListFragment extends Fragment {
                 mRefreshingShows = true;
                 getActivity().invalidateOptionsMenu();
                 return true;
+            case R.id.choose_quality:
+                FragmentManager fm = getFragmentManager();
+                ChooseQualityFragment dialog = ChooseQualityFragment.newInstance();
+                dialog.setTargetFragment(ShowListFragment.this, REQUEST_QUALITY);
+                dialog.show(fm, DIALOG_CHOOSE_QUALITY);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -134,6 +143,18 @@ public class ShowListFragment extends Fragment {
             } else {
                 mRecyclerView.setAdapter(new ShowAdapter(new ArrayList<Show>()));
             }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+
+        if (requestCode == REQUEST_QUALITY) {
+            StreamQuality quality = ChooseQualityFragment.getStreamQuality(data);
+            QueryPreferences.setStreamQuality(getActivity(), quality);
         }
     }
 

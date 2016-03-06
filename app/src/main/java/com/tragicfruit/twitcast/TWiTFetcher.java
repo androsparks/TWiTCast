@@ -230,14 +230,14 @@ public class TWiTFetcher {
         List<Episode> episodeList;
         if (show == null) {
             episodeList = getEpisodeListFromFeed(Constants.BRICKHOUSE_AUDIO_FEED);
-            addVideoFeed(episodeList, Constants.BRICKHOUSE_VIDEO_SMALL_FEED, Feed.VIDEO_SMALL);
-            addVideoFeed(episodeList, Constants.BRICKHOUSE_VIDEO_LARGE_FEED, Feed.VIDEO_LARGE);
-            addVideoFeed(episodeList, Constants.BRICKHOUSE_VIDEO_HD_FEED, Feed.VIDEO_HD);
+            addVideoFeed(episodeList, Constants.BRICKHOUSE_VIDEO_SMALL_FEED, StreamQuality.VIDEO_SMALL);
+            addVideoFeed(episodeList, Constants.BRICKHOUSE_VIDEO_LARGE_FEED, StreamQuality.VIDEO_LARGE);
+            addVideoFeed(episodeList, Constants.BRICKHOUSE_VIDEO_HD_FEED, StreamQuality.VIDEO_HD);
         } else {
             episodeList = getEpisodeListFromFeed(show.getAudioFeed());
-            addVideoFeed(episodeList, show.getVideoSmallFeed(), Feed.VIDEO_SMALL);
-            addVideoFeed(episodeList, show.getVideoLargeFeed(), Feed.VIDEO_LARGE);
-            addVideoFeed(episodeList, show.getVideoHdFeed(), Feed.VIDEO_HD);
+            addVideoFeed(episodeList, show.getVideoSmallFeed(), StreamQuality.VIDEO_SMALL);
+            addVideoFeed(episodeList, show.getVideoLargeFeed(), StreamQuality.VIDEO_LARGE);
+            addVideoFeed(episodeList, show.getVideoHdFeed(), StreamQuality.VIDEO_HD);
         }
 
         Log.d(TAG, "Fetched video feeds");
@@ -245,7 +245,7 @@ public class TWiTFetcher {
         return episodeList;
     }
 
-    private void addVideoFeed(List<Episode> episodeList, String feedUrl, Feed feedType) {
+    private void addVideoFeed(List<Episode> episodeList, String feedUrl, StreamQuality feedType) {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();

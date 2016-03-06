@@ -2,8 +2,14 @@
     <string name="app_name">TWiT Cast</string>
     <string name="studio_name">TWiT.tv</string>
     <string name="updating_shows_text">Updating shows, this may take a minute or two.</string>
-    <string name="refresh_button">Refresh shows</string>
+    <string name="refresh_shows_menu_item">Refresh shows</string>
     <string name="episode_running_time_long">%1$s hr %2$s min</string>
     <string name="episode_running_time_short">%1$s min</string>
     <string name="media_route_menu_title">Cast</string>
+    <string name="choose_quality_menu_item">Choose quality</string>
+    <string name="quality_video_hd">Video (HD)</string>
+    <string name="quality_video_large">Video (Large)</string>
+    <string name="quality_video_small">Video (Small)</string>
+    <string name="quality_audio">Audio</string>
+    <string name="error_playing_video_toast">Cannot play video, please try again later.</string>
 </resources>
