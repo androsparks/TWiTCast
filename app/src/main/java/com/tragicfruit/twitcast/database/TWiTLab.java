@@ -96,13 +96,14 @@ public class TWiTLab implements TWiTDatabase {
         return mEpisodes;
     }
 
-    public void addEpisodes(List<Episode> episodeList) {
+    public boolean addEpisodes(List<Episode> episodeList) {
+        boolean newEpisodes = false;
         for (Episode episode : episodeList) {
             Show showForEpisode = getShowFromEpisode(episode);
 
             if (showForEpisode == null) {
                 Log.d(TAG, "No show found for " + episode.getTitle());
-                return;
+                continue;
             }
 
             if (mEpisodes.contains(episode)) {
@@ -114,6 +115,7 @@ public class TWiTLab implements TWiTDatabase {
                 }
             }
 
+            newEpisodes = true;
             mEpisodes.add(episode);
             showForEpisode.addEpisode(episode);
             episode.setShow(showForEpisode);
@@ -123,6 +125,8 @@ public class TWiTLab implements TWiTDatabase {
             sortEpisodes(showForEpisode.getEpisodes());
         }
         // TODO: clean up old shows
+
+        return newEpisodes;
     }
 
     public boolean addEpisodes(List<Episode> episodeList, Show show) {

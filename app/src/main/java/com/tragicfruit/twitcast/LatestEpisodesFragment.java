@@ -3,10 +3,12 @@ package com.tragicfruit.twitcast;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateFormat;
@@ -24,6 +26,7 @@ import com.tragicfruit.twitcast.dialogs.ChooseQualityFragment;
 import com.tragicfruit.twitcast.episode.Episode;
 import com.tragicfruit.twitcast.episode.StreamQuality;
 import com.tragicfruit.twitcast.utils.QueryPreferences;
+import com.tragicfruit.twitcast.utils.TWiTFetcher;
 
 import java.util.List;
 
@@ -38,6 +41,7 @@ public class LatestEpisodesFragment extends Fragment {
     private List<Episode> mEpisodes;
 
     private RecyclerView mRecyclerView;
+    private SwipeRefreshLayout mSwipeRefresh;
 
     private Callbacks mCallbacks;
 
@@ -67,6 +71,15 @@ public class LatestEpisodesFragment extends Fragment {
         mRecyclerView = (RecyclerView) v.findViewById(R.id.fragment_latest_episodes_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(new EpisodeAdapter());
+
+        mSwipeRefresh = (SwipeRefreshLayout) v.findViewById(R.id.fragment_latest_episodes_swipe_refresh);
+        mSwipeRefresh.setColorSchemeResources(R.color.colorAccent);
+        mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new FetchMoreEpisodesTask().execute();
+            }
+        });
 
         return v;
     }
@@ -166,6 +179,27 @@ public class LatestEpisodesFragment extends Fragment {
         @Override
         public int getItemCount() {
             return mEpisodes.size();
+        }
+    }
+
+    private class FetchMoreEpisodesTask extends AsyncTask<Void, Void, List<Episode>> {
+
+        @Override
+        protected List<Episode> doInBackground(Void... params) {
+            return new TWiTFetcher(getActivity()).fetchAllEpisodes();
+        }
+
+        @Override
+        protected void onPostExecute(List<Episode> episodeList) {
+            boolean newShows = mTWiTLab.addEpisodes(episodeList);
+
+            mRecyclerView.getAdapter().notifyDataSetChanged();
+            mSwipeRefresh.setRefreshing(false);
+
+            if (newShows) {
+                mTWiTLab.saveShows();
+                mTWiTLab.saveEpisodes();
+            }
         }
     }
 }
