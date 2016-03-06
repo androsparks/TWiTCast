@@ -11,7 +11,7 @@ import com.tragicfruit.twitcast.R;
 /**
  * Created by jerem on 23/11/2015.
  */
-public abstract class SingleFragmentActivity extends AppCompatActivity {
+public abstract class SingleFragmentActivity extends GoogleCastActivity {
     protected abstract Fragment createFragment();
 
     @LayoutRes

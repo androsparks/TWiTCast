@@ -92,6 +92,10 @@ public class TWiTLab implements TWiTDatabase {
         return null;
     }
 
+    public List<Episode> getEpisodes() {
+        return mEpisodes;
+    }
+
     public void addEpisodes(List<Episode> episodeList) {
         for (Episode episode : episodeList) {
             Show showForEpisode = getShowFromEpisode(episode);

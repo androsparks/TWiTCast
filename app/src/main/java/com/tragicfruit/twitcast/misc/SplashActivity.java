@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import com.tragicfruit.twitcast.show.ShowListActivity;
+import com.tragicfruit.twitcast.show.MenuPagerActivity;
 
 /**
  * Created by Jeremy on 6/03/2016.
@@ -15,7 +15,7 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Intent intent = new Intent(this, ShowListActivity.class);
+        Intent intent = new Intent(this, MenuPagerActivity.class);
         startActivity(intent);
         finish();
     }

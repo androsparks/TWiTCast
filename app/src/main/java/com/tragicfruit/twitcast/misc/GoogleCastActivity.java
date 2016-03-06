@@ -2,6 +2,7 @@ package com.tragicfruit.twitcast.misc;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.widget.Toast;
@@ -23,7 +24,7 @@ import com.tragicfruit.twitcast.utils.QueryPreferences;
 /**
  * Created by Jeremy on 4/03/2016.
  */
-public abstract class GoogleCastActivity extends SingleFragmentActivity implements EpisodeListFragment.Callbacks {
+public abstract class GoogleCastActivity extends AppCompatActivity implements EpisodeListFragment.Callbacks {
     private static final String TAG = "GoogleCastActivity";
 
     private VideoCastManager mCastManager;

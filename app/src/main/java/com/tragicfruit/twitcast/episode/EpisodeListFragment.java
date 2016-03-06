@@ -19,17 +19,16 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.tragicfruit.twitcast.utils.QueryPreferences;
 import com.tragicfruit.twitcast.R;
-import com.tragicfruit.twitcast.show.Show;
-import com.tragicfruit.twitcast.utils.TWiTFetcher;
 import com.tragicfruit.twitcast.database.TWiTLab;
 import com.tragicfruit.twitcast.dialogs.ChooseQualityFragment;
+import com.tragicfruit.twitcast.show.Show;
+import com.tragicfruit.twitcast.utils.QueryPreferences;
+import com.tragicfruit.twitcast.utils.TWiTFetcher;
 
 import java.util.List;
 
@@ -45,7 +44,6 @@ public class EpisodeListFragment extends Fragment {
     private ImageView mCoverArtImageView;
     private TextView mTitleTextView;
     private TextView mDescriptionTextView;
-    private Button mMoreEpisodesButton;
     private ProgressBar mLoadingProgressBar;
     private SwipeRefreshLayout mSwipeRefresh;
 
@@ -84,6 +82,7 @@ public class EpisodeListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
         setHasOptionsMenu(true);
 
         mTWiTLab = TWiTLab.get(getActivity());

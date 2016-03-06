@@ -111,7 +111,7 @@ public class ShowListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_show_list, container, false);
 
-        mRecyclerView = (AutofitRecyclerView) v.findViewById(R.id.fragment_selection_recycler_view);
+        mRecyclerView = (AutofitRecyclerView) v.findViewById(R.id.fragment_show_list_recycler_view);
         setupAdapter();
 
         return v;
