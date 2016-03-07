@@ -37,6 +37,7 @@ import com.tragicfruit.twitcast.utils.TWiTFetcher;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -128,7 +129,6 @@ public class ShowListFragment extends Fragment {
 
     private void updateEpisodes() {
         if (isNetworkAvailableAndConnected()) {
-            // TODO: if oldest server episode is newer than newest local episode then wipe episodes & reset
             mFetchEpisodesTask = new FetchEpisodesTask();
             mFetchEpisodesTask.execute();
         } else {
@@ -394,6 +394,19 @@ public class ShowListFragment extends Fragment {
         protected void onPostExecute(List<Episode> episodeList) {
             if (isCancelled()) {
                 return;
+            }
+
+            // reset episodes if local episodes obsolete
+            if (mDatabase.getEpisodes().size() > 0) {
+                Episode newestLocal = mDatabase.getEpisodes().get(0);
+                Episode oldestServer = episodeList.get(episodeList.size() - 1);
+
+                Date newestLocalDate = newestLocal.getPublicationDate();
+                Date oldestServerDate = oldestServer.getPublicationDate();
+
+                if (oldestServerDate.after(newestLocalDate)) {
+                    mDatabase.resetEpisodes();
+                }
             }
 
             mDatabase.addEpisodes(episodeList);
