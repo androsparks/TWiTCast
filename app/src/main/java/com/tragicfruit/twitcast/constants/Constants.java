@@ -12,6 +12,7 @@ public class Constants {
     public static final String BRICKHOUSE_VIDEO_HD_FEED = "http://feeds.twit.tv/brickhouse_video_hd.xml";
 
     public static final String COVER_ART_FOLDER = "cover_art";
+    public static final String COVER_ART_LARGE_FOLDER = "cover_art_large";
 
     public static final String AUDIO_CONTENT_TYPE = "audio/mpeg3";
     public static final String VIDEO_CONTENT_TYPE = "video/mp4";

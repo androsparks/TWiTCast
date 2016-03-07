@@ -98,7 +98,7 @@ public class TWiTFetcher {
                 coverArtFolder.mkdir();
             }
 
-            file = new File(mContext.getFilesDir() + "/" + Constants.COVER_ART_FOLDER, show.getTitle() + ".jpg");
+            file = new File(mContext.getFilesDir() + "/" + Constants.COVER_ART_FOLDER, getImageFileName(Uri.parse(show.getCoverArtUrl())));
 
             OutputStream out = new FileOutputStream(file);
             writer = new OutputStreamWriter(out);
@@ -117,6 +117,14 @@ public class TWiTFetcher {
                 writer.close();
             }
         }
+    }
+
+    private String getImageFileName(Uri uri) {
+        String url = uri.toString();
+
+        int startIndex = url.lastIndexOf('/');
+        int endIndex = url.lastIndexOf('?');
+        return url.substring(startIndex + 1, endIndex);
     }
 
     public byte[] getUrlBytes(String urlSpec) throws IOException {

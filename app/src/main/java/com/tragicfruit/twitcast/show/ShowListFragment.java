@@ -308,15 +308,9 @@ public class ShowListFragment extends Fragment {
     private class FetchCoverArtTask extends AsyncTask<Void, Integer, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-            // delete old cover art
-            File coverArtFolder = new File(getActivity().getFilesDir() + "/" + Constants.COVER_ART_FOLDER);
-            if (coverArtFolder.exists()) {
-                File[] files = coverArtFolder.listFiles();
-                for (File file : files) {
-                    file.delete();
-                    Log.d(TAG, "Deleted " + file.getAbsolutePath());
-                }
-            }
+            // clean up old cover art
+            cleanUp(Constants.COVER_ART_FOLDER);
+            cleanUp(Constants.COVER_ART_LARGE_FOLDER);
 
             // download new cover art
             for (Show show : mDatabase.getShows()) {
@@ -334,6 +328,17 @@ public class ShowListFragment extends Fragment {
                 }
             }
             return null;
+        }
+
+        private void cleanUp(String folder) {
+            File coverArtFolder = new File(getActivity().getFilesDir() + "/" + folder);
+            if (coverArtFolder.exists()) {
+                File[] files = coverArtFolder.listFiles();
+                for (File file : files) {
+                    file.delete();
+                    Log.d(TAG, "Deleted " + file.getAbsolutePath());
+                }
+            }
         }
 
         @Override

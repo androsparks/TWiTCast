@@ -45,6 +45,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -52,12 +53,22 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.SeekBar;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -87,7 +98,7 @@ public class VideoCastControllerFragment extends Fragment implements
     private Handler mHandler;
     protected boolean mAuthSuccess = true;
     private VideoCastController mCastController;
-    private FetchBitmapTask mImageAsyncTask;
+    private AsyncTask mImageAsyncTask;
     private Timer mSeekbarTimer;
     private int mPlaybackState;
     private MyCastConsumer mCastConsumer;
@@ -578,28 +589,107 @@ public class VideoCastControllerFragment extends Fragment implements
             mCastController.setImage(mUrlAndBitmap.mBitmap);
             return;
         }
-        mUrlAndBitmap = null;
+
+        if (existsInLocalStorage(uri)) {
+            File imageFile = new File(getActivity().getFilesDir() + "/cover_art_large", getImageFileName(uri));
+
+            mUrlAndBitmap = new UrlAndBitmap();
+            mUrlAndBitmap.mUrl = uri;
+            Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+            mUrlAndBitmap.mBitmap = bitmap;
+            mCastController.setImage(bitmap);
+
+            return;
+        }
+
         if (mImageAsyncTask != null) {
             mImageAsyncTask.cancel(true);
         }
-        Point screenSize = Utils.getDisplaySize(getActivity());
-        mImageAsyncTask = new FetchBitmapTask(screenSize.x, screenSize.y, false) {
+
+        mImageAsyncTask = new AsyncTask<Uri, Void, File>() {
+
             @Override
-            protected void onPostExecute(Bitmap bitmap) {
-                if (bitmap != null) {
+            protected File doInBackground(Uri... uri) {
+                try {
+                    return getCoverArt(uri[0].toString());
+                } catch (IOException e) {
+                    Log.e(TAG, "Cannot fetch large cover art", e);
+                    return null;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(File file) {
+                if (file != null) {
                     mUrlAndBitmap = new UrlAndBitmap();
-                    mUrlAndBitmap.mBitmap = bitmap;
+                    mUrlAndBitmap.mBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
                     mUrlAndBitmap.mUrl = uri;
                     if (!isCancelled()) {
-                        mCastController.setImage(bitmap);
+                        mCastController.setImage(mUrlAndBitmap.mBitmap);
                     }
                 }
                 if (this == mImageAsyncTask) {
                     mImageAsyncTask = null;
                 }
             }
-        };
-        mImageAsyncTask.execute(uri);
+        }.execute(uri);
+    }
+
+    private File getCoverArt(String urlString) throws IOException {
+        URL url = new URL(urlString);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+        Writer writer = null;
+        File file;
+        try {
+            InputStream in = connection.getInputStream();
+
+            if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                throw new IOException(connection.getResponseMessage() + ": with " + url);
+            }
+
+            File coverArtFolder = new File(getActivity().getFilesDir() + "/cover_art_large");
+            if (!coverArtFolder.exists()) {
+                coverArtFolder.mkdir();
+            }
+
+            file = new File(getActivity().getFilesDir() + "/cover_art_large", getImageFileName(Uri.parse(urlString)));
+
+            OutputStream out = new FileOutputStream(file);
+            writer = new OutputStreamWriter(out);
+
+            int read;
+            byte[] bytes = new byte[1024];
+            while ((read = in.read(bytes)) != -1) {
+                out.write(bytes, 0, read);
+            }
+
+            Log.i(TAG, "File saved to: " + file.getAbsolutePath());
+
+            return file;
+        } finally {
+            if (writer != null) {
+                writer.close();
+            }
+        }
+    }
+
+    private boolean existsInLocalStorage(Uri uri) {
+        File coverArtFolder = new File(getActivity().getFilesDir() + "/cover_art_large");
+        if (!coverArtFolder.exists()) {
+            return false;
+        }
+
+        File imageFile = new File(getActivity().getFilesDir() + "/cover_art_large", getImageFileName(uri));
+        return imageFile.exists();
+    }
+
+    private String getImageFileName(Uri uri) {
+        String url = uri.toString();
+
+        int startIndex = url.lastIndexOf('/');
+        int endIndex = url.lastIndexOf('?');
+        return url.substring(startIndex + 1, endIndex);
     }
 
     /**
