@@ -44,6 +44,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -233,26 +234,38 @@ public class VideoCastNotificationService extends Service {
         } catch (CastException e) {
             LOGE(TAG, "Failed to build notification", e);
         }
-        mBitmapDecoderTask = new FetchBitmapTask() {
-            @Override
-            protected void onPostExecute(Bitmap bitmap) {
-                try {
-                    mVideoArtBitmap = Utils.scaleAndCenterCropBitmap(bitmap, mDimensionInPixels,
-                            mDimensionInPixels);
-                    build(info, mVideoArtBitmap, mIsPlaying);
-                } catch (CastException | NoConnectionException
-                        | TransientNetworkDisconnectionException e) {
-                    LOGE(TAG, "Failed to set notification for " + info.toString(), e);
-                }
-                if (mVisible && (mNotification != null)) {
-                    startForeground(NOTIFICATION_ID, mNotification);
-                }
-                if (this == mBitmapDecoderTask) {
-                    mBitmapDecoderTask = null;
-                }
-            }
-        };
-        mBitmapDecoderTask.execute(imgUri);
+
+        try {
+            mVideoArtBitmap = BitmapFactory.decodeFile(imgUri.toString());
+            build(info, mVideoArtBitmap, mIsPlaying);
+        } catch (CastException | NoConnectionException | TransientNetworkDisconnectionException e) {
+            LOGE(TAG, "Failed to set notification for " + info.toString(), e);
+        }
+
+        if (mVisible && (mNotification != null)) {
+            startForeground(NOTIFICATION_ID, mNotification);
+        }
+
+//        mBitmapDecoderTask = new FetchBitmapTask() {
+//            @Override
+//            protected void onPostExecute(Bitmap bitmap) {
+//                try {
+//                    mVideoArtBitmap = Utils.scaleAndCenterCropBitmap(bitmap, mDimensionInPixels,
+//                            mDimensionInPixels);
+//                    build(info, mVideoArtBitmap, mIsPlaying);
+//                } catch (CastException | NoConnectionException
+//                        | TransientNetworkDisconnectionException e) {
+//                    LOGE(TAG, "Failed to set notification for " + info.toString(), e);
+//                }
+//                if (mVisible && (mNotification != null)) {
+//                    startForeground(NOTIFICATION_ID, mNotification);
+//                }
+//                if (this == mBitmapDecoderTask) {
+//                    mBitmapDecoderTask = null;
+//                }
+//            }
+//        };
+//        mBitmapDecoderTask.execute(imgUri);
     }
 
     /**

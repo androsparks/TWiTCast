@@ -176,21 +176,24 @@ public class VideoMediaRouteControllerDialog extends MediaRouteControllerDialog 
             mIcon.setImageBitmap(bm);
             return;
         }
-        if (mFetchBitmap != null) {
-            mFetchBitmap.cancel(true);
-        }
 
-        mFetchBitmap = new FetchBitmapTask() {
-            @Override
-            protected void onPostExecute(Bitmap bitmap) {
-                mIcon.setImageBitmap(bitmap);
-                if (this == mFetchBitmap) {
-                    mFetchBitmap = null;
-                }
-            }
-        };
+        mIcon.setImageBitmap(BitmapFactory.decodeFile(uri.toString()));
 
-        mFetchBitmap.execute(mIconUri);
+//        if (mFetchBitmap != null) {
+//            mFetchBitmap.cancel(true);
+//        }
+//
+//        mFetchBitmap = new FetchBitmapTask() {
+//            @Override
+//            protected void onPostExecute(Bitmap bitmap) {
+//                mIcon.setImageBitmap(bitmap);
+//                if (this == mFetchBitmap) {
+//                    mFetchBitmap = null;
+//                }
+//            }
+//        };
+//
+//        mFetchBitmap.execute(mIconUri);
     }
 
     private void updatePlayPauseState(int state) {

@@ -282,24 +282,27 @@ public class MiniController extends RelativeLayout implements IMiniController {
         }
 
         mIconUri = uri;
-        if (mFetchBitmapTask != null) {
-            mFetchBitmapTask.cancel(true);
-        }
-        mFetchBitmapTask = new FetchBitmapTask() {
-            @Override
-            protected void onPostExecute(Bitmap bitmap) {
-                if (bitmap == null) {
-                    bitmap = BitmapFactory.decodeResource(getResources(),
-                            R.drawable.album_art_placeholder);
-                }
-                setIcon(bitmap);
-                if (this == mFetchBitmapTask) {
-                    mFetchBitmapTask = null;
-                }
-            }
-        };
+        Bitmap bitmap = BitmapFactory.decodeFile(uri.toString());
+        setIcon(bitmap);
 
-        mFetchBitmapTask.execute(uri);
+//        if (mFetchBitmapTask != null) {
+//            mFetchBitmapTask.cancel(true);
+//        }
+//        mFetchBitmapTask = new FetchBitmapTask() {
+//            @Override
+//            protected void onPostExecute(Bitmap bitmap) {
+//                if (bitmap == null) {
+//                    bitmap = BitmapFactory.decodeResource(getResources(),
+//                            R.drawable.album_art_placeholder);
+//                }
+//                setIcon(bitmap);
+//                if (this == mFetchBitmapTask) {
+//                    mFetchBitmapTask = null;
+//                }
+//            }
+//        };
+//
+//        mFetchBitmapTask.execute(uri);
     }
 
     @Override

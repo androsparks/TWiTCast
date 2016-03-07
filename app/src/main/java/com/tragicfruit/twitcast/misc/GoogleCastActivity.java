@@ -80,7 +80,7 @@ public abstract class GoogleCastActivity extends AppCompatActivity implements Ep
         mediaMetadata.putString(MediaMetadata.KEY_TITLE, episode.getShow().getTitle());
         mediaMetadata.putString(MediaMetadata.KEY_SUBTITLE, episode.getDisplayTitle());
         mediaMetadata.putString(MediaMetadata.KEY_STUDIO, getString(R.string.studio_name));
-        mediaMetadata.addImage(new WebImage(Uri.parse(episode.getShow().getCoverArtSmallUrl())));
+        mediaMetadata.addImage(new WebImage(Uri.parse(episode.getShow().getCoverArtLocalPath())));
         mediaMetadata.addImage(new WebImage(Uri.parse(episode.getShow().getCoverArtLargeUrl())));
 
         String url = getMediaUrl(episode);
