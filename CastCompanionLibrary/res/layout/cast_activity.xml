@@ -24,9 +24,11 @@
 
     <ImageView
         android:id="@+id/pageview"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:scaleType="centerCrop" />
+        android:layout_width="@dimen/ccl_player_cover_art_size"
+        android:layout_height="@dimen/ccl_player_cover_art_size"
+        android:layout_marginTop="@dimen/ccl_player_cover_art_margin_top"
+        android:layout_centerHorizontal="true"
+        android:scaleType="centerInside" />
 
     <com.google.android.libraries.cast.companionlibrary.widgets.MiniController
         android:id="@+id/miniController1"
@@ -67,24 +69,24 @@
                     android:src="@drawable/ic_play_circle_white_80dp" />
 
                 <ImageButton
-                    android:id="@+id/next"
+                    android:id="@+id/forward"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="20dp"
                     android:layout_toRightOf="@+id/play_pause_toggle"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    android:src="@drawable/skip_next_button" />
+                    android:src="@drawable/ic_fast_forward_white_48dp" />
 
                 <ImageButton
-                    android:id="@+id/previous"
+                    android:id="@+id/rewind"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="20dp"
                     android:layout_toLeftOf="@+id/play_pause_toggle"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    android:src="@drawable/skip_previous_button" />
+                    android:src="@drawable/ic_fast_rewind_white_48dp" />
 
                 <ImageButton
                     android:id="@+id/cc"

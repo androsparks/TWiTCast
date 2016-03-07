@@ -95,8 +95,8 @@ public class VideoCastControllerActivity extends AppCompatActivity implements
     private OnVideoCastControllerListener mListener;
     private int mStreamType;
     private ImageButton mClosedCaptionIcon;
-    private ImageButton mSkipNext;
-    private ImageButton mSkipPrevious;
+    private ImageButton mForward;
+    private ImageButton mRewind;
     private View mPlaybackControls;
     private Toolbar mToolbar;
     private int mNextPreviousVisibilityPolicy
@@ -173,8 +173,8 @@ public class VideoCastControllerActivity extends AppCompatActivity implements
         mLoading = (ProgressBar) findViewById(R.id.progressbar1);
         mControllers = findViewById(R.id.controllers);
         mClosedCaptionIcon = (ImageButton) findViewById(R.id.cc);
-        mSkipNext = (ImageButton) findViewById(R.id.next);
-        mSkipPrevious = (ImageButton) findViewById(R.id.previous);
+        mForward = (ImageButton) findViewById(R.id.forward);
+        mRewind = (ImageButton) findViewById(R.id.rewind);
         mPlaybackControls = findViewById(R.id.playback_controls);
         ((MiniController) findViewById(R.id.miniController1)).setCurrentVisibility(false);
         setClosedCaptionState(CC_DISABLED);
@@ -251,22 +251,22 @@ public class VideoCastControllerActivity extends AppCompatActivity implements
             }
         });
 
-        mSkipNext.setOnClickListener(new OnClickListener() {
+        mForward.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
-                    mListener.onSkipNextClicked(v);
+                    mListener.onForwardClicked(v);
                 } catch (TransientNetworkDisconnectionException | NoConnectionException e) {
                     LOGE(TAG, "Failed to move to the next item in the queue", e);
                 }
             }
         });
 
-        mSkipPrevious.setOnClickListener(new OnClickListener() {
+        mRewind.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
-                    mListener.onSkipPreviousClicked(v);
+                    mListener.onRewindClicked(v);
                 } catch (TransientNetworkDisconnectionException | NoConnectionException e) {
                     LOGE(TAG, "Failed to move to the previous item in the queue", e);
                 }
@@ -338,38 +338,38 @@ public class VideoCastControllerActivity extends AppCompatActivity implements
         switch(mNextPreviousVisibilityPolicy) {
             case CastConfiguration.NEXT_PREV_VISIBILITY_POLICY_HIDDEN:
                 if (nextAvailable) {
-                    mSkipNext.setVisibility(View.VISIBLE);
-                    mSkipNext.setEnabled(true);
+                    mForward.setVisibility(View.VISIBLE);
+                    mForward.setEnabled(true);
                 } else {
-                    mSkipNext.setVisibility(View.INVISIBLE);
+                    mForward.setVisibility(View.INVISIBLE);
                 }
                 if (prevAvailable) {
-                    mSkipPrevious.setVisibility(View.VISIBLE);
-                    mSkipPrevious.setEnabled(true);
+                    mRewind.setVisibility(View.VISIBLE);
+                    mRewind.setEnabled(true);
                 } else {
-                    mSkipPrevious.setVisibility(View.INVISIBLE);
+                    mRewind.setVisibility(View.INVISIBLE);
                 }
                 break;
             case CastConfiguration.NEXT_PREV_VISIBILITY_POLICY_ALWAYS:
-                mSkipNext.setVisibility(View.VISIBLE);
-                mSkipNext.setEnabled(true);
-                mSkipPrevious.setVisibility(View.VISIBLE);
-                mSkipPrevious.setEnabled(true);
+                mForward.setVisibility(View.VISIBLE);
+                mForward.setEnabled(true);
+                mRewind.setVisibility(View.VISIBLE);
+                mRewind.setEnabled(true);
                 break;
             case CastConfiguration.NEXT_PREV_VISIBILITY_POLICY_DISABLED:
                 if (nextAvailable) {
-                    mSkipNext.setVisibility(View.VISIBLE);
-                    mSkipNext.setEnabled(true);
+                    mForward.setVisibility(View.VISIBLE);
+                    mForward.setEnabled(true);
                 } else {
-                    mSkipNext.setVisibility(View.VISIBLE);
-                    mSkipNext.setEnabled(false);
+                    mForward.setVisibility(View.VISIBLE);
+                    mForward.setEnabled(false);
                 }
                 if (prevAvailable) {
-                    mSkipPrevious.setVisibility(View.VISIBLE);
-                    mSkipPrevious.setEnabled(true);
+                    mRewind.setVisibility(View.VISIBLE);
+                    mRewind.setEnabled(true);
                 } else {
-                    mSkipPrevious.setVisibility(View.VISIBLE);
-                    mSkipPrevious.setEnabled(false);
+                    mRewind.setVisibility(View.VISIBLE);
+                    mRewind.setEnabled(false);
                 }
                 break;
             default:
@@ -417,7 +417,7 @@ public class VideoCastControllerActivity extends AppCompatActivity implements
                 }
                 break;
             case MediaStatus.PLAYER_STATE_BUFFERING:
-                mPlaybackControls.setVisibility(View.INVISIBLE);
+//                mPlaybackControls.setVisibility(View.INVISIBLE);
                 mLoading.setVisibility(View.VISIBLE);
                 mLine2.setText(getString(R.string.ccl_loading));
                 break;

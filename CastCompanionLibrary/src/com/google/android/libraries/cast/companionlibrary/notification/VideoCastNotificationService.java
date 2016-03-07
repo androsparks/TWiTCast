@@ -387,12 +387,12 @@ public class VideoCastNotificationService extends Service {
         intent.putExtra(EXTRA_FORWARD_STEP_MS, (int) millis);
         PendingIntent pendingIntent = PendingIntent
                 .getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        int iconResourceId = R.drawable.ic_notification_forward_48dp;
-        if (millis == TEN_SECONDS_MILLIS) {
-            iconResourceId = R.drawable.ic_notification_forward10_48dp;
-        } else if (millis == THIRTY_SECONDS_MILLIS) {
-            iconResourceId = R.drawable.ic_notification_forward30_48dp;
-        }
+        int iconResourceId = R.drawable.ic_fast_forward_white_48dp;
+//        if (millis == TEN_SECONDS_MILLIS) {
+//            iconResourceId = R.drawable.ic_notification_forward10_48dp;
+//        } else if (millis == THIRTY_SECONDS_MILLIS) {
+//            iconResourceId = R.drawable.ic_notification_forward30_48dp;
+//        }
 
         return new NotificationCompat.Action.Builder(iconResourceId,
                 getString(R.string.ccl_forward), pendingIntent).build();
@@ -409,12 +409,12 @@ public class VideoCastNotificationService extends Service {
         intent.putExtra(EXTRA_FORWARD_STEP_MS, (int)-millis);
         PendingIntent pendingIntent = PendingIntent
                 .getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        int iconResourceId = R.drawable.ic_notification_rewind_48dp;
-        if (millis == TEN_SECONDS_MILLIS) {
-            iconResourceId = R.drawable.ic_notification_rewind10_48dp;
-        } else if (millis == THIRTY_SECONDS_MILLIS) {
-            iconResourceId = R.drawable.ic_notification_rewind30_48dp;
-        }
+        int iconResourceId = R.drawable.ic_fast_rewind_white_48dp;
+//        if (millis == TEN_SECONDS_MILLIS) {
+//            iconResourceId = R.drawable.ic_notification_rewind10_48dp;
+//        } else if (millis == THIRTY_SECONDS_MILLIS) {
+//            iconResourceId = R.drawable.ic_notification_rewind30_48dp;
+//        }
         return new NotificationCompat.Action.Builder(iconResourceId,
                 getString(R.string.ccl_rewind), pendingIntent).build();
     }

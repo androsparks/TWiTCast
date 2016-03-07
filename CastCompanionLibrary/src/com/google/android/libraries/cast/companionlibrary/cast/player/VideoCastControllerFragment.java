@@ -61,6 +61,7 @@ import org.json.JSONObject;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A fragment that provides a mechanism to retain the state and other needed objects for
@@ -847,6 +848,24 @@ public class VideoCastControllerFragment extends Fragment implements
             throws TransientNetworkDisconnectionException, NoConnectionException {
         mCastController.showLoading(true);
         mCastManager.queuePrev(null);
+    }
+
+    @Override
+    public void onRewindClicked(View v) throws TransientNetworkDisconnectionException, NoConnectionException{
+        mCastController.showLoading(true);
+
+        int forwardStep = (int) TimeUnit.SECONDS
+                .toMillis(mCastManager.getCastConfiguration().getForwardStep());
+        mCastManager.forward(-forwardStep);
+    }
+
+    @Override
+    public void onForwardClicked(View v) throws TransientNetworkDisconnectionException, NoConnectionException {
+        mCastController.showLoading(true);
+
+        int forwardStep = (int) TimeUnit.SECONDS
+                .toMillis(mCastManager.getCastConfiguration().getForwardStep());
+        mCastManager.forward(forwardStep);
     }
 
 }

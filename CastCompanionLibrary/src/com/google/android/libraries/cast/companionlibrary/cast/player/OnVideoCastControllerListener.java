@@ -78,4 +78,7 @@ public interface OnVideoCastControllerListener extends OnTracksSelectedListener 
     void onSkipPreviousClicked(View v)
             throws TransientNetworkDisconnectionException, NoConnectionException;
 
+    void onRewindClicked(View v) throws TransientNetworkDisconnectionException, NoConnectionException;
+
+    void onForwardClicked(View v) throws TransientNetworkDisconnectionException, NoConnectionException;
 }
