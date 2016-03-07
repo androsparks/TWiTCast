@@ -147,7 +147,6 @@ public class TWiTLab implements TWiTDatabase {
             newEpisodes = true;
             mEpisodes.add(episode);
             show.addEpisode(episode);
-            show.setLoadedAllEpisodes(true);
             Log.d(TAG, episode.getTitle() + " added to " + show.getTitle());
         }
 

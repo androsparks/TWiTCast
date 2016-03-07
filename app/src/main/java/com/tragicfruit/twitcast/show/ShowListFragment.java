@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -22,16 +23,16 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.tragicfruit.twitcast.dialogs.ChooseQualityFragment;
+import com.tragicfruit.twitcast.R;
 import com.tragicfruit.twitcast.constants.Constants;
+import com.tragicfruit.twitcast.database.TWiTLab;
+import com.tragicfruit.twitcast.dialogs.ChooseQualityFragment;
+import com.tragicfruit.twitcast.dialogs.UpdatingShowsFragment;
 import com.tragicfruit.twitcast.episode.Episode;
 import com.tragicfruit.twitcast.episode.EpisodeListActivity;
-import com.tragicfruit.twitcast.utils.QueryPreferences;
-import com.tragicfruit.twitcast.R;
 import com.tragicfruit.twitcast.episode.StreamQuality;
+import com.tragicfruit.twitcast.utils.QueryPreferences;
 import com.tragicfruit.twitcast.utils.TWiTFetcher;
-import com.tragicfruit.twitcast.dialogs.UpdatingShowsFragment;
-import com.tragicfruit.twitcast.database.TWiTLab;
 
 import java.io.File;
 import java.io.IOException;
@@ -61,6 +62,7 @@ public class ShowListFragment extends Fragment {
 
     public interface Callbacks {
         void refreshShows();
+        void showNoConnectionSnackbar();
     }
 
     public static ShowListFragment newInstance() {
@@ -76,33 +78,62 @@ public class ShowListFragment extends Fragment {
         mDatabase = TWiTLab.get(getActivity());
 
         if (mDatabase.getShows().size() == 0) {
-            mRefreshingShows = true;
-            getActivity().invalidateOptionsMenu();
             updateShows();
         } else if (!isCoverArtDownloaded()) {
-            mRefreshingShows = true;
-            getActivity().invalidateOptionsMenu();
             updateCoverArt();
         } else {
             updateEpisodes();
         }
     }
 
+    private boolean isNetworkAvailableAndConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        boolean isNetworkAvailable = cm.getActiveNetworkInfo() != null;
+        boolean isNetworkConnected = isNetworkAvailable && cm.getActiveNetworkInfo().isConnected();
+
+        return isNetworkConnected;
+    }
+
     private void updateShows() {
-        mFetchShowsTask = new FetchShowsTask();
-        mFetchShowsTask.execute();
-        // TODO: handle no internet connection
+        if (isNetworkAvailableAndConnected()) {
+            mRefreshingShows = true;
+            getActivity().invalidateOptionsMenu();
+
+            mDatabase.resetEpisodes();
+            mFetchShowsTask = new FetchShowsTask();
+            mFetchShowsTask.execute();
+        } else {
+            mRefreshingShows = false;
+            getActivity().invalidateOptionsMenu();
+
+            mCallbacks.showNoConnectionSnackbar();
+        }
     }
 
     private void updateCoverArt() {
-        mFetchCoverArtTask = new FetchCoverArtTask();
-        mFetchCoverArtTask.execute();
+        if (isNetworkAvailableAndConnected()) {
+            mRefreshingShows = true;
+            getActivity().invalidateOptionsMenu();
+
+            mFetchCoverArtTask = new FetchCoverArtTask();
+            mFetchCoverArtTask.execute();
+        } else {
+            mRefreshingShows = false;
+            getActivity().invalidateOptionsMenu();
+
+            mCallbacks.showNoConnectionSnackbar();
+        }
     }
 
     private void updateEpisodes() {
-        // TODO: if oldest server episode is newer than newest local episode then wipe episodes & reset
-        mFetchEpisodesTask = new FetchEpisodesTask();
-        mFetchEpisodesTask.execute(); // TODO: handle no internet connection
+        if (isNetworkAvailableAndConnected()) {
+            // TODO: if oldest server episode is newer than newest local episode then wipe episodes & reset
+            mFetchEpisodesTask = new FetchEpisodesTask();
+            mFetchEpisodesTask.execute();
+        } else {
+            mCallbacks.showNoConnectionSnackbar();
+        }
     }
 
     private boolean isCoverArtDownloaded() {
@@ -137,10 +168,7 @@ public class ShowListFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.refresh_button:
-                mDatabase.resetEpisodes();
                 updateShows();
-                mRefreshingShows = true;
-                getActivity().invalidateOptionsMenu();
                 return true;
             case R.id.choose_quality:
                 FragmentManager fm = getFragmentManager();

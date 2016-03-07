@@ -2,8 +2,10 @@ package com.tragicfruit.twitcast.episode;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 
+import com.tragicfruit.twitcast.R;
 import com.tragicfruit.twitcast.misc.GoogleCastActivity;
 import com.tragicfruit.twitcast.misc.SingleFragmentActivity;
 
@@ -23,5 +25,13 @@ public class EpisodeListActivity extends SingleFragmentActivity implements Episo
     protected Fragment createFragment() {
         int showId = getIntent().getIntExtra(EXTRA_SHOW_ID, 0);
         return EpisodeListFragment.newInstance(showId);
+    }
+
+    @Override
+    public void showNoConnectionSnackbar() {
+        Snackbar.make(findViewById(R.id.fragment_container),
+                R.string.no_connection_snackbar,
+                Snackbar.LENGTH_LONG)
+                .show();
     }
 }

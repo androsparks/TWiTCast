@@ -3,6 +3,7 @@ package com.tragicfruit.twitcast.episode;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -55,6 +56,7 @@ public class EpisodeListFragment extends Fragment {
 
     public interface Callbacks {
         void playVideo(Episode episode);
+        void showNoConnectionSnackbar();
     }
 
     @Override
@@ -95,9 +97,18 @@ public class EpisodeListFragment extends Fragment {
             activity.getSupportActionBar().setTitle(mShow.getTitle());
         }
 
-        if (!mShow.hasLoadedAllEpisodes()) {
+        if (!mShow.hasLoadedAllEpisodes() && isNetworkAvailableAndConnected()) {
             new FetchMoreEpisodesTask().execute();
         }
+    }
+
+    private boolean isNetworkAvailableAndConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        boolean isNetworkAvailable = cm.getActiveNetworkInfo() != null;
+        boolean isNetworkConnected = isNetworkAvailable && cm.getActiveNetworkInfo().isConnected();
+
+        return isNetworkConnected;
     }
 
     @Override
@@ -149,7 +160,7 @@ public class EpisodeListFragment extends Fragment {
         mDescriptionTextView.setText(mShow.getDescription());
 
         mLoadingProgressBar = (ProgressBar) v.findViewById(R.id.loading_more_episodes_progress_bar);
-        if (mShow.hasLoadedAllEpisodes()) {
+        if (mShow.hasLoadedAllEpisodes() || !isNetworkAvailableAndConnected()) {
             mLoadingProgressBar.setVisibility(View.GONE);
         }
 
@@ -158,7 +169,12 @@ public class EpisodeListFragment extends Fragment {
         mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new FetchMoreEpisodesTask().execute();
+                if (isNetworkAvailableAndConnected()) {
+                    new FetchMoreEpisodesTask().execute();
+                } else {
+                    mCallbacks.showNoConnectionSnackbar();
+                    mSwipeRefresh.setRefreshing(false);
+                }
             }
         });
 
@@ -186,14 +202,20 @@ public class EpisodeListFragment extends Fragment {
 
         @Override
         protected void onPostExecute(List<Episode> episodeList) {
-            boolean newShows = mTWiTLab.addEpisodes(episodeList, mShow);
-
-            mRecyclerView.getAdapter().notifyDataSetChanged();
             mLoadingProgressBar.setVisibility(View.GONE);
             mSwipeRefresh.setRefreshing(false);
 
+            if (episodeList == null) {
+                return;
+            }
+
+            boolean newShows = mTWiTLab.addEpisodes(episodeList, mShow);
+            mShow.setLoadedAllEpisodes(true);
+
             if (newShows) {
                 getActivity().setResult(Activity.RESULT_OK);
+                mRecyclerView.getAdapter().notifyDataSetChanged();
+
                 mTWiTLab.saveShows();
                 mTWiTLab.saveEpisodes();
             }

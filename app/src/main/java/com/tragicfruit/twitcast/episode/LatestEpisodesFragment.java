@@ -3,6 +3,7 @@ package com.tragicfruit.twitcast.episode;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -48,6 +49,7 @@ public class LatestEpisodesFragment extends Fragment {
 
     public interface Callbacks {
         void playVideo(Episode episode);
+        void showNoConnectionSnackbar();
     }
 
     public static LatestEpisodesFragment newInstance() {
@@ -78,11 +80,25 @@ public class LatestEpisodesFragment extends Fragment {
         mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new FetchEpisodesTask().execute();
+                if (isNetworkAvailableAndConnected()) {
+                    new FetchEpisodesTask().execute();
+                } else {
+                    mSwipeRefresh.setRefreshing(false);
+                    mCallbacks.showNoConnectionSnackbar();
+                }
             }
         });
 
         return v;
+    }
+
+    private boolean isNetworkAvailableAndConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        boolean isNetworkAvailable = cm.getActiveNetworkInfo() != null;
+        boolean isNetworkConnected = isNetworkAvailable && cm.getActiveNetworkInfo().isConnected();
+
+        return isNetworkConnected;
     }
 
     @Override

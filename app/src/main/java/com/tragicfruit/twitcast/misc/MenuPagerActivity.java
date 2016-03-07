@@ -1,6 +1,9 @@
 package com.tragicfruit.twitcast.misc;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -70,5 +73,13 @@ public class MenuPagerActivity extends GoogleCastActivity
         if (latestEpisodesFragment != null) {
             latestEpisodesFragment.updateList();
         }
+    }
+
+    @Override
+    public void showNoConnectionSnackbar() {
+        Snackbar.make(findViewById(R.id.activity_menu_pager_layout),
+                R.string.no_connection_snackbar,
+                Snackbar.LENGTH_LONG)
+                .show();
     }
 }
