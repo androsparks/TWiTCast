@@ -87,7 +87,10 @@ public abstract class GoogleCastActivity extends AppCompatActivity implements Ep
         String contentType = getContentType(url);
 
         if (url == null || contentType == null) {
-            Toast.makeText(this, R.string.error_playing_video_toast, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,
+                    R.string.error_playing_video_toast,
+                    Toast.LENGTH_SHORT)
+                    .show();
             return;
         }
 
@@ -104,7 +107,10 @@ public abstract class GoogleCastActivity extends AppCompatActivity implements Ep
                 mCastManager.startVideoCastControllerActivity(this, mediaInfo, 0, true);
             } catch (Exception e) {
                 Log.e(TAG, "Cannot load video", e);
-                Toast.makeText(this, R.string.cast_not_ready_toast, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this,
+                        R.string.cast_not_ready_toast,
+                        Toast.LENGTH_SHORT)
+                        .show();
             }
         } else {
             // TODO: prompt user to select cast device

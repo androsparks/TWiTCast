@@ -406,6 +406,7 @@ public class ShowListFragment extends Fragment {
 
                 if (oldestServerDate.after(newestLocalDate)) {
                     mDatabase.resetEpisodes();
+                    Log.d(TAG, "Cleaning up obsolete episodes");
                 }
             }
 
