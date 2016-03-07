@@ -372,9 +372,10 @@ public class ShowListFragment extends Fragment {
                 Log.e(TAG, "Cannot dismiss dialog");
             }
 
-            mCallbacks.refreshShows();
             TWiTLab.get(getActivity()).saveShows();
             TWiTLab.get(getActivity()).saveEpisodes();
+
+            mCallbacks.refreshShows();
         }
     }
 }

@@ -119,7 +119,7 @@ public class LatestEpisodesFragment extends Fragment {
 
     public void updateList() {
         Log.d(TAG, "Updating latest episode list");
-        mEpisodes = mTWiTLab.getEpisodes();
+        mEpisodes = TWiTLab.get(getActivity()).getEpisodes();
         mRecyclerView.getAdapter().notifyDataSetChanged();
     }
 
@@ -137,6 +137,7 @@ public class LatestEpisodesFragment extends Fragment {
 
     private class EpisodeHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private Episode mEpisode;
+        private TextView mShowTitleTextView;
         private TextView mNumberTitleTextView;
         private TextView mDateTextView;
         private TextView mRunningTimeTextView;
@@ -146,6 +147,7 @@ public class LatestEpisodesFragment extends Fragment {
             super(itemView);
             itemView.setOnClickListener(this);
 
+            mShowTitleTextView = (TextView) itemView.findViewById(R.id.show_title);
             mNumberTitleTextView = (TextView) itemView.findViewById(R.id.episode_number_title);
             mDateTextView = (TextView) itemView.findViewById(R.id.episode_date);
             mRunningTimeTextView = (TextView) itemView.findViewById(R.id.episode_running_time);
@@ -155,6 +157,7 @@ public class LatestEpisodesFragment extends Fragment {
         public void bindEpisode(Episode episode) {
             mEpisode = episode;
             mCoverArtImageView.setImageDrawable(episode.getShow().getCoverArt());
+            mShowTitleTextView.setText(episode.getShow().getTitle());
             mNumberTitleTextView.setText(episode.getDisplayTitle());
             mRunningTimeTextView.setText(episode.getRunningTime());
 
