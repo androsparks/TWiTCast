@@ -124,7 +124,8 @@ public class TWiTLab implements TWiTDatabase {
             sortEpisodes(mEpisodes);
             sortEpisodes(showForEpisode.getEpisodes());
         }
-        // TODO: clean up old shows
+
+        cleanUpOldShows();
 
         return newEpisodes;
     }
@@ -153,7 +154,22 @@ public class TWiTLab implements TWiTDatabase {
         sortEpisodes(mEpisodes);
         sortEpisodes(show.getEpisodes());
 
+        cleanUpOldShows();
+
         return newEpisodes;
+    }
+
+    private void cleanUpOldShows() {
+        if (mEpisodes.size() <= Constants.MAX_NUMBER_OF_EPISODES) {
+            return;
+        }
+
+        while (mEpisodes.size() > Constants.MAX_NUMBER_OF_EPISODES) {
+            Episode removedEpisode = mEpisodes.remove(mEpisodes.size() - 1);
+            removedEpisode.getShow().getEpisodes().remove(removedEpisode);
+
+            Log.d(TAG, "Clean up: removed " + removedEpisode.getTitle());
+        }
     }
 
     private void sortEpisodes(List<Episode> episodes) {

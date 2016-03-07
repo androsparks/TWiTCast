@@ -19,6 +19,8 @@ public class Constants {
 
     public static final StreamQuality DEFAULT_QUALITY = StreamQuality.VIDEO_HD;
 
+    public static final int MAX_NUMBER_OF_EPISODES = 250;
+
     public static final int[] EXCLUDED_SHOWS = {
             1683, // TWiT Bits
             1647, // Radio Leo
