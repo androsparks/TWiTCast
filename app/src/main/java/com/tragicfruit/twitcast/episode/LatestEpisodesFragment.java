@@ -139,7 +139,9 @@ public class LatestEpisodesFragment extends Fragment {
     public void updateList() {
         Log.d(TAG, "Updating latest episode list");
         mEpisodes = TWiTLab.get(getActivity()).getEpisodes();
-        mRecyclerView.getAdapter().notifyDataSetChanged();
+        if (mRecyclerView != null) {
+            mRecyclerView.getAdapter().notifyDataSetChanged();
+        }
     }
 
     @Override

@@ -3,6 +3,11 @@ package com.tragicfruit.twitcast.episode;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -10,9 +15,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -61,6 +69,7 @@ public class EpisodeListFragment extends Fragment {
     public interface Callbacks {
         void playVideo(Episode episode);
         void showNoConnectionSnackbar();
+        void setToolbarColour(int toolbarColour, int statusBarColour);
     }
 
     @Override
@@ -140,10 +149,31 @@ public class EpisodeListFragment extends Fragment {
         }
     }
 
+    private int getDarkerColour(int colour) {
+        double scale = 0.75;
+
+        int r = (int) (Color.red(colour) * scale);
+        int g = (int) (Color.green(colour) * scale);
+        int b = (int) (Color.blue(colour) * scale);
+
+        return Color.rgb(r, g, b);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_episode_list, container, false);
+
+        // set toolbar colour to dominant cover art colour
+        Bitmap bitmap = ((BitmapDrawable) mShow.getCoverArt()).getBitmap();
+        Bitmap bitmapTopHalf = Bitmap.createBitmap(bitmap, 0, 0, 600, 200);
+        Palette palette = Palette.from(bitmapTopHalf).generate();
+        int colour = palette.getDarkVibrantColor(0);
+        if (colour == 0) {
+            palette = Palette.from(bitmap).generate();
+            colour = palette.getDarkVibrantColor(0);
+        }
+        mCallbacks.setToolbarColour(colour, getDarkerColour(colour));
 
         mRecyclerView = (RecyclerView) v.findViewById(R.id.fragment_episode_list_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()) {
@@ -157,6 +187,7 @@ public class EpisodeListFragment extends Fragment {
 
         mCoverArtImageView = (ImageView) v.findViewById(R.id.show_cover_art);
         mCoverArtImageView.setImageDrawable(mShow.getCoverArt());
+
 
         mTitleTextView = (TextView) v.findViewById(R.id.show_title);
         mTitleTextView.setText(mShow.getTitle());

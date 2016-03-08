@@ -21,7 +21,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.tragicfruit.twitcast.R;
 import com.tragicfruit.twitcast.constants.Constants;

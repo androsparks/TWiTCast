@@ -1,17 +1,15 @@
 package com.tragicfruit.twitcast.misc;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.support.design.widget.TabLayout;
 
-import com.tragicfruit.twitcast.episode.LatestEpisodesFragment;
 import com.tragicfruit.twitcast.R;
+import com.tragicfruit.twitcast.episode.LatestEpisodesFragment;
 import com.tragicfruit.twitcast.show.ShowListFragment;
 
 public class MenuPagerActivity extends GoogleCastActivity
@@ -82,4 +80,7 @@ public class MenuPagerActivity extends GoogleCastActivity
                 Snackbar.LENGTH_LONG)
                 .show();
     }
+
+    @Override
+    public void setToolbarColour(int toolbarColour, int statusBarColour) {}
 }

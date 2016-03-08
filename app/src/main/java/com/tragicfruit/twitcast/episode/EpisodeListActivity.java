@@ -2,12 +2,15 @@ package com.tragicfruit.twitcast.episode;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.tragicfruit.twitcast.R;
 import com.tragicfruit.twitcast.misc.GoogleCastActivity;
@@ -50,5 +53,16 @@ public class EpisodeListActivity extends SingleFragmentActivity implements Episo
                 R.string.no_connection_snackbar,
                 Snackbar.LENGTH_LONG)
                 .show();
+    }
+
+    @Override
+    public void setToolbarColour(int toolbarColour, int statusBarColour) {
+        mToolbar.setBackgroundColor(toolbarColour);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(statusBarColour);
+        }
     }
 }
