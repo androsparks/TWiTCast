@@ -2,8 +2,12 @@ package com.tragicfruit.twitcast.episode;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.tragicfruit.twitcast.R;
 import com.tragicfruit.twitcast.misc.GoogleCastActivity;
@@ -15,10 +19,23 @@ import com.tragicfruit.twitcast.misc.SingleFragmentActivity;
 public class EpisodeListActivity extends SingleFragmentActivity implements EpisodeListFragment.Callbacks {
     private static final String EXTRA_SHOW_ID = "nz.co.tragicfruit.twitcast.show_id";
 
+    private Toolbar mToolbar;
+
     public static Intent newIntent(Context context, int showId) {
         Intent i = new Intent(context, EpisodeListActivity.class);
         i.putExtra(EXTRA_SHOW_ID, showId);
         return i;
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     @Override
