@@ -51,6 +51,7 @@ import android.os.IBinder;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.NotificationCompat;
 
+import java.io.File;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -235,37 +236,60 @@ public class VideoCastNotificationService extends Service {
             LOGE(TAG, "Failed to build notification", e);
         }
 
-        try {
-            mVideoArtBitmap = BitmapFactory.decodeFile(imgUri.toString());
-            build(info, mVideoArtBitmap, mIsPlaying);
-        } catch (CastException | NoConnectionException | TransientNetworkDisconnectionException e) {
-            LOGE(TAG, "Failed to set notification for " + info.toString(), e);
+        if (existsInLocalStorage(imgUri)) {
+            try {
+                File imageFile = new File(getFilesDir() + "/cover_art", getImageFileName(imgUri));
+                mVideoArtBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+                build(info, mVideoArtBitmap, mIsPlaying);
+            } catch (CastException | NoConnectionException | TransientNetworkDisconnectionException e) {
+                LOGE(TAG, "Failed to set notification for " + info.toString(), e);
+            }
+
+            if (mVisible && (mNotification != null)) {
+                startForeground(NOTIFICATION_ID, mNotification);
+            }
+
+            return;
         }
 
-        if (mVisible && (mNotification != null)) {
-            startForeground(NOTIFICATION_ID, mNotification);
+        mBitmapDecoderTask = new FetchBitmapTask() {
+            @Override
+            protected void onPostExecute(Bitmap bitmap) {
+                try {
+                    mVideoArtBitmap = Utils.scaleAndCenterCropBitmap(bitmap, mDimensionInPixels,
+                            mDimensionInPixels);
+                    build(info, mVideoArtBitmap, mIsPlaying);
+                } catch (CastException | NoConnectionException
+                        | TransientNetworkDisconnectionException e) {
+                    LOGE(TAG, "Failed to set notification for " + info.toString(), e);
+                }
+                if (mVisible && (mNotification != null)) {
+                    startForeground(NOTIFICATION_ID, mNotification);
+                }
+                if (this == mBitmapDecoderTask) {
+                    mBitmapDecoderTask = null;
+                }
+            }
+        };
+        mBitmapDecoderTask.execute(imgUri);
+    }
+
+    private boolean existsInLocalStorage(Uri uri) {
+        File coverArtFolder = new File(getFilesDir() + "/cover_art");
+        if (!coverArtFolder.exists()) {
+            return false;
         }
 
-//        mBitmapDecoderTask = new FetchBitmapTask() {
-//            @Override
-//            protected void onPostExecute(Bitmap bitmap) {
-//                try {
-//                    mVideoArtBitmap = Utils.scaleAndCenterCropBitmap(bitmap, mDimensionInPixels,
-//                            mDimensionInPixels);
-//                    build(info, mVideoArtBitmap, mIsPlaying);
-//                } catch (CastException | NoConnectionException
-//                        | TransientNetworkDisconnectionException e) {
-//                    LOGE(TAG, "Failed to set notification for " + info.toString(), e);
-//                }
-//                if (mVisible && (mNotification != null)) {
-//                    startForeground(NOTIFICATION_ID, mNotification);
-//                }
-//                if (this == mBitmapDecoderTask) {
-//                    mBitmapDecoderTask = null;
-//                }
-//            }
-//        };
-//        mBitmapDecoderTask.execute(imgUri);
+        File imageFile = new File(getFilesDir() + "/cover_art", getImageFileName(uri));
+        return imageFile.exists();
+    }
+
+    private String getImageFileName(Uri uri) {
+        String url = uri.toString();
+
+        int startIndex = url.lastIndexOf('/');
+        int endIndex = url.lastIndexOf('?');
+        return url.substring(startIndex + 1, endIndex);
     }
 
     /**

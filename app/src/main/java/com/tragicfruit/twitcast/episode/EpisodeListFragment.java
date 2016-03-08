@@ -54,6 +54,7 @@ public class EpisodeListFragment extends Fragment {
     private Show mShow;
     private List<Episode> mEpisodeList;
     private TWiTLab mTWiTLab;
+    private FetchEpisodesTask mFetchEpisodesTask;
 
     private Callbacks mCallbacks;
 
@@ -101,7 +102,8 @@ public class EpisodeListFragment extends Fragment {
         }
 
         if (!mShow.hasLoadedAllEpisodes() && isNetworkAvailableAndConnected()) {
-            new FetchMoreEpisodesTask().execute();
+            mFetchEpisodesTask = new FetchEpisodesTask();
+            mFetchEpisodesTask.execute();
         }
     }
 
@@ -173,7 +175,8 @@ public class EpisodeListFragment extends Fragment {
             @Override
             public void onRefresh() {
                 if (isNetworkAvailableAndConnected()) {
-                    new FetchMoreEpisodesTask().execute();
+                    mFetchEpisodesTask = new FetchEpisodesTask();
+                    mFetchEpisodesTask.execute();
                 } else {
                     mCallbacks.showNoConnectionSnackbar();
                     mSwipeRefresh.setRefreshing(false);
@@ -196,38 +199,11 @@ public class EpisodeListFragment extends Fragment {
         }
     }
 
-    private class FetchMoreEpisodesTask extends AsyncTask<Void, Void, List<Episode>> {
-
-        @Override
-        protected List<Episode> doInBackground(Void... params) {
-            try {
-                return new TWiTFetcher(getActivity()).fetchEpisodes(mShow);
-            } catch (IOException e) {
-                Log.e(TAG, "Error fetching episodes", e);
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(List<Episode> episodeList) {
-            mLoadingProgressBar.setVisibility(View.GONE);
-            mSwipeRefresh.setRefreshing(false);
-
-            if (episodeList == null) {
-                mCallbacks.showNoConnectionSnackbar();
-                return;
-            }
-
-            boolean newShows = mTWiTLab.addEpisodes(episodeList, mShow);
-            mShow.setLoadedAllEpisodes(true);
-
-            if (newShows) {
-                getActivity().setResult(Activity.RESULT_OK);
-                mRecyclerView.getAdapter().notifyDataSetChanged();
-
-                mTWiTLab.saveShows();
-                mTWiTLab.saveEpisodes();
-            }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mFetchEpisodesTask != null) {
+            mFetchEpisodesTask.cancel(false);
         }
     }
 
@@ -282,6 +258,45 @@ public class EpisodeListFragment extends Fragment {
         @Override
         public int getItemCount() {
             return mEpisodeList.size();
+        }
+    }
+
+    private class FetchEpisodesTask extends AsyncTask<Void, Void, List<Episode>> {
+
+        @Override
+        protected List<Episode> doInBackground(Void... params) {
+            try {
+                return new TWiTFetcher(getActivity()).fetchEpisodes(mShow);
+            } catch (IOException e) {
+                Log.e(TAG, "Error fetching episodes", e);
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(List<Episode> episodeList) {
+            if (isCancelled()) {
+                return;
+            }
+
+            mLoadingProgressBar.setVisibility(View.GONE);
+            mSwipeRefresh.setRefreshing(false);
+
+            if (episodeList == null) {
+                mCallbacks.showNoConnectionSnackbar();
+                return;
+            }
+
+            boolean newShows = mTWiTLab.addEpisodes(episodeList, mShow);
+            mShow.setLoadedAllEpisodes(true);
+
+            if (newShows) {
+                getActivity().setResult(Activity.RESULT_OK);
+                mRecyclerView.getAdapter().notifyDataSetChanged();
+
+                mTWiTLab.saveShows();
+                mTWiTLab.saveEpisodes();
+            }
         }
     }
 }

@@ -55,6 +55,7 @@ public class ShowListFragment extends Fragment {
     private TWiTLab mDatabase;
     private FetchShowsTask mFetchShowsTask;
     private FetchCoverArtTask mFetchCoverArtTask;
+    private FetchEpisodesTask mFetchEpisodesTask;
 
     private boolean mRefreshingShows;
 
@@ -130,7 +131,8 @@ public class ShowListFragment extends Fragment {
 
     private void updateEpisodes() {
         if (isNetworkAvailableAndConnected()) {
-            new FetchEpisodesTask().execute();
+            mFetchEpisodesTask = new FetchEpisodesTask();
+            mFetchEpisodesTask.execute();
         } else {
             dismissLoadingDialog();
             mCallbacks.showNoConnectionSnackbar();
@@ -235,6 +237,10 @@ public class ShowListFragment extends Fragment {
 
         if (mFetchCoverArtTask != null) {
             mFetchCoverArtTask.cancel(false);
+        }
+
+        if (mFetchEpisodesTask != null) {
+            mFetchEpisodesTask.cancel(false);
         }
     }
 
@@ -406,6 +412,10 @@ public class ShowListFragment extends Fragment {
 
         @Override
         protected void onPostExecute(List<Episode> episodeList) {
+            if (isCancelled()) {
+                return;
+            }
+
             if (episodeList == null) {
                 dismissLoadingDialog();
                 mCallbacks.showNoConnectionSnackbar();

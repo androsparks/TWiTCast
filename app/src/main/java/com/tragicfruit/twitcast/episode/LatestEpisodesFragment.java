@@ -42,6 +42,7 @@ public class LatestEpisodesFragment extends Fragment {
 
     private TWiTLab mTWiTLab;
     private List<Episode> mEpisodes;
+    private FetchEpisodesTask mFetchEpisodesTask;
 
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefresh;
@@ -82,7 +83,8 @@ public class LatestEpisodesFragment extends Fragment {
             @Override
             public void onRefresh() {
                 if (isNetworkAvailableAndConnected()) {
-                    new FetchEpisodesTask().execute();
+                    mFetchEpisodesTask = new FetchEpisodesTask();
+                    mFetchEpisodesTask.execute();
                 } else {
                     mSwipeRefresh.setRefreshing(false);
                     mCallbacks.showNoConnectionSnackbar();
@@ -150,6 +152,14 @@ public class LatestEpisodesFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mCallbacks = null;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mFetchEpisodesTask != null) {
+            mFetchEpisodesTask.cancel(false);
+        }
     }
 
     private class EpisodeHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -222,6 +232,10 @@ public class LatestEpisodesFragment extends Fragment {
 
         @Override
         protected void onPostExecute(List<Episode> episodeList) {
+            if (isCancelled()) {
+                return;
+            }
+
             mSwipeRefresh.setRefreshing(false);
 
             if (episodeList == null) {

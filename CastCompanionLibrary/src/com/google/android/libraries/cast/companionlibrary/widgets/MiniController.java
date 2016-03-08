@@ -44,6 +44,8 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.io.File;
+
 /**
  * A compound component that provides a superset of functionalities required for the global access
  * requirement. This component provides an image for the album art, a play/pause button, and a
@@ -96,9 +98,11 @@ public class MiniController extends RelativeLayout implements IMiniController {
     private FetchBitmapTask mFetchUpcomingBitmapTask;
     private View mMainContainer;
     private MediaQueueItem mUpcomingItem;
+    private Context mContext;
 
     public MiniController(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mContext = context;
         LayoutInflater inflater = LayoutInflater.from(context);
         inflater.inflate(R.layout.mini_controller, this);
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.MiniController);
@@ -282,27 +286,50 @@ public class MiniController extends RelativeLayout implements IMiniController {
         }
 
         mIconUri = uri;
-        Bitmap bitmap = BitmapFactory.decodeFile(uri.toString());
-        setIcon(bitmap);
 
-//        if (mFetchBitmapTask != null) {
-//            mFetchBitmapTask.cancel(true);
-//        }
-//        mFetchBitmapTask = new FetchBitmapTask() {
-//            @Override
-//            protected void onPostExecute(Bitmap bitmap) {
-//                if (bitmap == null) {
-//                    bitmap = BitmapFactory.decodeResource(getResources(),
-//                            R.drawable.album_art_placeholder);
-//                }
-//                setIcon(bitmap);
-//                if (this == mFetchBitmapTask) {
-//                    mFetchBitmapTask = null;
-//                }
-//            }
-//        };
-//
-//        mFetchBitmapTask.execute(uri);
+        if (existsInLocalStorage(uri)) {
+            File imageFile = new File(mContext.getFilesDir() + "/cover_art", getImageFileName(uri));
+            Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+            setIcon(bitmap);
+            return;
+        }
+
+        if (mFetchBitmapTask != null) {
+            mFetchBitmapTask.cancel(true);
+        }
+        mFetchBitmapTask = new FetchBitmapTask() {
+            @Override
+            protected void onPostExecute(Bitmap bitmap) {
+                if (bitmap == null) {
+                    bitmap = BitmapFactory.decodeResource(getResources(),
+                            R.drawable.album_art_placeholder);
+                }
+                setIcon(bitmap);
+                if (this == mFetchBitmapTask) {
+                    mFetchBitmapTask = null;
+                }
+            }
+        };
+
+        mFetchBitmapTask.execute(uri);
+    }
+
+    private boolean existsInLocalStorage(Uri uri) {
+        File coverArtFolder = new File(mContext.getFilesDir() + "/cover_art");
+        if (!coverArtFolder.exists()) {
+            return false;
+        }
+
+        File imageFile = new File(mContext.getFilesDir() + "/cover_art", getImageFileName(uri));
+        return imageFile.exists();
+    }
+
+    private String getImageFileName(Uri uri) {
+        String url = uri.toString();
+
+        int startIndex = url.lastIndexOf('/');
+        int endIndex = url.lastIndexOf('?');
+        return url.substring(startIndex + 1, endIndex);
     }
 
     @Override

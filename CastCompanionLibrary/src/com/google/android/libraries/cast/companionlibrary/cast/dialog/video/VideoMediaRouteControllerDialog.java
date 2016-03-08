@@ -43,6 +43,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.io.File;
+
 /**
  * A custom {@link MediaRouteControllerDialog} that provides an album art, a play/pause button and
  * the ability to take user to the target activity when the album art is tapped.
@@ -177,23 +179,47 @@ public class VideoMediaRouteControllerDialog extends MediaRouteControllerDialog 
             return;
         }
 
-        mIcon.setImageBitmap(BitmapFactory.decodeFile(uri.toString()));
+        if (existsInLocalStorage(uri)) {
+            File imageFile = new File(mContext.getFilesDir() + "/cover_art", getImageFileName(uri));
 
-//        if (mFetchBitmap != null) {
-//            mFetchBitmap.cancel(true);
-//        }
-//
-//        mFetchBitmap = new FetchBitmapTask() {
-//            @Override
-//            protected void onPostExecute(Bitmap bitmap) {
-//                mIcon.setImageBitmap(bitmap);
-//                if (this == mFetchBitmap) {
-//                    mFetchBitmap = null;
-//                }
-//            }
-//        };
-//
-//        mFetchBitmap.execute(mIconUri);
+            Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+            mIcon.setImageBitmap(bitmap);
+            return;
+        }
+
+        if (mFetchBitmap != null) {
+            mFetchBitmap.cancel(true);
+        }
+
+        mFetchBitmap = new FetchBitmapTask() {
+            @Override
+            protected void onPostExecute(Bitmap bitmap) {
+                mIcon.setImageBitmap(bitmap);
+                if (this == mFetchBitmap) {
+                    mFetchBitmap = null;
+                }
+            }
+        };
+
+        mFetchBitmap.execute(mIconUri);
+    }
+
+    private boolean existsInLocalStorage(Uri uri) {
+        File coverArtFolder = new File(mContext.getFilesDir() + "/cover_art");
+        if (!coverArtFolder.exists()) {
+            return false;
+        }
+
+        File imageFile = new File(mContext.getFilesDir() + "/cover_art", getImageFileName(uri));
+        return imageFile.exists();
+    }
+
+    private String getImageFileName(Uri uri) {
+        String url = uri.toString();
+
+        int startIndex = url.lastIndexOf('/');
+        int endIndex = url.lastIndexOf('?');
+        return url.substring(startIndex + 1, endIndex);
     }
 
     private void updatePlayPauseState(int state) {
