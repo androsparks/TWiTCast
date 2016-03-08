@@ -29,6 +29,7 @@ import com.tragicfruit.twitcast.dialogs.ChooseQualityFragment;
 import com.tragicfruit.twitcast.utils.QueryPreferences;
 import com.tragicfruit.twitcast.utils.TWiTFetcher;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -211,15 +212,25 @@ public class LatestEpisodesFragment extends Fragment {
 
         @Override
         protected List<Episode> doInBackground(Void... params) {
-            return new TWiTFetcher(getActivity()).fetchAllEpisodes();
+            try {
+                return new TWiTFetcher(getActivity()).fetchAllEpisodes();
+            } catch (IOException e) {
+                Log.e(TAG, "Error fetching episodes", e);
+                return null;
+            }
         }
 
         @Override
         protected void onPostExecute(List<Episode> episodeList) {
-            boolean newShows = mTWiTLab.addEpisodes(episodeList);
-
-            mRecyclerView.getAdapter().notifyDataSetChanged();
             mSwipeRefresh.setRefreshing(false);
+
+            if (episodeList == null) {
+                mCallbacks.showNoConnectionSnackbar();
+                return;
+            }
+
+            boolean newShows = mTWiTLab.addEpisodes(episodeList);
+            mRecyclerView.getAdapter().notifyDataSetChanged();
 
             if (newShows) {
                 mTWiTLab.saveShows();

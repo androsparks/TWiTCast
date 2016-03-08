@@ -55,7 +55,6 @@ public class ShowListFragment extends Fragment {
     private TWiTLab mDatabase;
     private FetchShowsTask mFetchShowsTask;
     private FetchCoverArtTask mFetchCoverArtTask;
-    private FetchEpisodesTask mFetchEpisodesTask;
 
     private boolean mRefreshingShows;
 
@@ -108,6 +107,7 @@ public class ShowListFragment extends Fragment {
             mRefreshingShows = false;
             getActivity().invalidateOptionsMenu();
 
+            dismissLoadingDialog();
             mCallbacks.showNoConnectionSnackbar();
         }
     }
@@ -123,16 +123,23 @@ public class ShowListFragment extends Fragment {
             mRefreshingShows = false;
             getActivity().invalidateOptionsMenu();
 
+            dismissLoadingDialog();
             mCallbacks.showNoConnectionSnackbar();
         }
     }
 
     private void updateEpisodes() {
         if (isNetworkAvailableAndConnected()) {
-            mFetchEpisodesTask = new FetchEpisodesTask();
-            mFetchEpisodesTask.execute();
+            new FetchEpisodesTask().execute();
         } else {
+            dismissLoadingDialog();
             mCallbacks.showNoConnectionSnackbar();
+        }
+    }
+
+    private void dismissLoadingDialog() {
+        if (mLoadingDialog != null && mLoadingDialog.isAdded()) {
+            mLoadingDialog.dismiss();
         }
     }
 
@@ -237,10 +244,6 @@ public class ShowListFragment extends Fragment {
         if (mFetchCoverArtTask != null) {
             mFetchCoverArtTask.cancel(false);
         }
-
-        if (mFetchEpisodesTask != null) {
-            mFetchEpisodesTask.cancel(false);
-        }
     }
 
     private void showLoadingDialog() {
@@ -320,16 +323,16 @@ public class ShowListFragment extends Fragment {
 
         @Override
         protected void onPostExecute(List<Show> showList) {
-            if (showList != null && !isCancelled()) {
+            if (isCancelled()) {
+                return;
+            }
+
+            if (showList != null) {
                 Log.d(TAG, "Fetched shows");
                 mDatabase.setShows(showList);
-                updateCoverArt();
-            } else {
-                if (mLoadingDialog != null && mLoadingDialog.isAdded()) {
-                    mLoadingDialog.dismiss();
-                }
-                Toast.makeText(getActivity(), "Cannot fetch episodes. Please try again later.", Toast.LENGTH_SHORT).show();
             }
+
+            updateCoverArt();
         }
     }
 
@@ -387,12 +390,19 @@ public class ShowListFragment extends Fragment {
 
         @Override
         protected List<Episode> doInBackground(Void... params) {
-            return new TWiTFetcher(getActivity()).fetchAllEpisodes();
+            try {
+                return new TWiTFetcher(getActivity()).fetchAllEpisodes();
+            } catch (IOException e) {
+                Log.e(TAG, "Error fetching episodes", e);
+                return null;
+            }
         }
 
         @Override
         protected void onPostExecute(List<Episode> episodeList) {
-            if (isCancelled()) {
+            if (episodeList == null) {
+                dismissLoadingDialog();
+                mCallbacks.showNoConnectionSnackbar();
                 return;
             }
 
@@ -411,18 +421,12 @@ public class ShowListFragment extends Fragment {
             }
 
             mDatabase.addEpisodes(episodeList);
+            dismissLoadingDialog();
 
-            // dismiss loading dialog
-            try {
-                mLoadingDialog.dismiss();
-            } catch (Exception e) {
-                Log.e(TAG, "Cannot dismiss dialog");
-            }
+            mCallbacks.refreshShows();
 
             TWiTLab.get(getActivity()).saveShows();
             TWiTLab.get(getActivity()).saveEpisodes();
-
-            mCallbacks.refreshShows();
         }
     }
 }

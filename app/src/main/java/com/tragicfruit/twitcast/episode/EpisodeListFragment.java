@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -31,12 +32,14 @@ import com.tragicfruit.twitcast.show.Show;
 import com.tragicfruit.twitcast.utils.QueryPreferences;
 import com.tragicfruit.twitcast.utils.TWiTFetcher;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
  * Created by Jeremy on 29/02/2016.
  */
 public class EpisodeListFragment extends Fragment {
+    private static final String TAG = "EpisodeListFragment";
     private static final String ARG_SHOW_ID = "show_id";
     private static final String DIALOG_CHOOSE_QUALITY = "choose_quality";
     private static final int REQUEST_QUALITY = 0;
@@ -197,7 +200,12 @@ public class EpisodeListFragment extends Fragment {
 
         @Override
         protected List<Episode> doInBackground(Void... params) {
-            return new TWiTFetcher(getActivity()).fetchEpisodes(mShow);
+            try {
+                return new TWiTFetcher(getActivity()).fetchEpisodes(mShow);
+            } catch (IOException e) {
+                Log.e(TAG, "Error fetching episodes", e);
+                return null;
+            }
         }
 
         @Override
@@ -206,6 +214,7 @@ public class EpisodeListFragment extends Fragment {
             mSwipeRefresh.setRefreshing(false);
 
             if (episodeList == null) {
+                mCallbacks.showNoConnectionSnackbar();
                 return;
             }
 

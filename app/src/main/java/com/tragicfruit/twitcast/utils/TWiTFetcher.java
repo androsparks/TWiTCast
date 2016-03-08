@@ -19,6 +19,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -40,6 +41,7 @@ import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * Created by Jeremy on 24/02/2016.
@@ -236,11 +238,11 @@ public class TWiTFetcher {
         return null;
     }
 
-    public List<Episode> fetchAllEpisodes() {
+    public List<Episode> fetchAllEpisodes() throws IOException {
         return fetchEpisodes(null);
     }
 
-    public List<Episode> fetchEpisodes(Show show) {
+    public List<Episode> fetchEpisodes(Show show) throws IOException {
         List<Episode> episodeList;
         if (show == null) {
             episodeList = getEpisodeListFromFeed(Constants.BRICKHOUSE_AUDIO_FEED);
@@ -259,7 +261,7 @@ public class TWiTFetcher {
         return episodeList;
     }
 
-    private void addVideoFeed(List<Episode> episodeList, String feedUrl, StreamQuality feedType) {
+    private void addVideoFeed(List<Episode> episodeList, String feedUrl, StreamQuality feedType) throws IOException {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
@@ -288,8 +290,8 @@ public class TWiTFetcher {
                         break;
                 }
             }
-        } catch (Exception e) {
-            Log.e(TAG, "Cannot add video feed: " + feedUrl, e);
+        } catch (ParserConfigurationException | SAXException e) {
+            Log.e(TAG, "Error parsing XML", e);
         }
     }
 
