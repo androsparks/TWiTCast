@@ -39,6 +39,7 @@ public abstract class GoogleCastActivity extends AppCompatActivity implements Ep
     private VideoCastConsumer mCastConsumer;
     private MenuItem mMediaRouteMenuItem;
     private MediaInfo mSelectedMediaInfo;
+    private Episode mEpisodeToPlay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,11 +74,17 @@ public abstract class GoogleCastActivity extends AppCompatActivity implements Ep
 
             @Override
             public void onDeviceSelected(CastDevice device, MediaRouter.RouteInfo routeInfo) {
-                if (mSelectedMediaInfo != null)
+                if (device != null) {
+                    boolean audioOnly = !device.hasCapability(CastDevice.CAPABILITY_VIDEO_OUT);
+                    QueryPreferences.setCastDeviceAudioOnly(GoogleCastActivity.this, audioOnly);
+                }
+
+                if (mSelectedMediaInfo != null) {
                     Toast.makeText(GoogleCastActivity.this,
                             R.string.chromecast_connecting,
                             Toast.LENGTH_LONG)
                             .show();
+                }
             }
         };
     }
@@ -107,14 +114,16 @@ public abstract class GoogleCastActivity extends AppCompatActivity implements Ep
 
     @Override
     public void playVideo(Episode episode) {
-        MediaMetadata mediaMetadata = new MediaMetadata(MediaMetadata.MEDIA_TYPE_MOVIE);
-        mediaMetadata.putString(MediaMetadata.KEY_TITLE, episode.getShow().getTitle());
-        mediaMetadata.putString(MediaMetadata.KEY_SUBTITLE, episode.getDisplayTitle());
-        mediaMetadata.putString(MediaMetadata.KEY_STUDIO, getString(R.string.studio_name));
-        mediaMetadata.addImage(new WebImage(Uri.parse(episode.getShow().getCoverArtLocalPath())));
-        mediaMetadata.addImage(new WebImage(Uri.parse(episode.getShow().getCoverArtLargeUrl())));
+        mEpisodeToPlay = episode;
 
-        String url = getMediaUrl(episode);
+        MediaMetadata mediaMetadata = new MediaMetadata(MediaMetadata.MEDIA_TYPE_MOVIE);
+        mediaMetadata.putString(MediaMetadata.KEY_TITLE, mEpisodeToPlay.getShow().getTitle());
+        mediaMetadata.putString(MediaMetadata.KEY_SUBTITLE, mEpisodeToPlay.getDisplayTitle());
+        mediaMetadata.putString(MediaMetadata.KEY_STUDIO, getString(R.string.studio_name));
+        mediaMetadata.addImage(new WebImage(Uri.parse(mEpisodeToPlay.getShow().getCoverArtLocalPath())));
+        mediaMetadata.addImage(new WebImage(Uri.parse(mEpisodeToPlay.getShow().getCoverArtLargeUrl())));
+
+        String url = getMediaUrl(mEpisodeToPlay);
         String contentType = getContentType(url);
 
         if (url == null || contentType == null) {
@@ -125,7 +134,6 @@ public abstract class GoogleCastActivity extends AppCompatActivity implements Ep
             return;
         }
 
-        Log.d(TAG, "Playing from url: " + url);
         mSelectedMediaInfo = new MediaInfo.Builder(url)
                 .setContentType(contentType)
                 .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
@@ -148,6 +156,12 @@ public abstract class GoogleCastActivity extends AppCompatActivity implements Ep
     }
 
     private void startPlayingSelectedMedia() {
+        if (QueryPreferences.isCastDeviceAudioOnly(this)) {
+            mSelectedMediaInfo = getAudioMediaInfo();
+        }
+
+        Log.d(TAG, "Playing from url: " + mSelectedMediaInfo.getContentId());
+
         try {
             mCastManager.loadMedia(mSelectedMediaInfo, true, 0);
             mCastManager.startVideoCastControllerActivity(this, mSelectedMediaInfo, 0, true);
@@ -159,6 +173,33 @@ public abstract class GoogleCastActivity extends AppCompatActivity implements Ep
                     Toast.LENGTH_LONG)
                     .show();
         }
+    }
+
+    private MediaInfo getAudioMediaInfo() {
+        MediaMetadata mediaMetadata = new MediaMetadata(MediaMetadata.MEDIA_TYPE_MUSIC_TRACK);
+        mediaMetadata.putString(MediaMetadata.KEY_TITLE, mEpisodeToPlay.getDisplayTitle());
+        mediaMetadata.putString(MediaMetadata.KEY_SUBTITLE, mEpisodeToPlay.getDisplayTitle());
+        mediaMetadata.putString(MediaMetadata.KEY_ALBUM_TITLE, mEpisodeToPlay.getShow().getTitle());
+        mediaMetadata.putString(MediaMetadata.KEY_ALBUM_ARTIST, getString(R.string.studio_name));
+        mediaMetadata.putString(MediaMetadata.KEY_ARTIST, getString(R.string.studio_name));
+        mediaMetadata.addImage(new WebImage(Uri.parse(mEpisodeToPlay.getShow().getCoverArtLocalPath())));
+        mediaMetadata.addImage(new WebImage(Uri.parse(mEpisodeToPlay.getShow().getCoverArtLargeUrl())));
+
+        String url = mEpisodeToPlay.getAudioUrl();
+
+        if (url == null) {
+            Toast.makeText(this,
+                    R.string.error_playing_episode_toast,
+                    Toast.LENGTH_SHORT)
+                    .show();
+            return null;
+        }
+
+        return new MediaInfo.Builder(url)
+                .setContentType(Constants.AUDIO_CONTENT_TYPE)
+                .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
+                .setMetadata(mediaMetadata)
+                .build();
     }
 
     private void showMediaRouteDialog(MenuItem menuItem) {

@@ -137,12 +137,6 @@ public class ShowListFragment extends Fragment {
         }
     }
 
-    private void dismissLoadingDialog() {
-        if (mLoadingDialog != null && mLoadingDialog.isAdded()) {
-            mLoadingDialog.dismiss();
-        }
-    }
-
     private boolean isCoverArtDownloaded() {
         for (Show show : mDatabase.getShows()) {
             if (show.getCoverArt() == null) {
@@ -228,9 +222,7 @@ public class ShowListFragment extends Fragment {
     public void onStart() {
         super.onStart();
         if (mRefreshingShows) {
-            if (mLoadingDialog == null || !mLoadingDialog.isAdded()) {
-                showLoadingDialog();
-            }
+            showLoadingDialog();
         }
     }
 
@@ -247,9 +239,25 @@ public class ShowListFragment extends Fragment {
     }
 
     private void showLoadingDialog() {
-        mLoadingDialog = UpdatingShowsFragment.newInstance();
-        FragmentManager fm = getFragmentManager();
-        mLoadingDialog.show(fm, DIALOG_UPDATING_SHOWS);
+        try {
+            if (mLoadingDialog == null || !mLoadingDialog.isAdded()) {
+                mLoadingDialog = UpdatingShowsFragment.newInstance();
+                FragmentManager fm = getFragmentManager();
+                mLoadingDialog.show(fm, DIALOG_UPDATING_SHOWS);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error showing loading dialog", e);
+        }
+    }
+
+    private void dismissLoadingDialog() {
+        try {
+            if (mLoadingDialog != null && mLoadingDialog.isAdded()) {
+                mLoadingDialog.dismiss();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error dismissing loading dialog", e);
+        }
     }
 
     private class ShowHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -311,9 +319,7 @@ public class ShowListFragment extends Fragment {
     private class FetchShowsTask extends AsyncTask<Void, Void, List<Show>> {
         @Override
         protected void onPreExecute() {
-            if (mLoadingDialog == null || !mLoadingDialog.isAdded()) {
-                showLoadingDialog();
-            }
+            showLoadingDialog();
         }
 
         @Override
