@@ -2,17 +2,23 @@ package com.tragicfruit.twitcast.misc;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.MediaRouteActionProvider;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.android.gms.cast.ApplicationMetadata;
 import com.google.android.gms.cast.MediaInfo;
 import com.google.android.gms.cast.MediaMetadata;
 import com.google.android.gms.common.images.WebImage;
 import com.google.android.libraries.cast.companionlibrary.cast.BaseCastManager;
 import com.google.android.libraries.cast.companionlibrary.cast.CastConfiguration;
 import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
+import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCastConsumer;
+import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCastConsumerImpl;
 import com.google.android.libraries.cast.companionlibrary.cast.dialog.video.VideoMediaRouteDialogFactory;
 import com.tragicfruit.twitcast.R;
 import com.tragicfruit.twitcast.constants.Constants;
@@ -28,6 +34,9 @@ public abstract class GoogleCastActivity extends AppCompatActivity implements Ep
     private static final String TAG = "GoogleCastActivity";
 
     private VideoCastManager mCastManager;
+    private VideoCastConsumer mCastConsumer;
+    private MenuItem mMediaRouteMenuItem;
+    private MediaInfo mSelectedMediaInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,13 +60,22 @@ public abstract class GoogleCastActivity extends AppCompatActivity implements Ep
                 .build();
 
         VideoCastManager.initialize(this, options);
+
+        mCastConsumer = new VideoCastConsumerImpl() {
+            @Override
+            public void onApplicationConnected(ApplicationMetadata appMetadata, String sessionId, boolean wasLaunched) {
+                if (mSelectedMediaInfo != null) {
+                    startPlayingSelectedMedia();
+                }
+            }
+        };
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.activity_google_cast, menu);
-        mCastManager.addMediaRouterButton(menu, R.id.media_route_menu_item);
+        mMediaRouteMenuItem = mCastManager.addMediaRouterButton(menu, R.id.media_route_menu_item);
         return true;
     }
 
@@ -66,12 +84,14 @@ public abstract class GoogleCastActivity extends AppCompatActivity implements Ep
         super.onResume();
         mCastManager = VideoCastManager.getInstance();
         mCastManager.incrementUiCounter();
+        mCastManager.addVideoCastConsumer(mCastConsumer);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         mCastManager.decrementUiCounter();
+        mCastManager.removeVideoCastConsumer(mCastConsumer);
     }
 
     @Override
@@ -88,34 +108,49 @@ public abstract class GoogleCastActivity extends AppCompatActivity implements Ep
 
         if (url == null || contentType == null) {
             Toast.makeText(this,
-                    R.string.error_playing_video_toast,
+                    R.string.error_playing_episode_toast,
                     Toast.LENGTH_SHORT)
                     .show();
             return;
         }
 
         Log.d(TAG, "Playing from url: " + url);
-        MediaInfo mediaInfo = new MediaInfo.Builder(url)
+        mSelectedMediaInfo = new MediaInfo.Builder(url)
                 .setContentType(contentType)
                 .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
                 .setMetadata(mediaMetadata)
                 .build();
 
         if (mCastManager.isConnected()) {
-            try {
-                mCastManager.loadMedia(mediaInfo, true, 0);
-                mCastManager.startVideoCastControllerActivity(this, mediaInfo, 0, true);
-            } catch (Exception e) {
-                Log.e(TAG, "Cannot load video", e);
+            startPlayingSelectedMedia();
+        } else {
+            // cast device detected but not connected
+            if (mMediaRouteMenuItem.isVisible()) {
+                showMediaRouteDialog(mMediaRouteMenuItem);
+            } else { // no cast device detected
                 Toast.makeText(this,
-                        R.string.cast_not_ready_toast,
+                        R.string.no_chromecast_toast,
                         Toast.LENGTH_SHORT)
                         .show();
             }
-        } else {
-            // TODO: prompt user to select cast device
-            Toast.makeText(this, "No cast device detected.", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void startPlayingSelectedMedia() {
+        try {
+            mCastManager.loadMedia(mSelectedMediaInfo, true, 0);
+            mCastManager.startVideoCastControllerActivity(this, mSelectedMediaInfo, 0, true);
+            mSelectedMediaInfo = null;
+        } catch (Exception e) {
+            // Cast device not ready - will play automatically once connected
+            Log.e(TAG, "Cannot load video", e);
+        }
+    }
+
+    private void showMediaRouteDialog(MenuItem menuItem) {
+        MediaRouteActionProvider mediaRouteActionProvider = (MediaRouteActionProvider)
+                MenuItemCompat.getActionProvider(menuItem);
+        mediaRouteActionProvider.onPerformDefaultAction();
     }
 
     private String getMediaUrl(Episode episode) {

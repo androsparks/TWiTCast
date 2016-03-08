@@ -11,10 +11,9 @@
     <string name="quality_video_large">Video (Large)</string>
     <string name="quality_video_small">Video (Small)</string>
     <string name="quality_audio">Audio</string>
-    <string name="error_playing_video_toast">Cannot play video, please try again later.</string>
-    <string name="cast_not_ready_toast">Cast device not ready. Please try again once connected.</string>
-    <string name="load_more_episodes_button">Load more episodes</string>
+    <string name="error_playing_episode_toast">Cannot play this episode, please try again later.</string>
     <string name="show_list_fragment_tab_title">Shows</string>
     <string name="latest_episodes_tab_title">Latest Episodes</string>
     <string name="no_connection_snackbar">No internet connection. Please try again later.</string>
+    <string name="no_chromecast_toast">No cast device detected.</string>
 </resources>
