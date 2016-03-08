@@ -5,12 +5,14 @@ import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.MediaRouteActionProvider;
+import android.support.v7.media.MediaRouter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.android.gms.cast.ApplicationMetadata;
+import com.google.android.gms.cast.CastDevice;
 import com.google.android.gms.cast.MediaInfo;
 import com.google.android.gms.cast.MediaMetadata;
 import com.google.android.gms.common.images.WebImage;
@@ -67,6 +69,15 @@ public abstract class GoogleCastActivity extends AppCompatActivity implements Ep
                 if (mSelectedMediaInfo != null) {
                     startPlayingSelectedMedia();
                 }
+            }
+
+            @Override
+            public void onDeviceSelected(CastDevice device, MediaRouter.RouteInfo routeInfo) {
+                if (mSelectedMediaInfo != null)
+                    Toast.makeText(GoogleCastActivity.this,
+                            R.string.chromecast_connecting,
+                            Toast.LENGTH_LONG)
+                            .show();
             }
         };
     }
@@ -143,7 +154,10 @@ public abstract class GoogleCastActivity extends AppCompatActivity implements Ep
             mSelectedMediaInfo = null;
         } catch (Exception e) {
             // Cast device not ready - will play automatically once connected
-            Log.e(TAG, "Cannot load video", e);
+            Toast.makeText(this,
+                    R.string.chromecast_connecting,
+                    Toast.LENGTH_LONG)
+                    .show();
         }
     }
 

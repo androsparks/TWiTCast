@@ -16,4 +16,5 @@
     <string name="latest_episodes_tab_title">Latest Episodes</string>
     <string name="no_connection_snackbar">No internet connection. Please try again later.</string>
     <string name="no_chromecast_toast">No cast device detected.</string>
+    <string name="chromecast_connecting">Cast device connecting - episode will begin playing once connected.</string>
 </resources>
