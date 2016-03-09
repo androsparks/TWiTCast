@@ -22,17 +22,21 @@ import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
 import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCastConsumer;
 import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCastConsumerImpl;
 import com.google.android.libraries.cast.companionlibrary.cast.dialog.video.VideoMediaRouteDialogFactory;
+import com.tragicfruit.twitcast.stream.LiveStreamFragment;
 import com.tragicfruit.twitcast.R;
+import com.tragicfruit.twitcast.stream.Stream;
 import com.tragicfruit.twitcast.constants.Constants;
 import com.tragicfruit.twitcast.constants.SecretConstants;
 import com.tragicfruit.twitcast.episode.Episode;
 import com.tragicfruit.twitcast.episode.EpisodeListFragment;
+import com.tragicfruit.twitcast.episode.LatestEpisodesFragment;
 import com.tragicfruit.twitcast.utils.QueryPreferences;
 
 /**
  * Created by Jeremy on 4/03/2016.
  */
-public abstract class GoogleCastActivity extends AppCompatActivity implements EpisodeListFragment.Callbacks {
+public class GoogleCastActivity extends AppCompatActivity
+        implements LatestEpisodesFragment.Callbacks, LiveStreamFragment.Callbacks, EpisodeListFragment.Callbacks {
     private static final String TAG = "GoogleCastActivity";
 
     private VideoCastManager mCastManager;
@@ -155,6 +159,48 @@ public abstract class GoogleCastActivity extends AppCompatActivity implements Ep
         }
     }
 
+
+    @Override
+    public void playVideo(Stream stream) {
+        MediaMetadata mediaMetadata = new MediaMetadata(MediaMetadata.MEDIA_TYPE_MOVIE);
+        mediaMetadata.putString(MediaMetadata.KEY_TITLE, "TWiT Live");
+        mediaMetadata.putString(MediaMetadata.KEY_SUBTITLE, "TWiT Live");
+        mediaMetadata.putString(MediaMetadata.KEY_STUDIO, getString(R.string.studio_name));
+//        mediaMetadata.addImage(new WebImage(Uri.parse(mEpisodeToPlay.getShow().getCoverArtUrl())));
+//        mediaMetadata.addImage(new WebImage(Uri.parse(mEpisodeToPlay.getShow().getCoverArtLargeUrl())));
+
+        String url = stream.getSource();
+        String contentType = stream.getType();
+
+        if (url == null || contentType == null) {
+            Toast.makeText(this,
+                    R.string.error_playing_episode_toast,
+                    Toast.LENGTH_SHORT)
+                    .show();
+            return;
+        }
+
+        mSelectedMediaInfo = new MediaInfo.Builder(url)
+                .setContentType(contentType)
+                .setStreamType(MediaInfo.STREAM_TYPE_LIVE)
+                .setMetadata(mediaMetadata)
+                .build();
+
+        if (mCastManager.isConnected()) {
+            startPlayingSelectedMedia();
+        } else {
+            // cast device detected but not connected
+            if (mMediaRouteMenuItem.isVisible()) {
+                showMediaRouteDialog(mMediaRouteMenuItem);
+            } else { // no cast device detected
+                Toast.makeText(this,
+                        R.string.no_chromecast_toast,
+                        Toast.LENGTH_SHORT)
+                        .show();
+            }
+        }
+    }
+
     private void startPlayingSelectedMedia() {
         if (QueryPreferences.isCastDeviceAudioOnly(this)) {
             mSelectedMediaInfo = getAudioMediaInfo();
@@ -241,4 +287,10 @@ public abstract class GoogleCastActivity extends AppCompatActivity implements Ep
             return null;
         }
     }
+
+    @Override
+    public void showNoConnectionSnackbar() {}
+
+    @Override
+    public void setToolbarColour(int toolbarColour, int statusBarColour) {}
 }

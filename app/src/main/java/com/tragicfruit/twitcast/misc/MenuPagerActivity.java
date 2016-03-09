@@ -8,20 +8,23 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 
+import com.tragicfruit.twitcast.stream.LiveStreamFragment;
 import com.tragicfruit.twitcast.R;
 import com.tragicfruit.twitcast.episode.LatestEpisodesFragment;
 import com.tragicfruit.twitcast.show.ShowListFragment;
 
 public class MenuPagerActivity extends GoogleCastActivity
-        implements LatestEpisodesFragment.Callbacks, ShowListFragment.Callbacks {
+        implements ShowListFragment.Callbacks, LatestEpisodesFragment.Callbacks {
     private static final Fragment[] mFragments = {
             ShowListFragment.newInstance(),
-            LatestEpisodesFragment.newInstance()
+            LatestEpisodesFragment.newInstance(),
+            LiveStreamFragment.newInstance()
     };
 
     private static final int[] mFragmentTitles = {
             R.string.show_list_fragment_tab_title,
-            R.string.latest_episodes_tab_title
+            R.string.latest_episodes_tab_title,
+            R.string.live_stream_tab_title
     };
 
     private ViewPager mViewPager;
@@ -80,7 +83,4 @@ public class MenuPagerActivity extends GoogleCastActivity
                 Snackbar.LENGTH_LONG)
                 .show();
     }
-
-    @Override
-    public void setToolbarColour(int toolbarColour, int statusBarColour) {}
 }

@@ -14,6 +14,7 @@
     <string name="error_playing_episode_toast">Cannot play this episode, please try again later.</string>
     <string name="show_list_fragment_tab_title">Shows</string>
     <string name="latest_episodes_tab_title">Latest Episodes</string>
+    <string name="live_stream_tab_title">Live</string>
     <string name="no_connection_snackbar">No internet connection. Please try again later.</string>
     <string name="no_chromecast_toast">No cast device detected.</string>
     <string name="chromecast_connecting">Episode will begin playing soon.</string>

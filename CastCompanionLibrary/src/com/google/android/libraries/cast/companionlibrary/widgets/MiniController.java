@@ -287,7 +287,7 @@ public class MiniController extends RelativeLayout implements IMiniController {
 
         mIconUri = uri;
 
-        if (existsInLocalStorage(uri)) {
+        if (uri != null && existsInLocalStorage(uri)) {
             File imageFile = new File(mContext.getFilesDir() + "/cover_art", getImageFileName(uri));
             Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
             setIcon(bitmap);

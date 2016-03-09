@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 
 import com.tragicfruit.twitcast.R;
+import com.tragicfruit.twitcast.episode.EpisodeListFragment;
 
 /**
  * Created by jerem on 23/11/2015.
