@@ -52,6 +52,7 @@ import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.NotificationCompat;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -101,6 +102,7 @@ public class VideoCastNotificationService extends Service {
     private List<Integer> mNotificationActions;
     private int[] mNotificationCompactActionsArray;
     private long mForwardTimeInMillis;
+    private int mStreamType;
 
     @Override
     public void onCreate() {
@@ -134,6 +136,12 @@ public class VideoCastNotificationService extends Service {
 
             @Override
             public void onRemoteMediaPlayerStatusUpdated() {
+                try {
+                    mStreamType = mCastManager.getRemoteMediaInformation().getStreamType();
+                } catch (Exception e) {
+                    LOGE(TAG, "Unable to get stream type", e);
+                }
+
                 int mediaStatus = mCastManager.getPlaybackStatus();
                 VideoCastNotificationService.this.onRemoteMediaPlayerStatusUpdated(mediaStatus);
             }
@@ -389,6 +397,21 @@ public class VideoCastNotificationService extends Service {
         MediaMetadata metadata = info.getMetadata();
         String castingTo = getResources().getString(R.string.ccl_casting_to_device,
                 mCastManager.getDeviceName());
+
+        // Remove rewind and forward buttons in notification
+        if (mStreamType == MediaInfo.STREAM_TYPE_LIVE) {
+            if (mNotificationActions.contains(CastConfiguration.NOTIFICATION_ACTION_FORWARD)) {
+                int index = mNotificationActions.indexOf(CastConfiguration.NOTIFICATION_ACTION_FORWARD);
+                mNotificationActions.remove(index);
+            }
+
+            if (mNotificationActions.contains(CastConfiguration.NOTIFICATION_ACTION_REWIND)) {
+                int index = mNotificationActions.indexOf(CastConfiguration.NOTIFICATION_ACTION_REWIND);
+                mNotificationActions.remove(index);
+            }
+
+            mNotificationCompactActionsArray = new int[] { mNotificationCompactActionsArray[0] };
+        }
 
         NotificationCompat.Builder builder
                 = (NotificationCompat.Builder) new NotificationCompat.Builder(this)
