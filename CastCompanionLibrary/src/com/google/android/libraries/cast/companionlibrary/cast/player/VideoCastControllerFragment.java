@@ -590,7 +590,20 @@ public class VideoCastControllerFragment extends Fragment implements
             return;
         }
 
-        if (existsInLocalStorage(uri)) {
+        if (uri.toString().contains("twitlogo")) {
+            if (existsInLocalStorage(uri.toString(), "logo")) {
+                File imageFile = new File(getActivity().getFilesDir() + "/logo", uri.toString());
+
+                mUrlAndBitmap = new UrlAndBitmap();
+                mUrlAndBitmap.mUrl = uri;
+                Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+                mUrlAndBitmap.mBitmap = bitmap;
+                mCastController.setImage(bitmap);
+                return;
+            }
+        }
+
+        if (existsInLocalStorage(getImageFileName(uri), "cover_art_large")) {
             File imageFile = new File(getActivity().getFilesDir() + "/cover_art_large", getImageFileName(uri));
 
             mUrlAndBitmap = new UrlAndBitmap();
@@ -674,14 +687,14 @@ public class VideoCastControllerFragment extends Fragment implements
         }
     }
 
-    private boolean existsInLocalStorage(Uri uri) {
-        File coverArtFolder = new File(getActivity().getFilesDir() + "/cover_art_large");
-        if (!coverArtFolder.exists()) {
+    private boolean existsInLocalStorage(String filename, String folderName) {
+        File folder = new File(getActivity().getFilesDir() + "/" + folderName);
+        if (!folder.exists()) {
             return false;
         }
 
-        File imageFile = new File(getActivity().getFilesDir() + "/cover_art_large", getImageFileName(uri));
-        return imageFile.exists();
+        File file = new File(getActivity().getFilesDir() + "/" + folderName, filename);
+        return file.exists();
     }
 
     private String getImageFileName(Uri uri) {

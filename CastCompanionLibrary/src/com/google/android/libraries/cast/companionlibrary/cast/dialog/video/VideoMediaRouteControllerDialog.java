@@ -179,7 +179,17 @@ public class VideoMediaRouteControllerDialog extends MediaRouteControllerDialog 
             return;
         }
 
-        if (existsInLocalStorage(uri)) {
+        if (uri.toString().contains("twitlogo")) {
+            if (existsInLocalStorage(uri.toString(), "logo")) {
+                File imageFile = new File(mContext.getFilesDir() + "/logo", uri.toString());
+
+                Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+                mIcon.setImageBitmap(bitmap);
+                return;
+            }
+        }
+
+        if (existsInLocalStorage(uri.toString(), "cover_art")) {
             File imageFile = new File(mContext.getFilesDir() + "/cover_art", getImageFileName(uri));
 
             Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
@@ -204,14 +214,14 @@ public class VideoMediaRouteControllerDialog extends MediaRouteControllerDialog 
         mFetchBitmap.execute(mIconUri);
     }
 
-    private boolean existsInLocalStorage(Uri uri) {
-        File coverArtFolder = new File(mContext.getFilesDir() + "/cover_art");
-        if (!coverArtFolder.exists()) {
+    private boolean existsInLocalStorage(String filename, String folderName) {
+        File folder = new File(mContext.getFilesDir() + "/" + folderName);
+        if (!folder.exists()) {
             return false;
         }
 
-        File imageFile = new File(mContext.getFilesDir() + "/cover_art", getImageFileName(uri));
-        return imageFile.exists();
+        File file = new File(mContext.getFilesDir() + "/" + folderName, filename);
+        return file.exists();
     }
 
     private String getImageFileName(Uri uri) {

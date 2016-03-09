@@ -287,7 +287,16 @@ public class MiniController extends RelativeLayout implements IMiniController {
 
         mIconUri = uri;
 
-        if (uri != null && existsInLocalStorage(uri)) {
+        if (uri.toString().contains("twitlogo")) {
+            if (existsInLocalStorage(uri.toString(), "logo")) {
+                File imageFile = new File(mContext.getFilesDir() + "/logo", uri.toString());
+                Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+                setIcon(bitmap);
+                return;
+            }
+        }
+
+        if (uri != null && existsInLocalStorage(getImageFileName(uri), "cover_art")) {
             File imageFile = new File(mContext.getFilesDir() + "/cover_art", getImageFileName(uri));
             Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
             setIcon(bitmap);
@@ -314,14 +323,14 @@ public class MiniController extends RelativeLayout implements IMiniController {
         mFetchBitmapTask.execute(uri);
     }
 
-    private boolean existsInLocalStorage(Uri uri) {
-        File coverArtFolder = new File(mContext.getFilesDir() + "/cover_art");
-        if (!coverArtFolder.exists()) {
+    private boolean existsInLocalStorage(String filename, String folderName) {
+        File folder = new File(mContext.getFilesDir() + "/" + folderName);
+        if (!folder.exists()) {
             return false;
         }
 
-        File imageFile = new File(mContext.getFilesDir() + "/cover_art", getImageFileName(uri));
-        return imageFile.exists();
+        File file = new File(mContext.getFilesDir() + "/" + folderName, filename);
+        return file.exists();
     }
 
     private String getImageFileName(Uri uri) {

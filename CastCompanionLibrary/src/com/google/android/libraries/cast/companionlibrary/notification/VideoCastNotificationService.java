@@ -236,7 +236,25 @@ public class VideoCastNotificationService extends Service {
             LOGE(TAG, "Failed to build notification", e);
         }
 
-        if (existsInLocalStorage(imgUri)) {
+        if (imgUri.toString().contains("twitlogo")) {
+            if (existsInLocalStorage(imgUri.toString(), "logo")) {
+                try {
+                    File imageFile = new File(getFilesDir() + "/logo", imgUri.toString());
+                    mVideoArtBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+                    build(info, mVideoArtBitmap, mIsPlaying);
+                } catch (CastException | NoConnectionException | TransientNetworkDisconnectionException e) {
+                    LOGE(TAG, "Failed to set notification for " + info.toString(), e);
+                }
+
+                if (mVisible && (mNotification != null)) {
+                    startForeground(NOTIFICATION_ID, mNotification);
+                }
+
+                return;
+            }
+        }
+
+        if (existsInLocalStorage(imgUri.toString(), "cover_art")) {
             try {
                 File imageFile = new File(getFilesDir() + "/cover_art", getImageFileName(imgUri));
                 mVideoArtBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
@@ -274,14 +292,14 @@ public class VideoCastNotificationService extends Service {
         mBitmapDecoderTask.execute(imgUri);
     }
 
-    private boolean existsInLocalStorage(Uri uri) {
-        File coverArtFolder = new File(getFilesDir() + "/cover_art");
-        if (!coverArtFolder.exists()) {
+    private boolean existsInLocalStorage(String filename, String folderName) {
+        File folder = new File(getFilesDir() + "/" + folderName);
+        if (!folder.exists()) {
             return false;
         }
 
-        File imageFile = new File(getFilesDir() + "/cover_art", getImageFileName(uri));
-        return imageFile.exists();
+        File file = new File(getFilesDir() + "/" + folderName, filename);
+        return file.exists();
     }
 
     private String getImageFileName(Uri uri) {

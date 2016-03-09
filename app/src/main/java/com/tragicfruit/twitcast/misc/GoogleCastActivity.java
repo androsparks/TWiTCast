@@ -166,8 +166,8 @@ public class GoogleCastActivity extends AppCompatActivity
         mediaMetadata.putString(MediaMetadata.KEY_TITLE, "TWiT Live");
         mediaMetadata.putString(MediaMetadata.KEY_SUBTITLE, "TWiT Live");
         mediaMetadata.putString(MediaMetadata.KEY_STUDIO, getString(R.string.studio_name));
-//        mediaMetadata.addImage(new WebImage(Uri.parse(mEpisodeToPlay.getShow().getCoverArtUrl())));
-//        mediaMetadata.addImage(new WebImage(Uri.parse(mEpisodeToPlay.getShow().getCoverArtLargeUrl())));
+        mediaMetadata.addImage(new WebImage(Uri.parse(Constants.LOGO_FILE)));
+        mediaMetadata.addImage(new WebImage(Uri.parse(Constants.LOGO_LARGE_FILE)));
 
         String url = stream.getSource();
         String contentType = stream.getType();

@@ -13,6 +13,9 @@ public class Constants {
 
     public static final String COVER_ART_FOLDER = "cover_art";
     public static final String COVER_ART_LARGE_FOLDER = "cover_art_large";
+    public static final String LOGO_FOLDER = "logo";
+    public static final String LOGO_FILE = "twitlogo_600x600.png";
+    public static final String LOGO_LARGE_FILE = "twitlogo_1400x1400.png";
 
     public static final String AUDIO_CONTENT_TYPE = "audio/mpeg3";
     public static final String VIDEO_CONTENT_TYPE = "video/mp4";

@@ -3,6 +3,8 @@ package com.tragicfruit.twitcast.show;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
@@ -34,7 +36,10 @@ import com.tragicfruit.twitcast.utils.QueryPreferences;
 import com.tragicfruit.twitcast.utils.TWiTFetcher;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -353,6 +358,7 @@ public class ShowListFragment extends Fragment {
             // clean up old cover art
             cleanUp(Constants.COVER_ART_FOLDER);
             cleanUp(Constants.COVER_ART_LARGE_FOLDER);
+            cleanUp(Constants.LOGO_FOLDER);
 
             // download new cover art
             for (Show show : mDatabase.getShows()) {
@@ -369,7 +375,55 @@ public class ShowListFragment extends Fragment {
                     Log.e(TAG, "Cannot download cover art for " + show.getTitle(), e);
                 }
             }
+
+            // pull logo from assets
+            try {
+                saveFromAssets(Constants.LOGO_FILE, Constants.LOGO_FOLDER);
+                saveFromAssets(Constants.LOGO_LARGE_FILE, Constants.LOGO_FOLDER);
+            } catch (IOException e) {
+                Log.e(TAG, "Cannot fetch logos from assets", e);
+            }
             return null;
+        }
+
+        private void saveFromAssets(String filename, String folderName) throws IOException {
+            InputStream inputStream = null;
+            OutputStream outputStream = null;
+
+            try {
+                inputStream = getActivity().getResources().getAssets().open(filename);
+
+                File folder = new File(getActivity().getFilesDir() + "/" + folderName);
+                if (!folder.exists()) {
+                    folder.mkdir();
+                }
+
+                File file = new File(getActivity().getFilesDir() + "/" + folderName, filename);
+
+                // write the inputStream to a FileOutputStream
+                outputStream =
+                        new FileOutputStream(file);
+
+                int read = 0;
+                byte[] bytes = new byte[1024];
+
+                while ((read = inputStream.read(bytes)) != -1) {
+                    outputStream.write(bytes, 0, read);
+                }
+
+                Log.i(TAG, "File saved to: " + file.getAbsolutePath());
+
+            } catch (IOException e) {
+                Log.e(TAG, "Error fetching " + filename + " from assets");
+            } finally {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+
+                if (outputStream != null) {
+                    outputStream.close();
+                }
+            }
         }
 
         private void cleanUp(String folder) {
