@@ -5,12 +5,14 @@ import android.preference.PreferenceManager;
 
 import com.tragicfruit.twitcast.constants.Constants;
 import com.tragicfruit.twitcast.episode.StreamQuality;
+import com.tragicfruit.twitcast.stream.StreamSource;
 
 /**
  * Created by Jeremy on 6/03/2016.
  */
 public class QueryPreferences {
     private static final String PREF_STREAM_QUALITY = "stream_quality";
+    private static final String PREF_STREAM_SOURCE = "stream_source";
     private static final String PREF_CAST_DEVICE_AUDIO = "cast_device_audio";
 
     public static StreamQuality getStreamQuality(Context context) {
@@ -23,6 +25,19 @@ public class QueryPreferences {
         PreferenceManager.getDefaultSharedPreferences(context)
                 .edit()
                 .putString(PREF_STREAM_QUALITY, quality.toString())
+                .apply();
+    }
+
+    public static StreamSource getStreamSource(Context context) {
+        String streamSourceValue = PreferenceManager.getDefaultSharedPreferences(context)
+                .getString(PREF_STREAM_SOURCE, Constants.DEFAULT_SOURCE.toString());
+        return StreamSource.valueOf(streamSourceValue);
+    }
+
+    public static void setStreamSource(Context context, StreamSource source) {
+        PreferenceManager.getDefaultSharedPreferences(context)
+                .edit()
+                .putString(PREF_STREAM_SOURCE, source.toString())
                 .apply();
     }
 

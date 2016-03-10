@@ -1,6 +1,7 @@
 package com.tragicfruit.twitcast.constants;
 
 import com.tragicfruit.twitcast.episode.StreamQuality;
+import com.tragicfruit.twitcast.stream.StreamSource;
 
 /**
  * Created by Jeremy on 4/03/2016.
@@ -19,8 +20,11 @@ public class Constants {
 
     public static final String AUDIO_CONTENT_TYPE = "audio/mpeg3";
     public static final String VIDEO_CONTENT_TYPE = "video/mp4";
+    public static final String LIVE_AUDIO_CONTENT_TYPE = "audio/mpeg";
+    public static final String LIVE_VIDEO_CONTENT_TYPE = "video";
 
     public static final StreamQuality DEFAULT_QUALITY = StreamQuality.VIDEO_HD;
+    public static final StreamSource DEFAULT_SOURCE = StreamSource.BIT_GRAVITY_HIGH;
 
     public static final int MAX_NUMBER_OF_EPISODES = 250;
 
@@ -29,4 +33,9 @@ public class Constants {
             1647, // Radio Leo
             65161 // All TWiT.tv Shows
     };
+
+    public static final String STREAM_BIT_GRAVITY_HIGH = "http://twit.live-s.cdn.bitgravity.com/cdn-live/_definst_/twit/live/high/playlist.m3u8";
+    public static final String STREAM_BIT_GRAVITY_LOW = "http://twit.live-s.cdn.bitgravity.com/cdn-live/_definst_/twit/live/low/playlist.m3u8";
+    public static final String STREAM_FLOSOFT = "http://hls.cdn.flosoft.biz/flosoft/smil:twitStreamAll.smil/playlist.m3u8";
+    public static final String STREAM_AUDIO = "http://twit.am/listen";
 }

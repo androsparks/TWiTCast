@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.tragicfruit.twitcast.R;
 import com.tragicfruit.twitcast.stream.Stream;
 import com.tragicfruit.twitcast.constants.Constants;
 import com.tragicfruit.twitcast.episode.Episode;
@@ -19,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Created by Jeremy on 29/02/2016.
@@ -28,7 +31,7 @@ public class TWiTLab implements TWiTDatabase {
 
     private List<Show> mShows;
     private List<Episode> mEpisodes;
-    private List<Stream> mStreams;
+    private ConcurrentMap<String, Stream> mStreams;
     private static TWiTLab sTWiTLab;
 
     private Context mContext;
@@ -62,46 +65,45 @@ public class TWiTLab implements TWiTDatabase {
         }
 
         linkShowsAndEpisodes();
-
         mStreams = loadStreams();
     }
 
     // TODO: currently hardcoded, need to get streams from TWiT API
-    private List<Stream> loadStreams() {
-        List<Stream> streams = new ArrayList<>();
+    private ConcurrentMap<String, Stream> loadStreams() {
+        ConcurrentMap<String, Stream> streams = new ConcurrentHashMap<>();
 
+        // BitGravity High
         Stream stream = new Stream();
-        stream.setTitle("BitGravity High");
-        stream.setSource("http://twit.live-s.cdn.bitgravity.com/cdn-live/_definst_/twit/live/high/playlist.m3u8");
-        stream.setType("video");
-        stream.setPreferred(false);
-        streams.add(stream);
+        stream.setTitle(mContext.getString(R.string.bitgravity_high_stream));
+        stream.setSource(Constants.STREAM_BIT_GRAVITY_HIGH);
+        stream.setType(Constants.LIVE_VIDEO_CONTENT_TYPE);
+        streams.put(stream.getTitle(), stream);
 
+        // BitGravity Low
         stream = new Stream();
-        stream.setTitle("BitGravity Low");
-        stream.setSource("http://twit.live-s.cdn.bitgravity.com/cdn-live/_definst_/twit/live/low/playlist.m3u8");
-        stream.setType("video");
-        stream.setPreferred(false);
-        streams.add(stream);
+        stream.setTitle(mContext.getString(R.string.bitgravity_low_stream));
+        stream.setSource(Constants.STREAM_BIT_GRAVITY_LOW);
+        stream.setType(Constants.LIVE_VIDEO_CONTENT_TYPE);
+        streams.put(stream.getTitle(), stream);
 
+        // Flosoft
         stream = new Stream();
-        stream.setTitle("Flosoft");
-        stream.setSource("http://hls.cdn.flosoft.biz/flosoft/smil:twitStreamAll.smil/playlist.m3u8");
-        stream.setType("video");
-        stream.setPreferred(false);
-        streams.add(stream);
+        stream.setTitle(mContext.getString(R.string.flosoft_stream));
+        stream.setSource(Constants.STREAM_FLOSOFT);
+        stream.setType(Constants.LIVE_VIDEO_CONTENT_TYPE);
+        streams.put(stream.getTitle(), stream);
 
+        // Audio
         stream = new Stream();
-        stream.setTitle("Audio");
-        stream.setSource("http://twit.am/listen");
-        stream.setType("audio/mpeg");
-        stream.setPreferred(false);
-        streams.add(stream);
+        stream.setTitle(mContext.getString(R.string.audio_stream));
+        stream.setSource(Constants.STREAM_AUDIO);
+        stream.setType(Constants.LIVE_AUDIO_CONTENT_TYPE);
+        streams.put(stream.getTitle(), stream);
 
         return streams;
     }
 
-    public List<Stream> getStreams() {
+    public ConcurrentMap<String, Stream> getStreams() {
         return mStreams;
     }
 

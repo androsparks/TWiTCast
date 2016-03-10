@@ -22,15 +22,20 @@ import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
 import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCastConsumer;
 import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCastConsumerImpl;
 import com.google.android.libraries.cast.companionlibrary.cast.dialog.video.VideoMediaRouteDialogFactory;
-import com.tragicfruit.twitcast.stream.LiveStreamFragment;
 import com.tragicfruit.twitcast.R;
-import com.tragicfruit.twitcast.stream.Stream;
 import com.tragicfruit.twitcast.constants.Constants;
 import com.tragicfruit.twitcast.constants.SecretConstants;
+import com.tragicfruit.twitcast.database.TWiTLab;
 import com.tragicfruit.twitcast.episode.Episode;
 import com.tragicfruit.twitcast.episode.EpisodeListFragment;
 import com.tragicfruit.twitcast.episode.LatestEpisodesFragment;
+import com.tragicfruit.twitcast.stream.LiveStreamFragment;
+import com.tragicfruit.twitcast.stream.Stream;
+import com.tragicfruit.twitcast.stream.StreamSource;
 import com.tragicfruit.twitcast.utils.QueryPreferences;
+
+import java.util.List;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Created by Jeremy on 4/03/2016.
@@ -161,7 +166,7 @@ public class GoogleCastActivity extends AppCompatActivity
 
 
     @Override
-    public void playVideo(Stream stream) {
+    public void playLiveStream() {
         MediaMetadata mediaMetadata = new MediaMetadata(MediaMetadata.MEDIA_TYPE_MOVIE);
         mediaMetadata.putString(MediaMetadata.KEY_TITLE, getString(R.string.twit_live_stream_title));
         mediaMetadata.putString(MediaMetadata.KEY_SUBTITLE, getString(R.string.twit_live_stream_title));
@@ -169,12 +174,16 @@ public class GoogleCastActivity extends AppCompatActivity
         mediaMetadata.addImage(new WebImage(Uri.parse(Constants.LOGO_FILE)));
         mediaMetadata.addImage(new WebImage(Uri.parse(Constants.LOGO_LARGE_FILE)));
 
-        String url = stream.getSource();
-        String contentType = stream.getType();
+        Stream stream = getStream(QueryPreferences.getStreamSource(this));
+        String url = null, contentType = null;
+        if (stream != null) {
+            url = stream.getSource();
+            contentType = stream.getType();
+        }
 
-        if (url == null || contentType == null) {
+        if (stream == null || url == null || contentType == null) {
             Toast.makeText(this,
-                    R.string.error_playing_episode_toast,
+                    R.string.error_playing_stream_toast,
                     Toast.LENGTH_SHORT)
                     .show();
             return;
@@ -199,6 +208,23 @@ public class GoogleCastActivity extends AppCompatActivity
                         .show();
             }
         }
+    }
+
+    private Stream getStream(StreamSource source) {
+        ConcurrentMap<String, Stream> streamMap = TWiTLab.get(this).getStreams();
+
+        switch (source) {
+            case BIT_GRAVITY_HIGH:
+                return streamMap.get(getString(R.string.bitgravity_high_stream));
+            case BIT_GRAVITY_LOW:
+                return streamMap.get(getString(R.string.bitgravity_low_stream));
+            case FLOSOFT:
+                return streamMap.get(getString(R.string.flosoft_stream));
+            case AUDIO:
+                return streamMap.get(getString(R.string.audio_stream));
+        }
+
+        return null;
     }
 
     private void startPlayingSelectedMedia() {

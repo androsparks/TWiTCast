@@ -11,13 +11,19 @@
     <string name="quality_video_large">Video (Large)</string>
     <string name="quality_video_small">Video (Small)</string>
     <string name="quality_audio">Audio</string>
-    <string name="error_playing_episode_toast">Cannot play this episode, please try again later.</string>
+    <string name="error_playing_episode_toast">Error playing this episode, please try again later.</string>
+    <string name="error_playing_stream_toast">Error playing this stream, please try again later.</string>
     <string name="show_list_fragment_tab_title">Shows</string>
     <string name="latest_episodes_tab_title">Latest Episodes</string>
     <string name="live_stream_tab_title">Live</string>
     <string name="no_connection_snackbar">No internet connection. Please try again later.</string>
     <string name="no_chromecast_toast">No cast device detected.</string>
-    <string name="chromecast_connecting">Episode will begin playing soon.</string>
+    <string name="chromecast_connecting">Casting with begin soon.</string>
     <string name="refreshing_shows_error_toast">Error refresh shows. Please try again later.</string>
     <string name="twit_live_stream_title">TWiT Live</string>
+    <string name="bitgravity_high_stream">BitGravity High</string>
+    <string name="bitgravity_low_stream">BitGravity Low</string>
+    <string name="flosoft_stream">Flosoft</string>
+    <string name="audio_stream">Audio</string>
+    <string name="choose_source_menu_item">Choose source</string>
 </resources>

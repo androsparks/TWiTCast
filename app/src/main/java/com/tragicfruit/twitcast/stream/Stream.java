@@ -7,7 +7,6 @@ public class Stream {
     private String mTitle;
     private String mSource;
     private String mType;
-    private boolean mPreferred;
 
     public String getTitle() {
         return mTitle;
@@ -31,13 +30,5 @@ public class Stream {
 
     public void setType(String type) {
         mType = type;
-    }
-
-    public boolean isPreferred() {
-        return mPreferred;
-    }
-
-    public void setPreferred(boolean preferred) {
-        mPreferred = preferred;
     }
 }
