@@ -288,8 +288,8 @@ public class MiniController extends RelativeLayout implements IMiniController {
         mIconUri = uri;
 
         if (uri.toString().contains("twitlogo")) {
-            if (existsInLocalStorage(uri.toString(), "logo")) {
-                File imageFile = new File(mContext.getFilesDir() + "/logo", uri.toString());
+            if (existsInLocalStorage("twitlogo_600x600.png", "logo")) {
+                File imageFile = new File(mContext.getFilesDir() + "/logo", "twitlogo_600x600.png");
                 Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
                 setIcon(bitmap);
                 return;

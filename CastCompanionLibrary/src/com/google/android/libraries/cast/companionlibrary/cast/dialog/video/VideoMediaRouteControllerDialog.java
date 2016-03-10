@@ -180,8 +180,8 @@ public class VideoMediaRouteControllerDialog extends MediaRouteControllerDialog 
         }
 
         if (uri.toString().contains("twitlogo")) {
-            if (existsInLocalStorage(uri.toString(), "logo")) {
-                File imageFile = new File(mContext.getFilesDir() + "/logo", uri.toString());
+            if (existsInLocalStorage("twitlogo_600x600.png", "logo")) {
+                File imageFile = new File(mContext.getFilesDir() + "/logo", "twitlogo_600x600.png");
 
                 Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
                 mIcon.setImageBitmap(bitmap);

@@ -250,9 +250,9 @@ public class VideoCastNotificationService extends Service {
         }
 
         if (imgUri.toString().contains("twitlogo")) {
-            if (existsInLocalStorage(imgUri.toString(), "logo")) {
+            if (existsInLocalStorage("twitlogo_600x600.png", "logo")) {
                 try {
-                    File imageFile = new File(getFilesDir() + "/logo", imgUri.toString());
+                    File imageFile = new File(getFilesDir() + "/logo", "twitlogo_600x600.png");
                     mVideoArtBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
                     build(info, mVideoArtBitmap, mIsPlaying);
                 } catch (CastException | NoConnectionException | TransientNetworkDisconnectionException e) {
