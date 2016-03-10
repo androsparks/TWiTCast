@@ -163,7 +163,13 @@ public class VideoMediaRouteControllerDialog extends MediaRouteControllerDialog 
         hideControls(false, 0);
         MediaMetadata mm = info.getMetadata();
         mTitle.setText(mm.getString(MediaMetadata.KEY_TITLE));
-        mSubTitle.setText(mm.getString(MediaMetadata.KEY_SUBTITLE));
+        String subtitle;
+        if (mm.getString(MediaMetadata.KEY_SUBTITLE) != null) {
+            subtitle = mm.getString(MediaMetadata.KEY_SUBTITLE);
+        } else {
+            subtitle = mm.getString(MediaMetadata.KEY_ALBUM_TITLE);
+        }
+        mSubTitle.setText(subtitle);
         setIcon(mm.hasImages() ? mm.getImages().get(0).getUrl() : null);
     }
 

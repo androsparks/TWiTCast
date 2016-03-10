@@ -171,7 +171,7 @@ public class GoogleCastActivity extends AppCompatActivity
         mediaMetadata.putString(MediaMetadata.KEY_TITLE, getString(R.string.twit_live_stream_title));
         mediaMetadata.putString(MediaMetadata.KEY_SUBTITLE, getString(R.string.twit_live_stream_title));
         mediaMetadata.putString(MediaMetadata.KEY_STUDIO, getString(R.string.studio_name));
-        mediaMetadata.addImage(new WebImage(Uri.parse("https://www.dropbox.com/s/a2n4o31ak8d6i8t/twitlogo_600x600.png?raw=1")));
+        mediaMetadata.addImage(new WebImage(Uri.parse(Constants.LOGO_URL)));
         mediaMetadata.addImage(new WebImage(Uri.parse(Constants.LOGO_LARGE_FILE)));
 
         Stream stream = getStream(QueryPreferences.getStreamSource(this));
@@ -248,30 +248,60 @@ public class GoogleCastActivity extends AppCompatActivity
     }
 
     private MediaInfo getAudioMediaInfo() {
-        MediaMetadata mediaMetadata = new MediaMetadata(MediaMetadata.MEDIA_TYPE_MUSIC_TRACK);
-        mediaMetadata.putString(MediaMetadata.KEY_TITLE, mEpisodeToPlay.getShow().getTitle());
-        mediaMetadata.putString(MediaMetadata.KEY_SUBTITLE, mEpisodeToPlay.getDisplayTitle());
-        mediaMetadata.putString(MediaMetadata.KEY_ALBUM_TITLE, mEpisodeToPlay.getShow().getTitle());
-        mediaMetadata.putString(MediaMetadata.KEY_ALBUM_ARTIST, getString(R.string.studio_name));
-        mediaMetadata.putString(MediaMetadata.KEY_ARTIST, getString(R.string.studio_name));
-        mediaMetadata.addImage(new WebImage(Uri.parse(mEpisodeToPlay.getShow().getCoverArtLocalPath())));
-        mediaMetadata.addImage(new WebImage(Uri.parse(mEpisodeToPlay.getShow().getCoverArtLargeUrl())));
+        if (mSelectedMediaInfo.getStreamType() != MediaInfo.STREAM_TYPE_LIVE) {
+            MediaMetadata mediaMetadata = new MediaMetadata(MediaMetadata.MEDIA_TYPE_MUSIC_TRACK);
+            mediaMetadata.putString(MediaMetadata.KEY_TITLE, mEpisodeToPlay.getShow().getTitle());
+            mediaMetadata.putString(MediaMetadata.KEY_ALBUM_TITLE, mEpisodeToPlay.getDisplayTitle());
+            mediaMetadata.putString(MediaMetadata.KEY_ALBUM_ARTIST, getString(R.string.studio_name));
+            mediaMetadata.putString(MediaMetadata.KEY_ARTIST, getString(R.string.studio_name));
+            mediaMetadata.addImage(new WebImage(Uri.parse(mEpisodeToPlay.getShow().getCoverArtUrl())));
+            mediaMetadata.addImage(new WebImage(Uri.parse(mEpisodeToPlay.getShow().getCoverArtLargeUrl())));
 
-        String url = mEpisodeToPlay.getAudioUrl();
+            String url = mEpisodeToPlay.getAudioUrl();
 
-        if (url == null) {
-            Toast.makeText(this,
-                    R.string.error_playing_episode_toast,
-                    Toast.LENGTH_SHORT)
-                    .show();
-            return null;
+            if (url == null) {
+                Toast.makeText(this,
+                        R.string.error_playing_episode_toast,
+                        Toast.LENGTH_SHORT)
+                        .show();
+                return null;
+            }
+
+            return new MediaInfo.Builder(url)
+                    .setContentType(Constants.AUDIO_CONTENT_TYPE)
+                    .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
+                    .setMetadata(mediaMetadata)
+                    .build();
+        } else {
+            MediaMetadata mediaMetadata = new MediaMetadata(MediaMetadata.MEDIA_TYPE_MUSIC_TRACK);
+            mediaMetadata.putString(MediaMetadata.KEY_TITLE, getString(R.string.studio_name));
+            mediaMetadata.putString(MediaMetadata.KEY_ALBUM_TITLE, getString(R.string.twit_live_stream_title));
+            mediaMetadata.putString(MediaMetadata.KEY_ALBUM_ARTIST, getString(R.string.studio_name));
+            mediaMetadata.putString(MediaMetadata.KEY_ARTIST, getString(R.string.studio_name));
+            mediaMetadata.addImage(new WebImage(Uri.parse(Constants.LOGO_URL)));
+            mediaMetadata.addImage(new WebImage(Uri.parse(Constants.LOGO_LARGE_FILE)));
+
+            Stream stream = getStream(StreamSource.AUDIO);
+            String url = null, contentType = null;
+            if (stream != null) {
+                url = stream.getSource();
+                contentType = stream.getType();
+            }
+
+            if (url == null) {
+                Toast.makeText(this,
+                        R.string.error_playing_episode_toast,
+                        Toast.LENGTH_SHORT)
+                        .show();
+                return null;
+            }
+
+            return new MediaInfo.Builder(url)
+                    .setContentType(contentType)
+                    .setStreamType(MediaInfo.STREAM_TYPE_LIVE)
+                    .setMetadata(mediaMetadata)
+                    .build();
         }
-
-        return new MediaInfo.Builder(url)
-                .setContentType(Constants.AUDIO_CONTENT_TYPE)
-                .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
-                .setMetadata(mediaMetadata)
-                .build();
     }
 
     private void showMediaRouteDialog(MenuItem menuItem) {

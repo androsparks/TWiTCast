@@ -17,6 +17,7 @@ public class Constants {
     public static final String LOGO_FOLDER = "logo";
     public static final String LOGO_FILE = "twitlogo_600x600.png";
     public static final String LOGO_LARGE_FILE = "twitlogo_1400x1400.png";
+    public static final String LOGO_URL = "https://www.dropbox.com/s/a2n4o31ak8d6i8t/twitlogo_600x600.png?raw=1";
 
     public static final String AUDIO_CONTENT_TYPE = "audio/mpeg3";
     public static final String VIDEO_CONTENT_TYPE = "video/mp4";

@@ -421,10 +421,17 @@ public class VideoCastNotificationService extends Service {
             notificationActionsArray = mNotificationCompactActionsArray;
         }
 
+        String contentTitle;
+        if (metadata.getString(MediaMetadata.KEY_SUBTITLE) != null) {
+            contentTitle = metadata.getString(MediaMetadata.KEY_SUBTITLE);
+        } else {
+            contentTitle = metadata.getString(MediaMetadata.KEY_ALBUM_TITLE);
+        }
+
         NotificationCompat.Builder builder
                 = (NotificationCompat.Builder) new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_twit)
-                .setContentTitle(metadata.getString(MediaMetadata.KEY_SUBTITLE))
+                .setContentTitle(contentTitle)
                         .setContentText(castingTo)
                         .setContentIntent(getContentIntent(info))
                         .setLargeIcon(bitmap)
