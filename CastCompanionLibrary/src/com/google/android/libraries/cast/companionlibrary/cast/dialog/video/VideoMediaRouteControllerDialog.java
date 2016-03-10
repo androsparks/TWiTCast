@@ -189,7 +189,7 @@ public class VideoMediaRouteControllerDialog extends MediaRouteControllerDialog 
             }
         }
 
-        if (existsInLocalStorage(uri.toString(), "cover_art")) {
+        if (existsInLocalStorage(getImageFileName(uri), "cover_art")) {
             File imageFile = new File(mContext.getFilesDir() + "/cover_art", getImageFileName(uri));
 
             Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());

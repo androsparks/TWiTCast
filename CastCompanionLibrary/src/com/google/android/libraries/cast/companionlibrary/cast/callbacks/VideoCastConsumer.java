@@ -178,4 +178,6 @@ public interface VideoCastConsumer extends BaseCastConsumer {
      * {@link com.google.android.gms.cast.CastStatusCodes#SUCCESS} signifies a successful request.
      */
     void onMediaQueueOperationResult(int operationId, int statusCode);
+
+    void onUpdateNotification();
 }

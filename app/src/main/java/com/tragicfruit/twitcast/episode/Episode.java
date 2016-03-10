@@ -100,7 +100,7 @@ public class Episode {
     }
 
     public String getDisplayTitle() {
-        return mTitle.replace(mShow.getTitle() + " ", "");
+        return mTitle.replace(mShow.getTitle(), mShow.getShortCode());
     }
 
     public void cleanTitle() {

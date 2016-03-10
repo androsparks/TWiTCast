@@ -136,14 +136,7 @@ public class VideoCastNotificationService extends Service {
 
             @Override
             public void onRemoteMediaPlayerStatusUpdated() {
-                try {
-                    mStreamType = mCastManager.getRemoteMediaInformation().getStreamType();
-                } catch (Exception e) {
-                    LOGE(TAG, "Unable to get stream type", e);
-                }
-
-                int mediaStatus = mCastManager.getPlaybackStatus();
-                VideoCastNotificationService.this.onRemoteMediaPlayerStatusUpdated(mediaStatus);
+                onUpdateNotification();
             }
 
             @Override
@@ -175,6 +168,18 @@ public class VideoCastNotificationService extends Service {
                 }
                 mHasNext = position < (size - 1);
                 mHasPrev = position > 0;
+            }
+
+            @Override
+            public void onUpdateNotification() {
+                try {
+                    mStreamType = mCastManager.getRemoteMediaInformation().getStreamType();
+                    LOGD(TAG, "Stream type: " + mStreamType);
+                } catch (Exception e) {
+                    LOGE(TAG, "Unable to get stream type", e);
+                }
+                int mediaStatus = mCastManager.getPlaybackStatus();
+                VideoCastNotificationService.this.onRemoteMediaPlayerStatusUpdated(mediaStatus);
             }
         };
         mCastManager.addVideoCastConsumer(mConsumer);
@@ -262,7 +267,7 @@ public class VideoCastNotificationService extends Service {
             }
         }
 
-        if (existsInLocalStorage(imgUri.toString(), "cover_art")) {
+        if (existsInLocalStorage(getImageFileName(imgUri), "cover_art")) {
             try {
                 File imageFile = new File(getFilesDir() + "/cover_art", getImageFileName(imgUri));
                 mVideoArtBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
@@ -398,19 +403,22 @@ public class VideoCastNotificationService extends Service {
         String castingTo = getResources().getString(R.string.ccl_casting_to_device,
                 mCastManager.getDeviceName());
 
+        List<Integer> notificationActions;
+        int[] notificationActionsArray;
         // Remove rewind and forward buttons in notification
         if (mStreamType == MediaInfo.STREAM_TYPE_LIVE) {
-            if (mNotificationActions.contains(CastConfiguration.NOTIFICATION_ACTION_FORWARD)) {
-                int index = mNotificationActions.indexOf(CastConfiguration.NOTIFICATION_ACTION_FORWARD);
-                mNotificationActions.remove(index);
+            notificationActions = new ArrayList<>();
+            for (Integer action : mNotificationActions) {
+                if (action != CastConfiguration.NOTIFICATION_ACTION_FORWARD &&
+                        action != CastConfiguration.NOTIFICATION_ACTION_REWIND) {
+                    notificationActions.add(action);
+                }
             }
 
-            if (mNotificationActions.contains(CastConfiguration.NOTIFICATION_ACTION_REWIND)) {
-                int index = mNotificationActions.indexOf(CastConfiguration.NOTIFICATION_ACTION_REWIND);
-                mNotificationActions.remove(index);
-            }
-
-            mNotificationCompactActionsArray = new int[] { mNotificationCompactActionsArray[0] };
+            notificationActionsArray = new int[] { mNotificationCompactActionsArray[0] };
+        } else {
+            notificationActions = mNotificationActions;
+            notificationActionsArray = mNotificationCompactActionsArray;
         }
 
         NotificationCompat.Builder builder
@@ -421,13 +429,13 @@ public class VideoCastNotificationService extends Service {
                         .setContentIntent(getContentIntent(info))
                         .setLargeIcon(bitmap)
                         .setStyle(new NotificationCompat.MediaStyle()
-                                .setShowActionsInCompactView(mNotificationCompactActionsArray)
+                                .setShowActionsInCompactView(notificationActionsArray)
                                 .setMediaSession(mCastManager.getMediaSessionCompatToken()))
                         .setOngoing(true)
                         .setShowWhen(false)
                         .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
 
-        for (Integer notificationType : mNotificationActions) {
+        for (Integer notificationType : notificationActions) {
             switch (notificationType) {
                 case CastConfiguration.NOTIFICATION_ACTION_DISCONNECT:
                     builder.addAction(getDisconnectAction());

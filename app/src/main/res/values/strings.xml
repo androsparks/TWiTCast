@@ -19,4 +19,5 @@
     <string name="no_chromecast_toast">No cast device detected.</string>
     <string name="chromecast_connecting">Episode will begin playing soon.</string>
     <string name="refreshing_shows_error_toast">Error refresh shows. Please try again later.</string>
+    <string name="twit_live_stream_title">TWiT Live</string>
 </resources>

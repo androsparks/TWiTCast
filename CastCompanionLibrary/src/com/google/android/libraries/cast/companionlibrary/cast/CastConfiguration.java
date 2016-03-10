@@ -217,7 +217,7 @@ public class CastConfiguration {
         private List<String> mNamespaces;
         private boolean mRelaunchIfRunning;
         private Locale mLocale;
-        private boolean mCastControllerImmersive = true;
+        private boolean mCastControllerImmersive = false;
         private int mForwardStep = CCL_DEFAULT_FORWARD_STEP_S;
         private Class<? extends Service> mCustomNotificationService;
         private MediaRouteDialogFactory mMediaRouteDialogFactory;

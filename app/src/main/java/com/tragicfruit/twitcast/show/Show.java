@@ -13,6 +13,7 @@ import java.util.List;
 public class Show {
     private List<Episode> mEpisodes;
     private String mTitle;
+    private String mShortCode;
     private String mCoverArtSmallUrl;
     private String mCoverArtUrl;
     private String mCoverArtLargeUrl;
@@ -36,6 +37,14 @@ public class Show {
 
     public void setTitle(String title) {
         mTitle = title;
+    }
+
+    public String getShortCode() {
+        return mShortCode;
+    }
+
+    public void setShortCode(String shortCode) {
+        mShortCode = shortCode;
     }
 
     public String getCoverArtSmallUrl() {

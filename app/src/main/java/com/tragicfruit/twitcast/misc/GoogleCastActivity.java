@@ -163,8 +163,8 @@ public class GoogleCastActivity extends AppCompatActivity
     @Override
     public void playVideo(Stream stream) {
         MediaMetadata mediaMetadata = new MediaMetadata(MediaMetadata.MEDIA_TYPE_MOVIE);
-        mediaMetadata.putString(MediaMetadata.KEY_TITLE, "TWiT Live");
-        mediaMetadata.putString(MediaMetadata.KEY_SUBTITLE, "TWiT Live");
+        mediaMetadata.putString(MediaMetadata.KEY_TITLE, getString(R.string.twit_live_stream_title));
+        mediaMetadata.putString(MediaMetadata.KEY_SUBTITLE, getString(R.string.twit_live_stream_title));
         mediaMetadata.putString(MediaMetadata.KEY_STUDIO, getString(R.string.studio_name));
         mediaMetadata.addImage(new WebImage(Uri.parse(Constants.LOGO_FILE)));
         mediaMetadata.addImage(new WebImage(Uri.parse(Constants.LOGO_LARGE_FILE)));
@@ -223,7 +223,7 @@ public class GoogleCastActivity extends AppCompatActivity
 
     private MediaInfo getAudioMediaInfo() {
         MediaMetadata mediaMetadata = new MediaMetadata(MediaMetadata.MEDIA_TYPE_MUSIC_TRACK);
-        mediaMetadata.putString(MediaMetadata.KEY_TITLE, mEpisodeToPlay.getDisplayTitle());
+        mediaMetadata.putString(MediaMetadata.KEY_TITLE, mEpisodeToPlay.getShow().getTitle());
         mediaMetadata.putString(MediaMetadata.KEY_SUBTITLE, mEpisodeToPlay.getDisplayTitle());
         mediaMetadata.putString(MediaMetadata.KEY_ALBUM_TITLE, mEpisodeToPlay.getShow().getTitle());
         mediaMetadata.putString(MediaMetadata.KEY_ALBUM_ARTIST, getString(R.string.studio_name));

@@ -109,8 +109,7 @@ public class VideoCastControllerActivity extends AppCompatActivity implements
         setContentView(R.layout.cast_activity);
         loadAndSetupViews();
         mCastManager = VideoCastManager.getInstance();
-//        mImmersive = mCastManager.getCastConfiguration().isCastControllerImmersive();
-        mImmersive = false; // activity never immersive
+        mImmersive = mCastManager.getCastConfiguration().isCastControllerImmersive();
         mVolumeIncrement = mCastManager.getVolumeStep();
 
         Bundle extras = getIntent().getExtras();

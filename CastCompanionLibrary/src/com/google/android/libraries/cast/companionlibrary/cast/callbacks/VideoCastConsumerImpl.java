@@ -115,4 +115,7 @@ public class VideoCastConsumerImpl extends BaseCastConsumerImpl
     public void onMediaQueueOperationResult(int operationId, int statusCode) {
     }
 
+    public void onUpdateNotification() {
+
+    }
 }

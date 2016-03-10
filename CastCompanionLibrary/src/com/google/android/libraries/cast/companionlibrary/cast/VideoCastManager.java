@@ -3040,4 +3040,10 @@ public class VideoCastManager extends BaseCastManager
     protected String getDataNamespace() {
         return mDataNamespace;
     }
+
+    public void updateNotification() {
+        for (VideoCastConsumer consumer : mVideoConsumers) {
+            consumer.onUpdateNotification();
+        }
+    }
 }

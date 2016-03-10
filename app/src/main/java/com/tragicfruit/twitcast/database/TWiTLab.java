@@ -364,6 +364,7 @@ public class TWiTLab implements TWiTDatabase {
     private static ContentValues getContentValues(Show show) {
         ContentValues values = new ContentValues();
         values.put(ShowTable.Cols.TITLE, show.getTitle());
+        values.put(ShowTable.Cols.SHORT_CODE, show.getShortCode());
         values.put(ShowTable.Cols.COVER_ART_SMALL_URL, show.getCoverArtSmallUrl());
         values.put(ShowTable.Cols.COVER_ART_URL, show.getCoverArtUrl());
         values.put(ShowTable.Cols.COVER_ART_LARGE_URL, show.getCoverArtLargeUrl());
