@@ -452,6 +452,14 @@ public class VideoCastControllerFragment extends Fragment implements
         if (mSelectedMedia == null) {
             return;
         }
+
+        try {
+            boolean isLive = mSelectedMedia.getStreamType() == MediaInfo.STREAM_TYPE_LIVE;
+            mCastController.adjustControllersForLiveStream(isLive);
+        } catch (Exception e) {
+            LOGE(TAG, "Cannot adjust controllers for live stream", e);
+        }
+
         mCastController.setStreamType(mSelectedMedia.getStreamType());
         if (mediaStatus == MediaStatus.PLAYER_STATE_BUFFERING) {
             mCastController.setSubTitle(getString(R.string.ccl_loading));

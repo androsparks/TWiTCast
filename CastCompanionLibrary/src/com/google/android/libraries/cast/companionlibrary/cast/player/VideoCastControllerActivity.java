@@ -309,6 +309,8 @@ public class VideoCastControllerActivity extends AppCompatActivity implements
         mStart.setVisibility(visibility);
         mEnd.setVisibility(visibility);
         mSeekbar.setVisibility(visibility);
+        mRewind.setVisibility(visibility);
+        mForward.setVisibility(visibility);
     }
 
     @Override
@@ -373,6 +375,14 @@ public class VideoCastControllerActivity extends AppCompatActivity implements
                 break;
             default:
                 LOGE(TAG, "onQueueItemsUpdated(): Invalid NextPreviousPolicy has been set");
+        }
+
+        try {
+            MediaInfo selectedMedia = mCastManager.getRemoteMediaInformation();
+            boolean isLive = selectedMedia.getStreamType() == MediaInfo.STREAM_TYPE_LIVE;
+            adjustControllersForLiveStream(isLive);
+        } catch (Exception e) {
+            LOGE(TAG, "Cannot adjust controllers for live stream", e);
         }
     }
 
