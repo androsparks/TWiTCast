@@ -382,7 +382,7 @@ public class VideoCastControllerActivity extends AppCompatActivity implements
             boolean isLive = selectedMedia.getStreamType() == MediaInfo.STREAM_TYPE_LIVE;
             adjustControllersForLiveStream(isLive);
         } catch (Exception e) {
-            LOGE(TAG, "Cannot adjust controllers for live stream", e);
+            LOGE(TAG, "Cannot adjust controllers for live stream");
         }
     }
 

@@ -454,7 +454,8 @@ public class VideoCastControllerFragment extends Fragment implements
         }
 
         try {
-            boolean isLive = mSelectedMedia.getStreamType() == MediaInfo.STREAM_TYPE_LIVE;
+            MediaInfo selectedMedia = mSelectedMedia;
+            boolean isLive = selectedMedia.getStreamType() == MediaInfo.STREAM_TYPE_LIVE;
             mCastController.adjustControllersForLiveStream(isLive);
         } catch (Exception e) {
             LOGE(TAG, "Cannot adjust controllers for live stream", e);
@@ -822,16 +823,15 @@ public class VideoCastControllerFragment extends Fragment implements
                 restartTrickplayTimer();
                 break;
             case MediaStatus.PLAYER_STATE_PLAYING:
-                mCastManager.pause();
-                mPlaybackState = MediaStatus.PLAYER_STATE_BUFFERING;
+                if (mSelectedMedia.getStreamType() == MediaInfo.STREAM_TYPE_LIVE) {
+                    mCastManager.stop();
+                } else {
+                    mCastManager.pause();
+                    mPlaybackState = MediaStatus.PLAYER_STATE_BUFFERING;
+                }
                 break;
             case MediaStatus.PLAYER_STATE_IDLE:
-                if ((mSelectedMedia.getStreamType() == MediaInfo.STREAM_TYPE_LIVE)
-                        && (mCastManager.getIdleReason() == MediaStatus.IDLE_REASON_CANCELED)) {
-                    mCastManager.play();
-                } else {
-                    mCastManager.loadMedia(mSelectedMedia, true, 0);
-                }
+                mCastManager.loadMedia(mSelectedMedia, true, 0);
                 mPlaybackState = MediaStatus.PLAYER_STATE_BUFFERING;
                 restartTrickplayTimer();
                 break;

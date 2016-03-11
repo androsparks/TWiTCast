@@ -322,12 +322,17 @@ public class VideoCastManager extends BaseCastManager
             TransientNetworkDisconnectionException, NoConnectionException {
         checkConnectivity();
         if (mState == MediaStatus.PLAYER_STATE_PLAYING) {
-            pause();
+            if (isRemoteStreamLive()) {
+                stop();
+            } else {
+                pause();
+            }
         } else {
             boolean isLive = isRemoteStreamLive();
-            if ((mState == MediaStatus.PLAYER_STATE_PAUSED && !isLive)
-                    || (mState == MediaStatus.PLAYER_STATE_IDLE && isLive)) {
+            if ((mState == MediaStatus.PLAYER_STATE_PAUSED && !isLive)) {
                 play();
+            } else if (mState == MediaStatus.PLAYER_STATE_IDLE && isLive) {
+                loadMedia(getRemoteMediaInformation(), true, 0);
             }
         }
     }
@@ -1787,10 +1792,13 @@ public class VideoCastManager extends BaseCastManager
         checkConnectivity();
         boolean isPlaying = isRemoteMediaPlaying();
         if (isPlaying) {
-            pause();
+            if (isRemoteStreamLive()) {
+                stop();
+            } else {
+                pause();
+            }
         } else {
-            if (mState == MediaStatus.PLAYER_STATE_IDLE
-                    && mIdleReason == MediaStatus.IDLE_REASON_FINISHED) {
+            if (mState == MediaStatus.PLAYER_STATE_IDLE) {
                 loadMedia(getRemoteMediaInformation(), true, 0);
             } else {
                 play();
