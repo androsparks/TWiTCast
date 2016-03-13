@@ -85,6 +85,7 @@ public class VideoCastControllerActivity extends AppCompatActivity implements
     private TextView mStart;
     private TextView mEnd;
     private SeekBar mSeekbar;
+    private TextView mLine1;
     private TextView mLine2;
     private ProgressBar mLoading;
     private double mVolumeIncrement;
@@ -168,6 +169,7 @@ public class VideoCastControllerActivity extends AppCompatActivity implements
         mStart = (TextView) findViewById(R.id.start_text);
         mEnd = (TextView) findViewById(R.id.end_text);
         mSeekbar = (SeekBar) findViewById(R.id.seekbar);
+        mLine1 = (TextView) findViewById(R.id.textview1);
         mLine2 = (TextView) findViewById(R.id.textview2);
         mLoading = (ProgressBar) findViewById(R.id.progressbar1);
         mControllers = findViewById(R.id.controllers);
@@ -456,7 +458,7 @@ public class VideoCastControllerActivity extends AppCompatActivity implements
 
     @Override
     public void setTitle(String text) {
-        mToolbar.setTitle(text);
+        mLine1.setText(text);
     }
 
     @Override

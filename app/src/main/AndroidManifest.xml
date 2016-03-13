@@ -22,8 +22,7 @@
 
         <activity
             android:name=".misc.SplashActivity"
-            android:theme="@style/SplashTheme"
-            android:screenOrientation="portrait">
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -31,16 +30,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".misc.MenuPagerActivity"
-            android:screenOrientation="portrait"/>
+            android:name=".misc.MenuPagerActivity"/>
         <activity
             android:name=".episode.EpisodeListActivity"
-            android:parentActivityName=".misc.MenuPagerActivity"
-            android:screenOrientation="portrait"/>
+            android:parentActivityName=".misc.MenuPagerActivity"/>
         <activity
             android:name="com.google.android.libraries.cast.companionlibrary.cast.player.VideoCastControllerActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/app_name"
+            android:label=""
             android:launchMode="singleTask"
             android:parentActivityName=".misc.MenuPagerActivity"
             android:theme="@style/Theme.CastVideosTheme">

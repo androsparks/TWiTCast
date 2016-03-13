@@ -17,6 +17,8 @@ import com.tragicfruit.twitcast.show.ShowListFragment;
 
 public class MenuPagerActivity extends GoogleCastActivity
         implements ShowListFragment.Callbacks, LatestEpisodesFragment.Callbacks {
+    private static final String KEY_PROGRESS_SHOWN = "progress_shown";
+
     private static final Fragment[] mFragments = {
             ShowListFragment.newInstance(),
             LatestEpisodesFragment.newInstance(),
@@ -66,6 +68,20 @@ public class MenuPagerActivity extends GoogleCastActivity
         }
 
         mConnectingProgressBar = (ProgressBar) findViewById(R.id.cast_device_connecting_progress_bar);
+        if (savedInstanceState != null) {
+            boolean progressShown = savedInstanceState.getBoolean(KEY_PROGRESS_SHOWN);
+            if (progressShown) {
+                mConnectingProgressBar.setVisibility(View.VISIBLE);
+            } else {
+                mConnectingProgressBar.setVisibility(View.INVISIBLE);
+            }
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(KEY_PROGRESS_SHOWN, mConnectingProgressBar.isShown());
     }
 
     @Override

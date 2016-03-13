@@ -15,6 +15,7 @@ import com.google.android.gms.cast.ApplicationMetadata;
 import com.google.android.gms.cast.CastDevice;
 import com.google.android.gms.cast.MediaInfo;
 import com.google.android.gms.cast.MediaMetadata;
+import com.google.android.gms.cast.MediaQueueItem;
 import com.google.android.gms.common.images.WebImage;
 import com.google.android.libraries.cast.companionlibrary.cast.BaseCastManager;
 import com.google.android.libraries.cast.companionlibrary.cast.CastConfiguration;
@@ -92,6 +93,11 @@ public abstract class GoogleCastActivity extends AppCompatActivity
                 if (mSelectedMediaInfo != null) {
                     showProgressBar();
                 }
+            }
+
+            @Override
+            public void onRemoteMediaPreloadStatusUpdated(MediaQueueItem item) {
+                hideProgressBar();
             }
         };
     }
@@ -255,9 +261,9 @@ public abstract class GoogleCastActivity extends AppCompatActivity
         }
 
         Log.d(TAG, "Playing from url: " + mSelectedMediaInfo.getContentId());
+        showProgressBar();
 
         try {
-            hideProgressBar();
             if (!mCastManager.isRemoteMediaLoaded()) { // beginning episode
                 mCastManager.startVideoCastControllerActivity(this, mSelectedMediaInfo, mPosition, true);
             }
@@ -266,7 +272,6 @@ public abstract class GoogleCastActivity extends AppCompatActivity
             mPosition = 0;
         } catch (Exception e) {
             // Cast device not ready - will play automatically once connected
-            showProgressBar();
         }
     }
 

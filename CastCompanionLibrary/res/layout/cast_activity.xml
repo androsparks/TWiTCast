@@ -22,14 +22,6 @@
     android:background="@color/ccl_cast_activity_background_color"
     tools:context=".cast.player.VideoCastControllerActivity">
 
-    <ImageView
-        android:id="@+id/pageview"
-        android:layout_width="@dimen/ccl_player_cover_art_size"
-        android:layout_height="@dimen/ccl_player_cover_art_size"
-        android:layout_marginTop="@dimen/ccl_player_cover_art_margin_top"
-        android:layout_centerHorizontal="true"
-        android:scaleType="centerInside" />
-
     <com.google.android.libraries.cast.companionlibrary.widgets.MiniController
         android:id="@+id/miniController1"
         android:layout_width="fill_parent"
@@ -146,13 +138,12 @@
                     android:progressDrawable="@drawable/seekbar"
                     android:minHeight="2dp"
                     android:maxHeight="2dp"
-                    android:layout_width="230dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_centerHorizontal="true"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"/>
+                    android:layout_marginLeft="60dp"
+                    android:layout_marginRight="60dp"/>
 
             </RelativeLayout>
 
@@ -165,6 +156,8 @@
             android:layout_above="@+id/textview2"
             android:ellipsize="end"
             android:gravity="center_horizontal"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
             android:maxLines="1"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@color/ccl_cast_activity_progress_text_color" />
@@ -178,9 +171,22 @@
             android:ellipsize="end"
             android:fontFamily="sans-serif-light"
             android:gravity="center_horizontal"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
             android:maxLines="1"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
             android:textColor="@color/ccl_cast_activity_progress_text_color" />
+
+        <ImageView
+            android:id="@+id/pageview"
+            android:layout_above="@id/textview1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="80dp"
+            android:paddingLeft="50dp"
+            android:paddingRight="50dp"
+            android:scaleType="centerInside" />
+
     </RelativeLayout>
 
     <ProgressBar

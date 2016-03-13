@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
@@ -53,7 +54,6 @@ public class ShowListFragment extends Fragment {
     private static final int REQUEST_SHOW_EPISODES = 1;
 
     private AutofitRecyclerView mRecyclerView;
-    private UpdatingShowsFragment mLoadingDialog;
     private TWiTLab mDatabase;
     private FetchShowsTask mFetchShowsTask;
     private FetchCoverArtTask mFetchCoverArtTask;
@@ -248,23 +248,25 @@ public class ShowListFragment extends Fragment {
 
     private void showLoadingDialog() {
         try {
-            if (mLoadingDialog == null || !mLoadingDialog.isAdded()) {
-                mLoadingDialog = UpdatingShowsFragment.newInstance();
-                FragmentManager fm = getFragmentManager();
-                mLoadingDialog.show(fm, DIALOG_UPDATING_SHOWS);
+            FragmentManager fm = getFragmentManager();
+            Fragment fragment = fm.findFragmentByTag(DIALOG_UPDATING_SHOWS);
+
+            if (fragment == null) {
+                UpdatingShowsFragment dialog = UpdatingShowsFragment.newInstance();
+                dialog.show(fm, DIALOG_UPDATING_SHOWS);
             }
         } catch (Exception e) {
-            Log.e(TAG, "Error showing loading dialog", e);
+            Log.e(TAG, "Error showing loading dialog");
         }
     }
 
     private void dismissLoadingDialog() {
         try {
-            if (mLoadingDialog != null && mLoadingDialog.isAdded()) {
-                mLoadingDialog.dismiss();
-            }
+            FragmentManager fm = getFragmentManager();
+            DialogFragment dialog = (DialogFragment) fm.findFragmentByTag(DIALOG_UPDATING_SHOWS);
+            dialog.dismiss();
         } catch (Exception e) {
-            Log.e(TAG, "Error dismissing loading dialog", e);
+            Log.e(TAG, "Error dismissing loading dialog");
         }
     }
 

@@ -14,6 +14,8 @@ import com.tragicfruit.twitcast.R;
  * Created by jerem on 23/11/2015.
  */
 public abstract class SingleFragmentActivity extends GoogleCastActivity {
+    private static final String KEY_PROGRESS_SHOWN = "progress_shown";
+
     private ProgressBar mConnectingProgressBar;
 
     protected abstract Fragment createFragment();
@@ -29,6 +31,14 @@ public abstract class SingleFragmentActivity extends GoogleCastActivity {
         setContentView(getLayoutResId());
 
         mConnectingProgressBar = (ProgressBar) findViewById(R.id.cast_device_connecting_progress_bar);
+        if (savedInstanceState != null) {
+            boolean progressShown = savedInstanceState.getBoolean(KEY_PROGRESS_SHOWN);
+            if (progressShown) {
+                mConnectingProgressBar.setVisibility(View.VISIBLE);
+            } else {
+                mConnectingProgressBar.setVisibility(View.INVISIBLE);
+            }
+        }
 
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.fragment_container);
@@ -39,6 +49,12 @@ public abstract class SingleFragmentActivity extends GoogleCastActivity {
                     .add(R.id.fragment_container, fragment)
                     .commit();
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(KEY_PROGRESS_SHOWN, mConnectingProgressBar.isShown());
     }
 
     @Override
