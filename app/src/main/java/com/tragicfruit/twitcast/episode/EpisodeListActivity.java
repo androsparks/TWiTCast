@@ -7,13 +7,11 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
 import com.tragicfruit.twitcast.R;
-import com.tragicfruit.twitcast.misc.GoogleCastActivity;
 import com.tragicfruit.twitcast.misc.SingleFragmentActivity;
 
 /**
@@ -22,6 +20,7 @@ import com.tragicfruit.twitcast.misc.SingleFragmentActivity;
 public class EpisodeListActivity extends SingleFragmentActivity implements EpisodeListFragment.Callbacks {
     private static final String EXTRA_SHOW_ID = "nz.co.tragicfruit.twitcast.show_id";
 
+    private Fragment mFragment;
     private Toolbar mToolbar;
 
     public static Intent newIntent(Context context, int showId) {
@@ -44,15 +43,19 @@ public class EpisodeListActivity extends SingleFragmentActivity implements Episo
     @Override
     protected Fragment createFragment() {
         int showId = getIntent().getIntExtra(EXTRA_SHOW_ID, 0);
-        return EpisodeListFragment.newInstance(showId);
+        mFragment =  EpisodeListFragment.newInstance(showId);
+        return mFragment;
     }
 
     @Override
     public void showNoConnectionSnackbar() {
-        Snackbar.make(findViewById(R.id.fragment_container),
-                R.string.no_connection_snackbar,
-                Snackbar.LENGTH_LONG)
-                .show();
+        View view = findViewById(R.id.fragment_container);
+        if (view != null) {
+            Snackbar.make(view,
+                    R.string.no_connection_snackbar,
+                    Snackbar.LENGTH_LONG)
+                    .show();
+        }
     }
 
     @Override

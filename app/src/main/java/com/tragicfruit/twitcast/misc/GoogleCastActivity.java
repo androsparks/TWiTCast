@@ -40,7 +40,7 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * Created by Jeremy on 4/03/2016.
  */
-public class GoogleCastActivity extends AppCompatActivity
+public abstract class GoogleCastActivity extends AppCompatActivity
         implements LatestEpisodesFragment.Callbacks, LiveStreamFragment.Callbacks, EpisodeListFragment.Callbacks {
     private static final String TAG = "GoogleCastActivity";
 
@@ -89,10 +89,7 @@ public class GoogleCastActivity extends AppCompatActivity
                 }
 
                 if (mSelectedMediaInfo != null) {
-                    Toast.makeText(GoogleCastActivity.this,
-                            R.string.chromecast_connecting,
-                            Toast.LENGTH_LONG)
-                            .show();
+                    showProgressBar();
                 }
             }
         };
@@ -235,15 +232,13 @@ public class GoogleCastActivity extends AppCompatActivity
         Log.d(TAG, "Playing from url: " + mSelectedMediaInfo.getContentId());
 
         try {
+            hideProgressBar();
             mCastManager.loadMedia(mSelectedMediaInfo, true, 0);
             mCastManager.startVideoCastControllerActivity(this, mSelectedMediaInfo, 0, true);
             mSelectedMediaInfo = null;
         } catch (Exception e) {
             // Cast device not ready - will play automatically once connected
-            Toast.makeText(this,
-                    R.string.chromecast_connecting,
-                    Toast.LENGTH_LONG)
-                    .show();
+            showProgressBar();
         }
     }
 
@@ -343,6 +338,9 @@ public class GoogleCastActivity extends AppCompatActivity
             return null;
         }
     }
+
+    public abstract void showProgressBar();
+    public abstract void hideProgressBar();
 
     @Override
     public void showNoConnectionSnackbar() {}

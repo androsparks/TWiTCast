@@ -7,6 +7,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.tragicfruit.twitcast.stream.LiveStreamFragment;
 import com.tragicfruit.twitcast.R;
@@ -30,6 +32,7 @@ public class MenuPagerActivity extends GoogleCastActivity
     private ViewPager mViewPager;
     private Toolbar mToolbar;
     private TabLayout mTabLayout;
+    private ProgressBar mConnectingProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +61,11 @@ public class MenuPagerActivity extends GoogleCastActivity
         });
 
         mTabLayout = (TabLayout) findViewById(R.id.tabs);
-        mTabLayout.setupWithViewPager(mViewPager);
+        if (mTabLayout != null) {
+            mTabLayout.setupWithViewPager(mViewPager);
+        }
+
+        mConnectingProgressBar = (ProgressBar) findViewById(R.id.cast_device_connecting_progress_bar);
     }
 
     @Override
@@ -78,9 +85,22 @@ public class MenuPagerActivity extends GoogleCastActivity
 
     @Override
     public void showNoConnectionSnackbar() {
-        Snackbar.make(findViewById(R.id.activity_menu_pager_layout),
-                R.string.no_connection_snackbar,
-                Snackbar.LENGTH_LONG)
-                .show();
+        View view = findViewById(R.id.activity_menu_pager_layout);
+        if (view != null) {
+            Snackbar.make(view,
+                    R.string.no_connection_snackbar,
+                    Snackbar.LENGTH_LONG)
+                    .show();
+        }
+    }
+
+    @Override
+    public void showProgressBar() {
+        mConnectingProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgressBar() {
+        mConnectingProgressBar.setVisibility(View.INVISIBLE);
     }
 }

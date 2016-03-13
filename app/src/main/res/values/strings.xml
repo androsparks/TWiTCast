@@ -18,7 +18,6 @@
     <string name="live_stream_tab_title">Live</string>
     <string name="no_connection_snackbar">No internet connection. Please try again later.</string>
     <string name="no_chromecast_toast">No cast device detected.</string>
-    <string name="chromecast_connecting">Casting with begin shortly.</string>
     <string name="refreshing_shows_error_toast">Error refresh shows. Please try again later.</string>
     <string name="twit_live_stream_title">TWiT Live</string>
     <string name="bitgravity_high_stream">BitGravity High</string>

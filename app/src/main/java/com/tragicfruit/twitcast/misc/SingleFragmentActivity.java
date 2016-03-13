@@ -4,15 +4,18 @@ import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 
 import com.tragicfruit.twitcast.R;
-import com.tragicfruit.twitcast.episode.EpisodeListFragment;
 
 /**
  * Created by jerem on 23/11/2015.
  */
 public abstract class SingleFragmentActivity extends GoogleCastActivity {
+    private ProgressBar mConnectingProgressBar;
+
     protected abstract Fragment createFragment();
 
     @LayoutRes
@@ -25,6 +28,8 @@ public abstract class SingleFragmentActivity extends GoogleCastActivity {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutResId());
 
+        mConnectingProgressBar = (ProgressBar) findViewById(R.id.cast_device_connecting_progress_bar);
+
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.fragment_container);
 
@@ -34,5 +39,15 @@ public abstract class SingleFragmentActivity extends GoogleCastActivity {
                     .add(R.id.fragment_container, fragment)
                     .commit();
         }
+    }
+
+    @Override
+    public void showProgressBar() {
+        mConnectingProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgressBar() {
+        mConnectingProgressBar.setVisibility(View.INVISIBLE);
     }
 }

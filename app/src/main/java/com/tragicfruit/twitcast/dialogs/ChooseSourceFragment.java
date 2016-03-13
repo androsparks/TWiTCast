@@ -1,4 +1,4 @@
-package com.tragicfruit.twitcast;
+package com.tragicfruit.twitcast.dialogs;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import com.tragicfruit.twitcast.R;
 import com.tragicfruit.twitcast.stream.StreamSource;
 import com.tragicfruit.twitcast.utils.QueryPreferences;
 

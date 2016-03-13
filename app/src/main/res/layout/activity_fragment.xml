@@ -28,7 +28,17 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1">
+
+        <ProgressBar
+            android:id="@+id/cast_device_connecting_progress_bar"
+            android:visibility="invisible"
+            style="?android:attr/progressBarStyle"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </FrameLayout>
 
     <com.google.android.libraries.cast.companionlibrary.widgets.MiniController
         android:id="@+id/miniController"

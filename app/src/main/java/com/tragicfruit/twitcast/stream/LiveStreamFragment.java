@@ -15,8 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.tragicfruit.twitcast.ChooseSourceFragment;
 import com.tragicfruit.twitcast.R;
+import com.tragicfruit.twitcast.dialogs.ChooseSourceFragment;
 import com.tragicfruit.twitcast.utils.QueryPreferences;
 
 /**
