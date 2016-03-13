@@ -63,7 +63,8 @@ public class EpisodeListFragment extends Fragment {
     private Callbacks mCallbacks;
 
     public interface Callbacks {
-        void playVideo(Episode episode);
+        void playVideo(Episode episode, int position);
+        void refreshVideo();
         void showNoConnectionSnackbar();
         void setToolbarColour(int toolbarColour, int statusBarColour);
     }
@@ -222,6 +223,7 @@ public class EpisodeListFragment extends Fragment {
         if (requestCode == REQUEST_QUALITY) {
             StreamQuality quality = ChooseQualityFragment.getStreamQuality(data);
             QueryPreferences.setStreamQuality(getActivity(), quality);
+            mCallbacks.refreshVideo();
         }
     }
 
@@ -262,7 +264,7 @@ public class EpisodeListFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            mCallbacks.playVideo(mEpisode);
+            mCallbacks.playVideo(mEpisode, 0);
         }
     }
 

@@ -3,8 +3,6 @@ package com.tragicfruit.twitcast.show;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
@@ -66,7 +64,7 @@ public class ShowListFragment extends Fragment {
     private Callbacks mCallbacks;
 
     public interface Callbacks {
-        void refreshShows();
+        void refreshLatestEpisodes();
         void showNoConnectionSnackbar();
     }
 
@@ -208,7 +206,7 @@ public class ShowListFragment extends Fragment {
             StreamQuality quality = ChooseQualityFragment.getStreamQuality(data);
             QueryPreferences.setStreamQuality(getActivity(), quality);
         } else if (requestCode == REQUEST_SHOW_EPISODES) {
-            mCallbacks.refreshShows();
+            mCallbacks.refreshLatestEpisodes();
         }
     }
 
@@ -492,7 +490,7 @@ public class ShowListFragment extends Fragment {
             mDatabase.addEpisodes(episodeList);
             dismissLoadingDialog();
 
-            mCallbacks.refreshShows();
+            mCallbacks.refreshLatestEpisodes();
 
             TWiTLab.get(getActivity()).saveShows();
             TWiTLab.get(getActivity()).saveEpisodes();

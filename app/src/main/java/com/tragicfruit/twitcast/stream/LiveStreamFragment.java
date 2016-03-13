@@ -32,6 +32,7 @@ public class LiveStreamFragment extends Fragment {
 
     public interface Callbacks {
         void playLiveStream();
+        void refreshLiveStream();
     }
 
     public static LiveStreamFragment newInstance() {
@@ -89,6 +90,7 @@ public class LiveStreamFragment extends Fragment {
         if (requestCode == REQUEST_SOURCE) {
             StreamSource source = ChooseSourceFragment.getStreamSource(data);
             QueryPreferences.setStreamSource(getActivity(), source);
+            mCallbacks.refreshLiveStream();
         }
     }
 

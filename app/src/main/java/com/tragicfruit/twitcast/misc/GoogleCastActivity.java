@@ -49,6 +49,7 @@ public abstract class GoogleCastActivity extends AppCompatActivity
     private MenuItem mMediaRouteMenuItem;
     private MediaInfo mSelectedMediaInfo;
     private Episode mEpisodeToPlay;
+    private int mPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,8 +120,32 @@ public abstract class GoogleCastActivity extends AppCompatActivity
     }
 
     @Override
-    public void playVideo(Episode episode) {
+    public void refreshVideo() {
+        try {
+            if (mCastManager.isConnected() && mCastManager.isRemoteMediaLoaded()) {
+                int position = (int) mCastManager.getCurrentMediaPosition();
+                playVideo(mEpisodeToPlay, position);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error refreshing video", e);
+        }
+    }
+
+    @Override
+    public void refreshLiveStream() {
+        try {
+            if (mCastManager.isConnected() && mCastManager.isRemoteMediaLoaded()) {
+                playLiveStream();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error refreshing video", e);
+        }
+    }
+
+    @Override
+    public void playVideo(Episode episode, int position) {
         mEpisodeToPlay = episode;
+        mPosition = position;
 
         MediaMetadata mediaMetadata = new MediaMetadata(MediaMetadata.MEDIA_TYPE_MOVIE);
         mediaMetadata.putString(MediaMetadata.KEY_TITLE, mEpisodeToPlay.getShow().getTitle());
@@ -233,9 +258,12 @@ public abstract class GoogleCastActivity extends AppCompatActivity
 
         try {
             hideProgressBar();
-            mCastManager.loadMedia(mSelectedMediaInfo, true, 0);
-            mCastManager.startVideoCastControllerActivity(this, mSelectedMediaInfo, 0, true);
+            if (!mCastManager.isRemoteMediaLoaded()) { // beginning episode
+                mCastManager.startVideoCastControllerActivity(this, mSelectedMediaInfo, mPosition, true);
+            }
+            mCastManager.loadMedia(mSelectedMediaInfo, true, mPosition);
             mSelectedMediaInfo = null;
+            mPosition = 0;
         } catch (Exception e) {
             // Cast device not ready - will play automatically once connected
             showProgressBar();

@@ -50,7 +50,8 @@ public class LatestEpisodesFragment extends Fragment {
     private Callbacks mCallbacks;
 
     public interface Callbacks {
-        void playVideo(Episode episode);
+        void playVideo(Episode episode, int position);
+        void refreshVideo();
         void showNoConnectionSnackbar();
     }
 
@@ -133,6 +134,7 @@ public class LatestEpisodesFragment extends Fragment {
         if (requestCode == REQUEST_QUALITY) {
             StreamQuality quality = ChooseQualityFragment.getStreamQuality(data);
             QueryPreferences.setStreamQuality(getActivity(), quality);
+            mCallbacks.refreshVideo();
         }
     }
 
@@ -196,7 +198,7 @@ public class LatestEpisodesFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            mCallbacks.playVideo(mEpisode);
+            mCallbacks.playVideo(mEpisode, 0);
         }
     }
 

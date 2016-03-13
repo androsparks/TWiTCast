@@ -69,7 +69,7 @@ public class MenuPagerActivity extends GoogleCastActivity
     }
 
     @Override
-    public void refreshShows() {
+    public void refreshLatestEpisodes() {
         LatestEpisodesFragment latestEpisodesFragment = null;
         for (Fragment fragment : mFragments) {
             if (fragment instanceof LatestEpisodesFragment) {
