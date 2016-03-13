@@ -25,4 +25,7 @@
     <string name="flosoft_stream">Flosoft</string>
     <string name="audio_stream">Audio</string>
     <string name="choose_source_menu_item">Choose source</string>
+    <string name="upcoming_episode">%1$s %2$s</string>
+    <string name="today_upcoming_title">Today</string>
+    <string name="tomorrow_upcoming_title">Tomorrow</string>
 </resources>

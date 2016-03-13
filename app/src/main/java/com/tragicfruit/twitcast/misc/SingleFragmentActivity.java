@@ -11,7 +11,7 @@ import android.widget.ProgressBar;
 import com.tragicfruit.twitcast.R;
 
 /**
- * Created by jerem on 23/11/2015.
+ * Created by Jeremy on 23/11/2015.
  */
 public abstract class SingleFragmentActivity extends GoogleCastActivity {
     private static final String KEY_PROGRESS_SHOWN = "progress_shown";

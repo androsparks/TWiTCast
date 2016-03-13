@@ -61,6 +61,7 @@ public class MenuPagerActivity extends GoogleCastActivity
                 return getString(mFragmentTitles[position]);
             }
         });
+        mViewPager.setOffscreenPageLimit(2);
 
         mTabLayout = (TabLayout) findViewById(R.id.tabs);
         if (mTabLayout != null) {

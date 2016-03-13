@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
+import com.tragicfruit.twitcast.UpcomingEpisode;
 import com.tragicfruit.twitcast.episode.Episode;
 import com.tragicfruit.twitcast.R;
 import com.tragicfruit.twitcast.show.Show;
@@ -35,6 +36,7 @@ import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -48,7 +50,8 @@ import javax.xml.parsers.ParserConfigurationException;
  */
 public class TWiTFetcher {
     private static final String TAG = "TWiTFetcher";
-    private static final Uri ENDPOINT = Uri.parse("https://twit.tv/api/v1.0");
+    private static final Uri TWIT_API_ENDPOINT = Uri.parse("https://twit.tv/api/v1.0");
+    private static final Uri GOOGLE_CALENDAR_ENDPOINT = Uri.parse("https://www.googleapis.com/calendar/v3/calendars");
 
     private TWiTLab mDatabase;
     private Context mContext;
@@ -58,7 +61,7 @@ public class TWiTFetcher {
         mDatabase = TWiTLab.get(context);
     }
 
-    public String readRssFeed(String urlSpec) throws IOException {
+    public byte[] getUrlBytes(String urlSpec) throws IOException {
         URL url = new URL(urlSpec);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
@@ -76,10 +79,14 @@ public class TWiTFetcher {
                 out.write(buffer, 0, bytesRead);
             }
             out.close();
-            return new String(out.toByteArray());
+            return out.toByteArray();
         } finally {
             connection.disconnect();
         }
+    }
+
+    public String getUrlString(String urlSpec) throws IOException {
+        return new String(getUrlBytes(urlSpec));
     }
 
     public File getCoverArt(Show show) throws IOException {
@@ -129,7 +136,7 @@ public class TWiTFetcher {
         return url.substring(startIndex + 1, endIndex);
     }
 
-    public byte[] getUrlBytes(String urlSpec) throws IOException {
+    public byte[] getApiUrlBytes(String urlSpec) throws IOException {
         URL url = new URL(urlSpec);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestProperty("app-id", SecretConstants.TWIT_API_ID);
@@ -155,18 +162,80 @@ public class TWiTFetcher {
         }
     }
 
-    public String getUrlString(String urlSpec) throws IOException {
-        return new String(getUrlBytes(urlSpec));
+    public String getApiUrlString(String urlSpec) throws IOException {
+        return new String(getApiUrlBytes(urlSpec));
+    }
+
+    public List<UpcomingEpisode> fetchUpcomingEpisodes() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'H:m:ssZZZZZ");
+        String timeNow = dateFormat.format(new Date());
+
+        Calendar c = Calendar.getInstance();
+        c.setTime(new Date());
+        c.add(Calendar.DATE, 2); // advance date 2 days
+        Date twoDaysTime = c.getTime();
+
+        String timeInTwoDays = dateFormat.format(twoDaysTime);
+
+        Uri uri = GOOGLE_CALENDAR_ENDPOINT.buildUpon()
+                .appendPath(Constants.GOOGLE_CALENDAR_ID)
+                .appendPath("events")
+                .appendQueryParameter("key", SecretConstants.GOOGLE_CALENDAR_API_KEY)
+                .appendQueryParameter("singleEvents", "true")
+                .appendQueryParameter("orderBy", "startTime")
+                .appendQueryParameter("timeMin", timeNow)
+                .appendQueryParameter("timeMax", timeInTwoDays)
+                .build();
+
+        try {
+            String jsonBody = getUrlString(uri.toString());
+            JSONObject jsonObject = new JSONObject(jsonBody);
+            return parseUpcomingEpisodes(jsonObject);
+
+        } catch (JSONException | ParseException e) {
+            Log.e(TAG, "Failed to parse JSON", e);
+            return null;
+        } catch (IOException ioe) {
+            Log.e(TAG, "Error fetching upcoming episodes", ioe);
+            return null;
+        }
+    }
+
+    private List<UpcomingEpisode> parseUpcomingEpisodes(JSONObject json) throws JSONException, ParseException {
+        List<UpcomingEpisode> upcomingEpisodeList = new ArrayList<>();
+        JSONArray items = json.getJSONArray("items");
+
+        for (int i = 0; i < items.length(); i++) {
+            JSONObject item = items.getJSONObject(i);
+
+            UpcomingEpisode episode = new UpcomingEpisode();
+            episode.setTitle(item.getString("summary"));
+
+            JSONObject start = item.getJSONObject("start");
+            String startDateString = start.getString("dateTime");
+
+            GregorianCalendar calendar = new GregorianCalendar();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'H:m:ssZZZZZ");
+            dateFormat.setCalendar(calendar);
+            calendar.setTime(dateFormat.parse(startDateString));
+
+            episode.setAiringDate(calendar.getTime());
+
+            Log.d(TAG, episode.getTitle() + ": " + episode.getAiringDate());
+            upcomingEpisodeList.add(episode);
+        }
+
+        return upcomingEpisodeList;
     }
 
     public List<Show> fetchShows() {
         try {
-            Uri uri = ENDPOINT.buildUpon()
+            Uri uri = TWIT_API_ENDPOINT.buildUpon()
                     .appendPath("shows")
                     .appendQueryParameter("shows_active", "1")
                     .build();
 
-            String jsonBody = getUrlString(uri.toString());
+            String jsonBody = getApiUrlString(uri.toString());
             JSONObject jsonObject = new JSONObject(jsonBody);
             return parseShows(jsonObject);
 
@@ -266,7 +335,7 @@ public class TWiTFetcher {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
-            String feed = readRssFeed(feedUrl);
+            String feed = getUrlString(feedUrl);
             Document document = builder.parse(new InputSource(new StringReader(feed)));
 
             NodeList episodeNodeList = document.getElementsByTagName("item");
@@ -315,7 +384,7 @@ public class TWiTFetcher {
 
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
-            String feed = readRssFeed(feedUrl);
+            String feed = getUrlString(feedUrl);
             Document document = builder.parse(new InputSource(new StringReader(feed)));
 
             NodeList episodeNodeList = document.getElementsByTagName("item");
