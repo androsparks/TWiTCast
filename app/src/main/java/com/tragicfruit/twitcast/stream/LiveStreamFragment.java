@@ -16,16 +16,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tragicfruit.twitcast.R;
-import com.tragicfruit.twitcast.UpcomingEpisode;
 import com.tragicfruit.twitcast.dialogs.ChooseSourceFragment;
 import com.tragicfruit.twitcast.utils.QueryPreferences;
 import com.tragicfruit.twitcast.utils.TWiTFetcher;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -40,7 +38,7 @@ public class LiveStreamFragment extends Fragment {
     private static final int REQUEST_SOURCE = 0;
     private static final String DIALOG_CHOOSE_SOURCE = "dialog_choose_source";
 
-    private Button mPlayButton;
+    private ImageView mPlayButton;
     private RecyclerView mTodayRecyclerView;
     private RecyclerView mTomorrowRecyclerView;
 
@@ -69,7 +67,7 @@ public class LiveStreamFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_live_stream, container, false);
 
-        mPlayButton = (Button) v.findViewById(R.id.twit_live_play_button);
+        mPlayButton = (ImageView) v.findViewById(R.id.twit_live_play_button);
         mPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,9 +77,11 @@ public class LiveStreamFragment extends Fragment {
 
         mTodayRecyclerView = (RecyclerView) v.findViewById(R.id.today_upcoming_shows_recycler_view);
         mTodayRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mTodayRecyclerView.setNestedScrollingEnabled(false);
 
         mTomorrowRecyclerView = (RecyclerView) v.findViewById(R.id.tomorrow_upcoming_shows_recycler_view);
         mTomorrowRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mTomorrowRecyclerView.setNestedScrollingEnabled(false);
 
         return v;
     }
@@ -147,10 +147,7 @@ public class LiveStreamFragment extends Fragment {
         }
 
         public void bindUpcomingEpisode(UpcomingEpisode episode) {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("h:mm a");
-            String airingDate = dateFormat.format(episode.getAiringDate());
-
-            mTextView.setText(getString(R.string.upcoming_episode, airingDate, episode.getTitle()));
+            mTextView.setText(episode.getDisplayTitle());
         }
     }
 

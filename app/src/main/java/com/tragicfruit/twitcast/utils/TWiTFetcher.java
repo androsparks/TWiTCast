@@ -4,7 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
-import com.tragicfruit.twitcast.UpcomingEpisode;
+import com.tragicfruit.twitcast.stream.UpcomingEpisode;
 import com.tragicfruit.twitcast.episode.Episode;
 import com.tragicfruit.twitcast.R;
 import com.tragicfruit.twitcast.show.Show;
