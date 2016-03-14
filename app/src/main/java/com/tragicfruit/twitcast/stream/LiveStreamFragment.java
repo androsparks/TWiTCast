@@ -41,6 +41,8 @@ public class LiveStreamFragment extends Fragment {
     private ImageView mPlayButton;
     private RecyclerView mTodayRecyclerView;
     private RecyclerView mTomorrowRecyclerView;
+    private List<UpcomingEpisode> mTodayList;
+    private List<UpcomingEpisode> mTomorrowList;
 
     private Callbacks mCallbacks;
 
@@ -83,13 +85,20 @@ public class LiveStreamFragment extends Fragment {
         mTomorrowRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mTomorrowRecyclerView.setNestedScrollingEnabled(false);
 
+        setupAdapters();
+
         return v;
     }
 
-    private void setupAdapters(List<UpcomingEpisode> todayList, List<UpcomingEpisode> tomorrowList) {
+    private void setupAdapters() {
         if (isAdded()) {
-            mTodayRecyclerView.setAdapter(new UpcomingEpisodesAdapter(todayList));
-            mTomorrowRecyclerView.setAdapter(new UpcomingEpisodesAdapter(tomorrowList));
+            if (mTodayList != null) {
+                mTodayRecyclerView.setAdapter(new UpcomingEpisodesAdapter(mTodayList));
+            }
+
+            if (mTomorrowList != null) {
+                mTomorrowRecyclerView.setAdapter(new UpcomingEpisodesAdapter(mTomorrowList));
+            }
         }
     }
 
@@ -190,19 +199,19 @@ public class LiveStreamFragment extends Fragment {
                 return;
             }
 
-            List<UpcomingEpisode> todayList = new ArrayList<>();
-            List<UpcomingEpisode> tomorrowList = new ArrayList<>();
+            mTodayList = new ArrayList<>();
+            mTomorrowList = new ArrayList<>();
 
             // allocated to different lists
             for (UpcomingEpisode episode : upcomingEpisodes) {
                 if (isToday(episode.getAiringDate())) {
-                    todayList.add(episode);
+                    mTodayList.add(episode);
                 } else if (isTomorrow(episode.getAiringDate())) {
-                    tomorrowList.add(episode);
+                    mTomorrowList.add(episode);
                 }
             }
 
-            setupAdapters(todayList, tomorrowList);
+            setupAdapters();
         }
 
         private boolean isToday(Date date) {
