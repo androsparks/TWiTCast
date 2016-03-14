@@ -41,6 +41,8 @@ public class LiveStreamFragment extends Fragment {
     private ImageView mPlayButton;
     private RecyclerView mTodayRecyclerView;
     private RecyclerView mTomorrowRecyclerView;
+    private TextView mTodayLoading;
+    private TextView mTomorrowLoading;
 
     private FetchUpcomingEpisodesTask mUpcomingEpisodesTask;
     private List<UpcomingEpisode> mTodayList;
@@ -87,6 +89,9 @@ public class LiveStreamFragment extends Fragment {
         mTomorrowRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mTomorrowRecyclerView.setNestedScrollingEnabled(false);
 
+        mTodayLoading = (TextView) v.findViewById(R.id.today_loading_text);
+        mTomorrowLoading = (TextView) v.findViewById(R.id.tomorrow_loading_text);
+
         setupAdapters();
 
         return v;
@@ -103,11 +108,17 @@ public class LiveStreamFragment extends Fragment {
     private void setupAdapters() {
         if (isAdded()) {
             if (mTodayList != null) {
+                mTodayLoading.setVisibility(View.GONE);
                 mTodayRecyclerView.setAdapter(new UpcomingEpisodesAdapter(mTodayList));
+            } else {
+                mTodayLoading.setText(R.string.upcoming_shows_error);
             }
 
             if (mTomorrowList != null) {
+                mTomorrowLoading.setVisibility(View.GONE);
                 mTomorrowRecyclerView.setAdapter(new UpcomingEpisodesAdapter(mTomorrowList));
+            } else {
+                mTomorrowLoading.setText(R.string.upcoming_shows_error);
             }
         }
     }
@@ -205,19 +216,21 @@ public class LiveStreamFragment extends Fragment {
 
         @Override
         protected void onPostExecute(List<UpcomingEpisode> upcomingEpisodes) {
-            if (isCancelled() || upcomingEpisodes == null) {
+            if (isCancelled()) {
                 return;
             }
 
-            mTodayList = new ArrayList<>();
-            mTomorrowList = new ArrayList<>();
+            if (upcomingEpisodes != null) {
+                mTodayList = new ArrayList<>();
+                mTomorrowList = new ArrayList<>();
 
-            // allocated to different lists
-            for (UpcomingEpisode episode : upcomingEpisodes) {
-                if (isToday(episode.getAiringDate())) {
-                    mTodayList.add(episode);
-                } else if (isTomorrow(episode.getAiringDate())) {
-                    mTomorrowList.add(episode);
+                // allocated to different lists
+                for (UpcomingEpisode episode : upcomingEpisodes) {
+                    if (isToday(episode.getAiringDate())) {
+                        mTodayList.add(episode);
+                    } else if (isTomorrow(episode.getAiringDate())) {
+                        mTomorrowList.add(episode);
+                    }
                 }
             }
 

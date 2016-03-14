@@ -27,4 +27,6 @@
     <string name="choose_source_menu_item">Choose source</string>
     <string name="today_upcoming_title">Today</string>
     <string name="tomorrow_upcoming_title">Tomorrow</string>
+    <string name="loading_upcoming_shows">Loading…</string>
+    <string name="upcoming_shows_error">Error loading upcoming shows.</string>
 </resources>
