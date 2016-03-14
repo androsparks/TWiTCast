@@ -41,9 +41,10 @@ public class LiveStreamFragment extends Fragment {
     private ImageView mPlayButton;
     private RecyclerView mTodayRecyclerView;
     private RecyclerView mTomorrowRecyclerView;
+
+    private FetchUpcomingEpisodesTask mUpcomingEpisodesTask;
     private List<UpcomingEpisode> mTodayList;
     private List<UpcomingEpisode> mTomorrowList;
-
     private Callbacks mCallbacks;
 
     public interface Callbacks {
@@ -61,7 +62,8 @@ public class LiveStreamFragment extends Fragment {
         setRetainInstance(true);
         setHasOptionsMenu(true);
 
-        new FetchUpcomingEpisodesTask().execute();
+        mUpcomingEpisodesTask = new FetchUpcomingEpisodesTask();
+        mUpcomingEpisodesTask.execute();
     }
 
     @Nullable
@@ -88,6 +90,14 @@ public class LiveStreamFragment extends Fragment {
         setupAdapters();
 
         return v;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mUpcomingEpisodesTask != null) {
+            mUpcomingEpisodesTask.cancel(false);
+        }
     }
 
     private void setupAdapters() {
@@ -195,7 +205,7 @@ public class LiveStreamFragment extends Fragment {
 
         @Override
         protected void onPostExecute(List<UpcomingEpisode> upcomingEpisodes) {
-            if (upcomingEpisodes == null) {
+            if (isCancelled() || upcomingEpisodes == null) {
                 return;
             }
 

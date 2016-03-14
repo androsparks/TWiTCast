@@ -597,8 +597,8 @@ public class VideoCastControllerFragment extends Fragment implements
      */
     private void showImage(final Uri uri) {
         if (uri == null) {
-            mCastController.setImage(BitmapFactory.decodeResource(getActivity().getResources(),
-                    R.drawable.album_art_placeholder_large));
+//            mCastController.setImage(BitmapFactory.decodeResource(getActivity().getResources(),
+//                    R.drawable.album_art_placeholder_large));
             return;
         }
         if (mUrlAndBitmap != null && mUrlAndBitmap.isMatch(uri)) {

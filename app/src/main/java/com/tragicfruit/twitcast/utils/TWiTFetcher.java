@@ -221,7 +221,7 @@ public class TWiTFetcher {
 
             episode.setAiringDate(calendar.getTime());
 
-            Log.d(TAG, episode.getTitle() + ": " + episode.getAiringDate());
+            Log.d(TAG, "Upcoming show: " +  episode.getTitle() + " - " + episode.getAiringDate());
             upcomingEpisodeList.add(episode);
         }
 

@@ -94,11 +94,6 @@ public abstract class GoogleCastActivity extends AppCompatActivity
                     showProgressBar();
                 }
             }
-
-            @Override
-            public void onRemoteMediaPreloadStatusUpdated(MediaQueueItem item) {
-                hideProgressBar();
-            }
         };
     }
 
@@ -268,6 +263,7 @@ public abstract class GoogleCastActivity extends AppCompatActivity
                 mCastManager.startVideoCastControllerActivity(this, mSelectedMediaInfo, mPosition, true);
             }
             mCastManager.loadMedia(mSelectedMediaInfo, true, mPosition);
+            hideProgressBar();
             mSelectedMediaInfo = null;
             mPosition = 0;
         } catch (Exception e) {
