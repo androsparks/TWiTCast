@@ -189,11 +189,9 @@ public class LatestEpisodesFragment extends Fragment {
             mEpisode = episode;
             mCoverArtImageView.setImageDrawable(episode.getShow().getCoverArt());
             mShowTitleTextView.setText(episode.getShow().getTitle());
-            mNumberTitleTextView.setText(episode.getDisplayTitle());
+            mNumberTitleTextView.setText(episode.getShortTitle());
             mRunningTimeTextView.setText(episode.getRunningTime());
-
-            String dateString = DateFormat.format("MMM d", episode.getPublicationDate()).toString();
-            mDateTextView.setText(dateString);
+            mDateTextView.setText(episode.getDisplayDate());
         }
 
         @Override

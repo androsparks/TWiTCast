@@ -1,8 +1,12 @@
 package com.tragicfruit.twitcast.episode;
 
+import android.text.format.DateFormat;
+
 import com.tragicfruit.twitcast.show.Show;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 /**
  * Created by Jeremy on 29/02/2016.
@@ -33,6 +37,59 @@ public class Episode {
 
     public void setPublicationDate(Date publicationDate) {
         mPublicationDate = publicationDate;
+    }
+
+    public String getDisplayDate() {
+        // today
+        Calendar calendar = new GregorianCalendar();
+
+        // midnight today
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        if (mPublicationDate.after(calendar.getTime())) {
+            return "Today";
+        }
+
+        // midnight yesterday
+        calendar.add(Calendar.DAY_OF_MONTH, -1);
+        if (mPublicationDate.after(calendar.getTime())) {
+            return "Yesterday";
+        }
+
+        // midnight 2 days ago
+        calendar.add(Calendar.DAY_OF_MONTH, -1);
+        if (mPublicationDate.after(calendar.getTime())) {
+            return "2 days ago";
+        }
+
+        // midnight 3 days ago
+        calendar.add(Calendar.DAY_OF_MONTH, -1);
+        if (mPublicationDate.after(calendar.getTime())) {
+            return "3 days ago";
+        }
+
+        // midnight 4 days ago
+        calendar.add(Calendar.DAY_OF_MONTH, -1);
+        if (mPublicationDate.after(calendar.getTime())) {
+            return "4 days ago";
+        }
+
+        // midnight 5 days ago
+        calendar.add(Calendar.DAY_OF_MONTH, -1);
+        if (mPublicationDate.after(calendar.getTime())) {
+            return "5 days ago";
+        }
+
+        // midnight 6 days ago
+        calendar.add(Calendar.DAY_OF_MONTH, -1);
+        if (mPublicationDate.after(calendar.getTime())) {
+            return "6 days ago";
+        }
+
+        return DateFormat.format("MMM d", mPublicationDate).toString();
     }
 
     public String getSubtitle() {
@@ -99,7 +156,7 @@ public class Episode {
         mShow = show;
     }
 
-    public String getDisplayTitle() {
+    public String getShortTitle() {
         return mTitle.replace(mShow.getTitle(), mShow.getShortCode());
     }
 

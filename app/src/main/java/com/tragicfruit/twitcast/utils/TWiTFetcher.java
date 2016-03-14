@@ -213,13 +213,7 @@ public class TWiTFetcher {
 
             JSONObject start = item.getJSONObject("start");
             String startDateString = start.getString("dateTime");
-
-            GregorianCalendar calendar = new GregorianCalendar();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'H:m:ssZZZZZ");
-            dateFormat.setCalendar(calendar);
-            calendar.setTime(dateFormat.parse(startDateString));
-
-            episode.setAiringDate(calendar.getTime());
+            episode.setAiringDate(parseDate(startDateString, "yyyy-MM-dd'T'H:m:ssZZZZZ"));
 
             Log.d(TAG, "Upcoming show: " +  episode.getTitle() + " - " + episode.getAiringDate());
             upcomingEpisodeList.add(episode);
@@ -396,7 +390,7 @@ public class TWiTFetcher {
                 episode.setTitle(title);
 
                 String pubDate = episodeElement.getElementsByTagName("pubDate").item(0).getTextContent();
-                episode.setPublicationDate(parseDate(pubDate));
+                episode.setPublicationDate(parseDate(pubDate, "EEE, d MMM yyyy k:m:s ZZZ"));
 
                 String subtitle = episodeElement.getElementsByTagName("itunes:subtitle").item(0).getTextContent();
                 episode.setSubtitle(subtitle);
@@ -423,12 +417,12 @@ public class TWiTFetcher {
         }
     }
 
-    private Date parseDate(String dateString) {
+    private Date parseDate(String dateString, String format) {
         try {
 //            TimeZone timeZone = TimeZone.getTimeZone("GMT");
 //            Calendar calendar = Calendar.getInstance(timeZone);
             GregorianCalendar calendar = new GregorianCalendar();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, d MMM yyyy k:m:s ZZZ");
+            SimpleDateFormat dateFormat = new SimpleDateFormat(format);
 
             dateFormat.setCalendar(calendar);
             calendar.setTime(dateFormat.parse(dateString));

@@ -44,6 +44,7 @@ public class LiveStreamFragment extends Fragment {
     private TextView mTodayLoading;
     private TextView mTomorrowLoading;
 
+    private boolean mFetchedUpcomingEpisodes;
     private FetchUpcomingEpisodesTask mUpcomingEpisodesTask;
     private List<UpcomingEpisode> mTodayList;
     private List<UpcomingEpisode> mTomorrowList;
@@ -111,14 +112,18 @@ public class LiveStreamFragment extends Fragment {
                 mTodayLoading.setVisibility(View.GONE);
                 mTodayRecyclerView.setAdapter(new UpcomingEpisodesAdapter(mTodayList));
             } else {
-                mTodayLoading.setText(R.string.upcoming_shows_error);
+                if (mFetchedUpcomingEpisodes) {
+                    mTodayLoading.setText(R.string.upcoming_shows_error);
+                }
             }
 
             if (mTomorrowList != null) {
                 mTomorrowLoading.setVisibility(View.GONE);
                 mTomorrowRecyclerView.setAdapter(new UpcomingEpisodesAdapter(mTomorrowList));
             } else {
-                mTomorrowLoading.setText(R.string.upcoming_shows_error);
+                if (mFetchedUpcomingEpisodes) {
+                    mTomorrowLoading.setText(R.string.upcoming_shows_error);
+                }
             }
         }
     }
@@ -220,6 +225,7 @@ public class LiveStreamFragment extends Fragment {
                 return;
             }
 
+            mFetchedUpcomingEpisodes = true;
             if (upcomingEpisodes != null) {
                 mTodayList = new ArrayList<>();
                 mTomorrowList = new ArrayList<>();
@@ -263,7 +269,7 @@ public class LiveStreamFragment extends Fragment {
             calendar.set(Calendar.SECOND, 0);
             calendar.set(Calendar.MILLISECOND, 0);
 
-            // midnight tomorrow
+            // second midnight from now
             calendar.add(Calendar.DAY_OF_MONTH, 2);
 
             return date.before(calendar.getTime());

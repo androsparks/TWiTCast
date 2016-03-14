@@ -17,7 +17,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -254,12 +253,10 @@ public class EpisodeListFragment extends Fragment {
 
         public void bindEpisode(Episode episode) {
             mEpisode = episode;
-            mNumberTitleTextView.setText(episode.getDisplayTitle());
+            mNumberTitleTextView.setText(episode.getShortTitle());
             mRunningTimeTextView.setText(episode.getRunningTime());
             mDescriptionTextView.setText(episode.getSubtitle());
-
-            String dateString = DateFormat.format("MMM d", episode.getPublicationDate()).toString();
-            mDateTextView.setText(dateString);
+            mDateTextView.setText(episode.getDisplayDate());
         }
 
         @Override

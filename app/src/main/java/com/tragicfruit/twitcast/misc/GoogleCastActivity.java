@@ -15,7 +15,6 @@ import com.google.android.gms.cast.ApplicationMetadata;
 import com.google.android.gms.cast.CastDevice;
 import com.google.android.gms.cast.MediaInfo;
 import com.google.android.gms.cast.MediaMetadata;
-import com.google.android.gms.cast.MediaQueueItem;
 import com.google.android.gms.common.images.WebImage;
 import com.google.android.libraries.cast.companionlibrary.cast.BaseCastManager;
 import com.google.android.libraries.cast.companionlibrary.cast.CastConfiguration;
@@ -35,7 +34,6 @@ import com.tragicfruit.twitcast.stream.Stream;
 import com.tragicfruit.twitcast.stream.StreamSource;
 import com.tragicfruit.twitcast.utils.QueryPreferences;
 
-import java.util.List;
 import java.util.concurrent.ConcurrentMap;
 
 /**
@@ -150,7 +148,7 @@ public abstract class GoogleCastActivity extends AppCompatActivity
 
         MediaMetadata mediaMetadata = new MediaMetadata(MediaMetadata.MEDIA_TYPE_MOVIE);
         mediaMetadata.putString(MediaMetadata.KEY_TITLE, mEpisodeToPlay.getShow().getTitle());
-        mediaMetadata.putString(MediaMetadata.KEY_SUBTITLE, mEpisodeToPlay.getDisplayTitle());
+        mediaMetadata.putString(MediaMetadata.KEY_SUBTITLE, mEpisodeToPlay.getShortTitle());
         mediaMetadata.putString(MediaMetadata.KEY_STUDIO, getString(R.string.studio_name));
         mediaMetadata.addImage(new WebImage(Uri.parse(mEpisodeToPlay.getShow().getCoverArtUrl())));
         mediaMetadata.addImage(new WebImage(Uri.parse(mEpisodeToPlay.getShow().getCoverArtLargeUrl())));
@@ -275,7 +273,7 @@ public abstract class GoogleCastActivity extends AppCompatActivity
         if (mSelectedMediaInfo.getStreamType() != MediaInfo.STREAM_TYPE_LIVE) {
             MediaMetadata mediaMetadata = new MediaMetadata(MediaMetadata.MEDIA_TYPE_MUSIC_TRACK);
             mediaMetadata.putString(MediaMetadata.KEY_TITLE, mEpisodeToPlay.getShow().getTitle());
-            mediaMetadata.putString(MediaMetadata.KEY_ALBUM_TITLE, mEpisodeToPlay.getDisplayTitle());
+            mediaMetadata.putString(MediaMetadata.KEY_ALBUM_TITLE, mEpisodeToPlay.getShortTitle());
             mediaMetadata.putString(MediaMetadata.KEY_ALBUM_ARTIST, getString(R.string.studio_name));
             mediaMetadata.putString(MediaMetadata.KEY_ARTIST, getString(R.string.studio_name));
             mediaMetadata.addImage(new WebImage(Uri.parse(mEpisodeToPlay.getShow().getCoverArtUrl())));
