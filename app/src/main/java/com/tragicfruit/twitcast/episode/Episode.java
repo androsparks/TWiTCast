@@ -89,7 +89,7 @@ public class Episode {
             return "6 days ago";
         }
 
-        return DateFormat.format("MMM d", mPublicationDate).toString();
+        return DateFormat.format("MMMM d", mPublicationDate).toString();
     }
 
     public String getSubtitle() {

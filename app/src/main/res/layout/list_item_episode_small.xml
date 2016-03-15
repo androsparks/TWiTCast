@@ -46,12 +46,7 @@
         <TextView
             android:id="@+id/episode_running_time"
             tools:text="75 min"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <TextView
-            android:id="@+id/episode_date"
-            tools:text="Mar 1"
+            android:textStyle="italic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 

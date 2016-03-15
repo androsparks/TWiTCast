@@ -12,7 +12,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -30,6 +29,8 @@ import com.tragicfruit.twitcast.utils.QueryPreferences;
 import com.tragicfruit.twitcast.utils.TWiTFetcher;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -46,6 +47,7 @@ public class LatestEpisodesFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefresh;
+    private RecyclerView.Adapter mAdapter;
 
     private Callbacks mCallbacks;
 
@@ -75,8 +77,11 @@ public class LatestEpisodesFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_latest_episodes, container, false);
 
         mRecyclerView = (RecyclerView) v.findViewById(R.id.fragment_latest_episodes_recycler_view);
+        mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerView.setAdapter(new EpisodeAdapter());
+//        mRecyclerView.addItemDecoration(new DividerItemDecoration(this,LinearLayoutManager.VERTICAL));
+
+        setupAdapter();
 
         mSwipeRefresh = (SwipeRefreshLayout) v.findViewById(R.id.fragment_latest_episodes_swipe_refresh);
         mSwipeRefresh.setColorSchemeResources(R.color.colorAccent);
@@ -94,6 +99,57 @@ public class LatestEpisodesFragment extends Fragment {
         });
 
         return v;
+    }
+
+    private void setupAdapter() {
+        // This is the code to provide a sectioned list
+        List<SectionedRecyclerViewAdapter.Section> sections = new ArrayList<>();
+        addSections(sections);
+
+        //Add your adapter to the sectionAdapter
+        SectionedRecyclerViewAdapter.Section[] dummy = new SectionedRecyclerViewAdapter.Section[sections.size()];
+        SectionedRecyclerViewAdapter mSectionedAdapter = new
+                SectionedRecyclerViewAdapter(getActivity(),R.layout.section_recycler_view,R.id.section_text,new EpisodeAdapter());
+        mSectionedAdapter.setSections(sections.toArray(dummy));
+
+        //Apply this adapter to the RecyclerView
+        mRecyclerView.setAdapter(mSectionedAdapter);
+    }
+
+    private void addSections(List<SectionedRecyclerViewAdapter.Section> sections) {
+        if (mEpisodes.size() == 0) {
+            return;
+        }
+
+        int startingIndex = 0;
+        Episode controlEpisode = mEpisodes.get(0);
+        String sectionTitle = controlEpisode.getDisplayDate();
+
+        if (mEpisodes.size() == 1) {
+            sections.add(new SectionedRecyclerViewAdapter.Section(startingIndex, sectionTitle));
+            return;
+        }
+
+        for (int i = 1; i < mEpisodes.size(); i++) {
+            Episode currentEpisode = mEpisodes.get(i);
+
+            // different day or last item
+            if (!isOnSameDay(controlEpisode, currentEpisode) || i == mEpisodes.size() - 1) {
+                sections.add(new SectionedRecyclerViewAdapter.Section(startingIndex, sectionTitle));
+                startingIndex = i;
+                controlEpisode = currentEpisode;
+                sectionTitle = controlEpisode.getDisplayDate();
+            }
+        }
+    }
+
+    private boolean isOnSameDay(Episode episode1, Episode episode2) {
+        Calendar cal1 = Calendar.getInstance();
+        Calendar cal2 = Calendar.getInstance();
+        cal1.setTime(episode1.getPublicationDate());
+        cal2.setTime(episode2.getPublicationDate());
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
     }
 
     private boolean isNetworkAvailableAndConnected() {
@@ -141,9 +197,7 @@ public class LatestEpisodesFragment extends Fragment {
     public void updateList() {
         Log.d(TAG, "Updating latest episode list");
         mEpisodes = TWiTLab.get(getActivity()).getEpisodes();
-        if (mRecyclerView != null) {
-            mRecyclerView.getAdapter().notifyDataSetChanged();
-        }
+        setupAdapter();
     }
 
     @Override
@@ -170,7 +224,6 @@ public class LatestEpisodesFragment extends Fragment {
         private Episode mEpisode;
         private TextView mShowTitleTextView;
         private TextView mNumberTitleTextView;
-        private TextView mDateTextView;
         private TextView mRunningTimeTextView;
         private ImageView mCoverArtImageView;
 
@@ -180,7 +233,6 @@ public class LatestEpisodesFragment extends Fragment {
 
             mShowTitleTextView = (TextView) itemView.findViewById(R.id.show_title);
             mNumberTitleTextView = (TextView) itemView.findViewById(R.id.episode_number_title);
-            mDateTextView = (TextView) itemView.findViewById(R.id.episode_date);
             mRunningTimeTextView = (TextView) itemView.findViewById(R.id.episode_running_time);
             mCoverArtImageView = (ImageView) itemView.findViewById(R.id.list_item_cover_art);
         }
@@ -191,7 +243,6 @@ public class LatestEpisodesFragment extends Fragment {
             mShowTitleTextView.setText(episode.getShow().getTitle());
             mNumberTitleTextView.setText(episode.getShortTitle());
             mRunningTimeTextView.setText(episode.getRunningTime());
-            mDateTextView.setText(episode.getDisplayDate());
         }
 
         @Override
