@@ -116,7 +116,12 @@ public class TWiTLab implements TWiTDatabase {
     private void linkShowsAndEpisodes() {
         for (Episode episode : mEpisodes) {
             Show showForEpisode = episode.getShow();
-            showForEpisode.addEpisode(episode);
+            if (showForEpisode != null) {
+                showForEpisode.addEpisode(episode);
+            } else {
+                Log.e(TAG, "No show found for " + episode.getTitle() + " - removed.");
+                mEpisodes.remove(episode);
+            }
         }
     }
 
