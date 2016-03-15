@@ -16,8 +16,9 @@
   -->
 <resources>
     <!-- Dialog -->
-    <style name="CCLCastDialog" parent="@android:style/Theme.Dialog">
+    <style name="CCLCastDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:windowTitleStyle">@style/CCLCastDialogWindowTitle</item>
+        <item name="colorAccent">@color/colorAccent</item>
     </style>
 
     <style name="CCLCastDialogWindowTitle">

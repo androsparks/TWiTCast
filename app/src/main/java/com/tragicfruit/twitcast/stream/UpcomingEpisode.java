@@ -26,10 +26,7 @@ public class UpcomingEpisode {
         mTitle = title;
     }
 
-    public String getDisplayTitle() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("h:mm a");
-        String airingDate = dateFormat.format(mAiringDate);
-
-        return airingDate + " " + mTitle;
+    public String getDisplayTime() {
+        return new SimpleDateFormat("h:mm a").format(mAiringDate);
     }
 }

@@ -340,6 +340,12 @@ public class TWiTFetcher {
                 Episode episode = episodeList.get(j);
 
                 Element episodeElement = (Element) episodeNodeList.item(i);
+                String title = episodeElement.getElementsByTagName("title").item(0).getTextContent();
+                if (!title.equals(episode.getTitle())) {
+                    Log.e(TAG, "Video feed does not match with audio feed.");
+                    break;
+                }
+
                 String link = episodeElement.getElementsByTagName("link").item(0).getTextContent();
 
                 switch (feedType) {

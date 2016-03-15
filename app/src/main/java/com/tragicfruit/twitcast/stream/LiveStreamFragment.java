@@ -174,15 +174,19 @@ public class LiveStreamFragment extends Fragment {
     }
 
     private class UpcomingEpisodeHolder extends RecyclerView.ViewHolder {
-        private TextView mTextView;
+        private TextView mTimeTextView;
+        private TextView mTitleTextView;
 
         public UpcomingEpisodeHolder(View itemView) {
             super(itemView);
-            mTextView = (TextView) itemView;
+
+            mTimeTextView = (TextView) itemView.findViewById(R.id.upcoming_episode_time);
+            mTitleTextView = (TextView) itemView.findViewById(R.id.upcoming_episode_title);
         }
 
         public void bindUpcomingEpisode(UpcomingEpisode episode) {
-            mTextView.setText(episode.getDisplayTitle());
+            mTimeTextView.setText(episode.getDisplayTime());
+            mTitleTextView.setText(episode.getTitle());
         }
     }
 
@@ -196,7 +200,7 @@ public class LiveStreamFragment extends Fragment {
         @Override
         public UpcomingEpisodeHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(getActivity());
-            View view = inflater.inflate(android.R.layout.simple_list_item_1, parent, false);
+            View view = inflater.inflate(R.layout.list_item_upcoming_episode, parent, false);
             return new UpcomingEpisodeHolder(view);
         }
 

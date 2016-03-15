@@ -134,13 +134,16 @@ public class LatestEpisodesFragment extends Fragment {
             Episode currentEpisode = mEpisodes.get(i);
 
             // different day or last item
-            if (!isOnSameDay(controlEpisode, currentEpisode) || i == mEpisodes.size() - 1) {
+            if (!isOnSameDay(controlEpisode, currentEpisode)) {
                 sections.add(new SectionedRecyclerViewAdapter.Section(startingIndex, sectionTitle));
                 startingIndex = i;
                 controlEpisode = currentEpisode;
                 sectionTitle = controlEpisode.getDisplayDate();
             }
         }
+
+        // add last section
+        sections.add(new SectionedRecyclerViewAdapter.Section(startingIndex, sectionTitle));
     }
 
     private boolean isOnSameDay(Episode episode1, Episode episode2) {

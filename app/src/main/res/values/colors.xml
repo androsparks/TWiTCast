@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#34AAD2</color>
     <color name="colorPrimaryDark">#2C8FB0</color>
-    <color name="colorAccent">#DD1F25</color>
+    <color name="colorAccent">#edaf0d</color>
     <color name="textColourTitles">#000000</color>
     <color name="twitLogo">#34AAD2</color>
 
