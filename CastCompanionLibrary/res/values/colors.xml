@@ -31,7 +31,7 @@
     <color name="ccl_blue">#4285f4</color>
     <color name="ccl_grey600">#555753</color>
     <color name="ccl_mini_upcoming_background">#03A9F4</color>
-    <color name="ccl_mini_main_background">#FFFFFF</color>
+    <color name="ccl_mini_main_background">#f4f1e9</color>
     <color name="ccl_mini_upcoming_upnext_color">#eeff41</color>
 
     <!-- Introductory Overlay -->

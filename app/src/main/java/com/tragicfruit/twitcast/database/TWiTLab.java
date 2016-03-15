@@ -64,7 +64,14 @@ public class TWiTLab implements TWiTDatabase {
             Log.e(TAG, "Error loading episodes", e);
         }
 
-        linkShowsAndEpisodes();
+        try {
+            linkShowsAndEpisodes();
+        } catch (Exception e) {
+            Log.e(TAG, "Error linking shows and episodes", e);
+            mShows = new ArrayList<>();
+            mEpisodes = new ArrayList<>();
+        }
+
         mStreams = loadStreams();
     }
 
