@@ -7,7 +7,7 @@
           android:singleLine="true"
           android:textAllCaps="true"
           android:textColor="@color/colorPrimaryDark"
-          android:background="@android:color/transparent"
+          android:background="@android:color/white"
           android:textSize="16sp"
           android:id="@+id/section_text"
           android:textStyle="bold" />

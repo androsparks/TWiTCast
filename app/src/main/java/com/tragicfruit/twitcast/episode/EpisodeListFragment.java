@@ -28,6 +28,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.tragicfruit.twitcast.misc.DividerItemDecoration;
 import com.tragicfruit.twitcast.R;
 import com.tragicfruit.twitcast.database.TWiTLab;
 import com.tragicfruit.twitcast.dialogs.ChooseQualityFragment;
@@ -180,6 +181,7 @@ public class EpisodeListFragment extends Fragment {
         });
         mRecyclerView.setAdapter(new EpisodeAdapter());
         mRecyclerView.setFocusable(false); // to allow scroll view to start at the top
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
 
         mCoverArtImageView = (ImageView) v.findViewById(R.id.show_cover_art);
         mCoverArtImageView.setImageDrawable(mShow.getCoverArt());

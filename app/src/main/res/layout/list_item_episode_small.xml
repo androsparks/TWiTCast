@@ -4,7 +4,8 @@
               android:orientation="horizontal"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:background="?attr/selectableItemBackground">
+              android:background="?attr/selectableItemBackground"
+              android:padding="8dp">
 
     <ImageView
         android:id="@+id/list_item_cover_art"
@@ -13,7 +14,7 @@
 
     <LinearLayout
         android:paddingLeft="8dp"
-        android:paddingStart="8dp"
+        android:paddingRight="8dp"
         android:gravity="center_vertical"
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -22,6 +23,7 @@
 
         <TextView
             android:id="@+id/show_title"
+            android:textSize="16sp"
             android:textColor="@color/textColourTitles"
             tools:text="Show title"
             android:layout_width="wrap_content"
@@ -39,9 +41,7 @@
         android:gravity="center_vertical|end"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingRight="8dp"
-        android:paddingEnd="8dp">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/episode_running_time"
