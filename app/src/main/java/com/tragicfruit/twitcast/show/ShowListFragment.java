@@ -489,13 +489,15 @@ public class ShowListFragment extends Fragment {
                 }
             }
 
-            mDatabase.addEpisodes(episodeList);
+            boolean newShows = mDatabase.addEpisodes(episodeList);
             dismissLoadingDialog();
 
-            mCallbacks.refreshLatestEpisodes();
+            if (newShows) {
+                mCallbacks.refreshLatestEpisodes();
 
-            TWiTLab.get(getActivity()).saveShows();
-            TWiTLab.get(getActivity()).saveEpisodes();
+                TWiTLab.get(getActivity()).saveShows();
+                TWiTLab.get(getActivity()).saveEpisodes();
+            }
         }
     }
 }
