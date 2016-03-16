@@ -3,11 +3,13 @@
     <color name="colorPrimary">#34AAD2</color>
     <color name="colorPrimaryDark">#2C8FB0</color>
     <color name="colorAccent">#edaf0d</color>
-    <color name="textColourTitles">#000000</color>
     <color name="twitLogo">#34AAD2</color>
 
-    <color name="textColorPrimary">#FFFFFF</color>
     <color name="windowBackground">@color/material_grey_50</color>
     <color name="navigationBarColor">#000000</color>
     <color name="tabIndicator">#FFFFFF</color>
+
+    <color name="textColorBlack">#212121</color>
+    <color name="textColorGrey">#757575</color>
+    <color name="textColorWhite">#FFFFFF</color>
 </resources>

@@ -8,8 +8,8 @@
               android:padding="8dp">
 
     <TextView
-        android:textSize="16sp"
-        android:textColor="@color/textColourTitles"
+        style="@style/TextAppearance.AppCompat.Subhead"
+        android:textColor="@color/textColorBlack"
         android:id="@+id/episode_number_title"
         tools:text="11: Episode title"
         android:layout_width="wrap_content"
@@ -17,6 +17,8 @@
 
     <TextView
         android:id="@+id/episode_description"
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/textColorGrey"
         tools:text="Episode description goes here"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
@@ -29,6 +31,8 @@
 
         <TextView
             android:textStyle="italic"
+            style="@style/TextAppearance.AppCompat.Caption"
+            android:textColor="@color/textColorGrey"
             android:layout_gravity="start"
             android:id="@+id/episode_running_time"
             tools:text="75 min"
@@ -37,6 +41,8 @@
 
         <TextView
             android:textStyle="italic"
+            style="@style/TextAppearance.AppCompat.Caption"
+            android:textColor="@color/textColorGrey"
             android:layout_gravity="end"
             android:id="@+id/episode_date"
             tools:text="Mar 1"

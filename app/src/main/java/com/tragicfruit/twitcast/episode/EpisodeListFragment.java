@@ -147,7 +147,7 @@ public class EpisodeListFragment extends Fragment {
     }
 
     private int getDarkerColour(int colour) {
-        double scale = 0.75;
+        double scale = 0.8;
 
         int r = (int) (Color.red(colour) * scale);
         int g = (int) (Color.green(colour) * scale);
@@ -170,6 +170,7 @@ public class EpisodeListFragment extends Fragment {
             palette = Palette.from(bitmap).generate();
             colour = palette.getDarkVibrantColor(0);
         }
+
         mCallbacks.setToolbarColour(colour, getDarkerColour(colour));
 
         mRecyclerView = (RecyclerView) v.findViewById(R.id.fragment_episode_list_recycler_view);
@@ -238,7 +239,7 @@ public class EpisodeListFragment extends Fragment {
 
     private class EpisodeHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private Episode mEpisode;
-        private TextView mNumberTitleTextView;
+        private TextView mTitleTextView;
         private TextView mDateTextView;
         private TextView mRunningTimeTextView;
         private TextView mDescriptionTextView;
@@ -247,7 +248,7 @@ public class EpisodeListFragment extends Fragment {
             super(itemView);
             itemView.setOnClickListener(this);
 
-            mNumberTitleTextView = (TextView) itemView.findViewById(R.id.episode_number_title);
+            mTitleTextView = (TextView) itemView.findViewById(R.id.episode_number_title);
             mDateTextView = (TextView) itemView.findViewById(R.id.episode_date);
             mRunningTimeTextView = (TextView) itemView.findViewById(R.id.episode_running_time);
             mDescriptionTextView = (TextView) itemView.findViewById(R.id.episode_description);
@@ -255,7 +256,7 @@ public class EpisodeListFragment extends Fragment {
 
         public void bindEpisode(Episode episode) {
             mEpisode = episode;
-            mNumberTitleTextView.setText(episode.getShortTitle());
+            mTitleTextView.setText(episode.getShortTitle());
             mRunningTimeTextView.setText(episode.getRunningTime());
             mDescriptionTextView.setText(episode.getSubtitle());
             mDateTextView.setText(episode.getDisplayDate());

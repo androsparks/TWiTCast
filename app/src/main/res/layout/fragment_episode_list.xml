@@ -28,7 +28,10 @@
                     android:id="@+id/show_cover_art"/>
 
                 <LinearLayout
-                    android:padding="8dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="12dp"
                     android:layout_toRightOf="@id/show_cover_art"
                     android:layout_toEndOf="@id/show_cover_art"
                     android:orientation="vertical"
@@ -38,14 +41,18 @@
                     <TextView
                         tools:text="Show title"
                         android:id="@+id/show_title"
+                        android:textColor="@color/textColorBlack"
                         android:textSize="20sp"
-                        android:textColor="@color/textColourTitles"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="4dp"/>
 
                     <TextView
                         tools:text="Show description"
                         android:id="@+id/show_description"
+                        style="@style/TextAppearance.AppCompat.Body1"
+                        android:textColor="@color/textColorGrey"
+                        android:lineSpacingMultiplier="1.2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
 

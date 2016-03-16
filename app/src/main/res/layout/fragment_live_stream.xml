@@ -21,28 +21,26 @@
 
         <TextView
             android:text="@string/upcoming_schedule_title"
-            android:textColor="@color/colorPrimaryDark"
-            android:textStyle="bold"
-            android:textAllCaps="true"
-            android:textSize="20sp"
+            style="@style/TextAppearance.AppCompat.Headline"
+            android:textColor="@color/textColorBlack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="8dp"/>
 
         <TextView
-            android:paddingBottom="4dp"
+            android:layout_marginBottom="4dp"
             android:text="@string/today_upcoming_title"
-            android:textColor="@color/colorPrimary"
-            android:textStyle="bold"
-            android:textAllCaps="true"
-            android:textSize="16sp"
+            style="@style/TextAppearance.AppCompat.Subhead"
+            android:textColor="@color/colorPrimaryDark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
         <TextView
             android:id="@+id/today_loading_text"
             android:text="@string/loading_upcoming_shows"
+            style="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="@color/textColorGrey"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
@@ -50,15 +48,13 @@
             android:id="@+id/today_upcoming_shows_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="12dp"/>
 
         <TextView
-            android:paddingBottom="4dp"
+            android:layout_marginBottom="4dp"
             android:text="@string/tomorrow_upcoming_title"
-            android:textColor="@color/colorPrimary"
-            android:textStyle="bold"
-            android:textAllCaps="true"
-            android:textSize="16sp"
+            style="@style/TextAppearance.AppCompat.Subhead"
+            android:textColor="@color/colorPrimaryDark"
             android:gravity="center_horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
@@ -66,6 +62,8 @@
         <TextView
             android:id="@+id/tomorrow_loading_text"
             android:text="@string/loading_upcoming_shows"
+            style="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="@color/textColorGrey"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 

@@ -12,7 +12,8 @@
     <TextView
         android:id="@+id/upcoming_episode_time"
         tools:text="12:00 PM"
-        android:textSize="16sp"
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/textColorGrey"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="wrap_content"
@@ -22,7 +23,9 @@
         android:id="@+id/upcoming_episode_title"
         tools:text="Tech News Today"
         android:paddingLeft="16dp"
-        android:textSize="16sp"
+        android:paddingStart="16dp"
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/textColorGrey"
         android:layout_width="0dp"
         android:layout_weight="2"
         android:layout_height="wrap_content"/>

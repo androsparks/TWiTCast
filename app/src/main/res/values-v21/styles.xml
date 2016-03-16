@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
@@ -27,4 +28,5 @@
         <!-- The rest of your attributes -->
         <!--item name="android:seekBarStyle">@style/YellowSeekBar</item-->
     </style>
+
 </resources>
