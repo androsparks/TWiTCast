@@ -35,4 +35,6 @@
     <string name="feedback_email_address">support@tragicfruit.com</string>
     <string name="feedback_email_subject">TWiT Cast Feedback (%s)</string>
     <string name="no_email_app_error">No email app found.</string>
+    <string name="leave_feedback_email">Email</string>
+    <string name="leave_feedback_play_store">Play Store</string>
 </resources>

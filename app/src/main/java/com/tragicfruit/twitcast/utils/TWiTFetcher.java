@@ -321,7 +321,6 @@ public class TWiTFetcher {
         }
 
         Log.d(TAG, "Fetched video feeds");
-
         return episodeList;
     }
 

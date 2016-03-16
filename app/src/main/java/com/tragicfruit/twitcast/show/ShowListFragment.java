@@ -288,6 +288,7 @@ public class ShowListFragment extends Fragment {
         public void bindShow(Show show) {
             mShow = show;
             mImageView.setImageDrawable(show.getCoverArt());
+            mImageView.setContentDescription(show.getTitle());
         }
 
         @Override

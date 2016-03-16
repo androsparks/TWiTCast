@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import jp.wasabeef.recyclerview.animators.adapters.ScaleInAnimationAdapter;
+import jp.wasabeef.recyclerview.animators.adapters.AlphaInAnimationAdapter;
 
 /**
  * Created by Jeremy on 6/03/2016.
@@ -111,13 +111,11 @@ public class LatestEpisodesFragment extends Fragment {
         //Add your adapter to the sectionAdapter
         SectionedRecyclerViewAdapter.Section[] dummy = new SectionedRecyclerViewAdapter.Section[sections.size()];
         SectionedRecyclerViewAdapter mSectionedAdapter = new
-                SectionedRecyclerViewAdapter(getActivity(),R.layout.section_recycler_view,R.id.section_text,new EpisodeAdapter());
+                SectionedRecyclerViewAdapter(getActivity(), R.layout.section_recycler_view, R.id.section_text, new EpisodeAdapter());
         mSectionedAdapter.setSections(sections.toArray(dummy));
 
-        ScaleInAnimationAdapter animationAdapter = new ScaleInAnimationAdapter(mSectionedAdapter);
-        animationAdapter.setDuration(150);
-
-        //Apply this adapter to the RecyclerView
+        // Add sectioned adapter to animation adapter
+        AlphaInAnimationAdapter animationAdapter = new AlphaInAnimationAdapter(mSectionedAdapter);
         mRecyclerView.setAdapter(animationAdapter);
     }
 
