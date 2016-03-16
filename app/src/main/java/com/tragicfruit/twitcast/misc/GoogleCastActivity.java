@@ -2,6 +2,7 @@ package com.tragicfruit.twitcast.misc;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.MediaRouteActionProvider;
@@ -26,6 +27,7 @@ import com.tragicfruit.twitcast.R;
 import com.tragicfruit.twitcast.constants.Constants;
 import com.tragicfruit.twitcast.constants.SecretConstants;
 import com.tragicfruit.twitcast.database.TWiTLab;
+import com.tragicfruit.twitcast.dialogs.LeaveFeedbackFragment;
 import com.tragicfruit.twitcast.episode.Episode;
 import com.tragicfruit.twitcast.episode.EpisodeListFragment;
 import com.tragicfruit.twitcast.episode.LatestEpisodesFragment;
@@ -42,6 +44,7 @@ import java.util.concurrent.ConcurrentMap;
 public abstract class GoogleCastActivity extends AppCompatActivity
         implements LatestEpisodesFragment.Callbacks, LiveStreamFragment.Callbacks, EpisodeListFragment.Callbacks {
     private static final String TAG = "GoogleCastActivity";
+    private static final String DIALOG_FEEDBACK = "feedback";
 
     private VideoCastManager mCastManager;
     private VideoCastConsumer mCastConsumer;
@@ -101,6 +104,19 @@ public abstract class GoogleCastActivity extends AppCompatActivity
         getMenuInflater().inflate(R.menu.activity_google_cast, menu);
         mMediaRouteMenuItem = mCastManager.addMediaRouterButton(menu, R.id.media_route_menu_item);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.leave_feedback_menu_item:
+                FragmentManager fm = getSupportFragmentManager();
+                LeaveFeedbackFragment dialog = LeaveFeedbackFragment.newInstance();
+                dialog.show(fm, DIALOG_FEEDBACK);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override

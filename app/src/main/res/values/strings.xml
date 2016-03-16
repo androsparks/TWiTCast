@@ -31,4 +31,8 @@
     <string name="loading_upcoming_shows">Loading…</string>
     <string name="upcoming_shows_error">Error loading upcoming shows.</string>
     <string name="play_live_stream">Play</string>
+    <string name="leave_feedback_menu_item">Leave feedback</string>
+    <string name="feedback_email_address">support@tragicfruit.com</string>
+    <string name="feedback_email_subject">TWiT Cast Feedback (%s)</string>
+    <string name="no_email_app_error">No email app found.</string>
 </resources>
