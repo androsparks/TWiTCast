@@ -22,10 +22,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tragicfruit.twitcast.misc.DividerItemDecoration;
 import com.tragicfruit.twitcast.R;
 import com.tragicfruit.twitcast.database.TWiTLab;
 import com.tragicfruit.twitcast.dialogs.ChooseQualityFragment;
+import com.tragicfruit.twitcast.misc.DividerItemDecoration;
 import com.tragicfruit.twitcast.utils.QueryPreferences;
 import com.tragicfruit.twitcast.utils.TWiTFetcher;
 
@@ -33,6 +33,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import jp.wasabeef.recyclerview.animators.adapters.ScaleInAnimationAdapter;
 
 /**
  * Created by Jeremy on 6/03/2016.
@@ -112,8 +114,11 @@ public class LatestEpisodesFragment extends Fragment {
                 SectionedRecyclerViewAdapter(getActivity(),R.layout.section_recycler_view,R.id.section_text,new EpisodeAdapter());
         mSectionedAdapter.setSections(sections.toArray(dummy));
 
+        ScaleInAnimationAdapter animationAdapter = new ScaleInAnimationAdapter(mSectionedAdapter);
+        animationAdapter.setDuration(150);
+
         //Apply this adapter to the RecyclerView
-        mRecyclerView.setAdapter(mSectionedAdapter);
+        mRecyclerView.setAdapter(animationAdapter);
     }
 
     private void addSections(List<SectionedRecyclerViewAdapter.Section> sections) {

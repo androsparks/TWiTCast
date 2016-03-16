@@ -28,10 +28,10 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.tragicfruit.twitcast.misc.DividerItemDecoration;
 import com.tragicfruit.twitcast.R;
 import com.tragicfruit.twitcast.database.TWiTLab;
 import com.tragicfruit.twitcast.dialogs.ChooseQualityFragment;
+import com.tragicfruit.twitcast.misc.DividerItemDecoration;
 import com.tragicfruit.twitcast.show.Show;
 import com.tragicfruit.twitcast.utils.QueryPreferences;
 import com.tragicfruit.twitcast.utils.TWiTFetcher;
