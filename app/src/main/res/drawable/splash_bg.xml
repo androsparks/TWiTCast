@@ -3,10 +3,11 @@
     <item
         android:drawable="@color/twitLogo"/>
 
-    <item
-        android:gravity="center"
-        android:width="96dp"
-        android:height="96dp"
-        android:drawable="@drawable/twitcast_splash_logo"/>
+    <item>
 
+        <bitmap
+            android:src="@drawable/twitcast_splash_logo"
+            android:gravity="center"/>
+
+    </item>
 </layer-list>
