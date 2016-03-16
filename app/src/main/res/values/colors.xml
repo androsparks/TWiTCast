@@ -9,7 +9,7 @@
     <color name="navigationBarColor">#000000</color>
     <color name="tabIndicator">#FFFFFF</color>
 
-    <color name="textColorBlack">#212121</color>
-    <color name="textColorGrey">#757575</color>
+    <color name="textColorBlack">#4b4b4b</color>
+    <color name="textColorGrey">#868686</color>
     <color name="textColorWhite">#FFFFFF</color>
 </resources>

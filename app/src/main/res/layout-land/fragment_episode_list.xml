@@ -34,6 +34,7 @@
             <TextView
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
+                android:paddingBottom="8dp"
                 tools:text="Show description"
                 android:id="@+id/show_description"
                 style="@style/TextAppearance.AppCompat.Body1"
