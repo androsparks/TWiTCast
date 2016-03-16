@@ -290,16 +290,14 @@ public class MiniController extends RelativeLayout implements IMiniController {
         if (uri.toString().contains("twitlogo")) {
             if (existsInLocalStorage("twitlogo_600x600.png", "logo")) {
                 File imageFile = new File(mContext.getFilesDir() + "/logo", "twitlogo_600x600.png");
-                Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
-                setIcon(bitmap);
+                setIcon(BitmapFactory.decodeFile(imageFile.getAbsolutePath()));
                 return;
             }
         }
 
         if (existsInLocalStorage(getImageFileName(uri), "cover_art")) {
             File imageFile = new File(mContext.getFilesDir() + "/cover_art", getImageFileName(uri));
-            Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
-            setIcon(bitmap);
+            setIcon(BitmapFactory.decodeFile(imageFile.getAbsolutePath()));
             return;
         }
 

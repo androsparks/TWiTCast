@@ -466,7 +466,6 @@ public class VideoCastNotificationService extends Service {
         }
 
         mNotification = builder.build();
-
     }
 
     /**

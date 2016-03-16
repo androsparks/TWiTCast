@@ -209,7 +209,7 @@ public abstract class GoogleCastActivity extends AppCompatActivity
         mediaMetadata.putString(MediaMetadata.KEY_SUBTITLE, getString(R.string.twit_live_stream_title));
         mediaMetadata.putString(MediaMetadata.KEY_STUDIO, getString(R.string.studio_name));
         mediaMetadata.addImage(new WebImage(Uri.parse(Constants.LOGO_URL)));
-        mediaMetadata.addImage(new WebImage(Uri.parse(Constants.LOGO_LARGE_FILE)));
+        mediaMetadata.addImage(new WebImage(Uri.parse(Constants.LOGO_LARGE_URL)));
 
         Stream stream = getStream(QueryPreferences.getStreamSource(this));
         String url = null, contentType = null;

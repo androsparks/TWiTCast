@@ -16,8 +16,24 @@
 
 package com.google.android.libraries.cast.companionlibrary.cast.player;
 
-import static com.google.android.libraries.cast.companionlibrary.utils.LogUtils.LOGD;
-import static com.google.android.libraries.cast.companionlibrary.utils.LogUtils.LOGE;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.View;
+import android.widget.SeekBar;
 
 import com.google.android.gms.cast.MediaInfo;
 import com.google.android.gms.cast.MediaMetadata;
@@ -33,29 +49,8 @@ import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCa
 import com.google.android.libraries.cast.companionlibrary.cast.exceptions.CastException;
 import com.google.android.libraries.cast.companionlibrary.cast.exceptions.NoConnectionException;
 import com.google.android.libraries.cast.companionlibrary.cast.exceptions.TransientNetworkDisconnectionException;
-import com.google.android.libraries.cast.companionlibrary.utils.FetchBitmapTask;
 import com.google.android.libraries.cast.companionlibrary.utils.LogUtils;
 import com.google.android.libraries.cast.companionlibrary.utils.Utils;
-
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Point;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.View;
-import android.widget.SeekBar;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -73,6 +68,9 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
+
+import static com.google.android.libraries.cast.companionlibrary.utils.LogUtils.LOGD;
+import static com.google.android.libraries.cast.companionlibrary.utils.LogUtils.LOGE;
 
 /**
  * A fragment that provides a mechanism to retain the state and other needed objects for
@@ -608,14 +606,13 @@ public class VideoCastControllerFragment extends Fragment implements
         }
 
         if (uri.toString().contains("twitlogo")) {
-            if (existsInLocalStorage(uri.toString(), "logo")) {
-                File imageFile = new File(getActivity().getFilesDir() + "/logo", uri.toString());
+            if (existsInLocalStorage("twitlogo_1400x1400.png", "logo")) {
+                File imageFile = new File(getActivity().getFilesDir() + "/logo", "twitlogo_1400x1400.png");
 
                 mUrlAndBitmap = new UrlAndBitmap();
                 mUrlAndBitmap.mUrl = uri;
-                Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
-                mUrlAndBitmap.mBitmap = bitmap;
-                mCastController.setImage(bitmap);
+                mUrlAndBitmap.mBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());;
+                mCastController.setImage(mUrlAndBitmap.mBitmap);
                 return;
             }
         }
@@ -625,15 +622,13 @@ public class VideoCastControllerFragment extends Fragment implements
 
             mUrlAndBitmap = new UrlAndBitmap();
             mUrlAndBitmap.mUrl = uri;
-            Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
-            mUrlAndBitmap.mBitmap = bitmap;
-            mCastController.setImage(bitmap);
+            mUrlAndBitmap.mBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+            mCastController.setImage(mUrlAndBitmap.mBitmap);
 
             return;
         }
-
         if (mImageAsyncTask != null) {
-            mImageAsyncTask.cancel(true);
+            mImageAsyncTask.cancel(false);
         }
 
         mImageAsyncTask = new AsyncTask<Uri, Void, File>() {
@@ -650,6 +645,14 @@ public class VideoCastControllerFragment extends Fragment implements
 
             @Override
             protected void onPostExecute(File file) {
+                if (isCancelled()) {
+                    if (file != null) {
+                        LOGD(TAG, "ImageAsyncTask cancelled, image file deleted");
+                        file.delete();
+                    }
+                    return;
+                }
+
                 if (file != null) {
                     mUrlAndBitmap = new UrlAndBitmap();
                     mUrlAndBitmap.mBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
@@ -676,6 +679,10 @@ public class VideoCastControllerFragment extends Fragment implements
 
             if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
                 throw new IOException(connection.getResponseMessage() + ": with " + url);
+            }
+
+            if (mImageAsyncTask.isCancelled()) {
+                return null;
             }
 
             File coverArtFolder = new File(getActivity().getFilesDir() + "/cover_art_large");
@@ -776,7 +783,7 @@ public class VideoCastControllerFragment extends Fragment implements
     public void onStop() {
         super.onStop();
         if (mImageAsyncTask != null) {
-            mImageAsyncTask.cancel(true);
+            mImageAsyncTask.cancel(false);
             mImageAsyncTask = null;
         }
     }
