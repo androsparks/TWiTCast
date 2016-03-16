@@ -31,8 +31,8 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
     };
 
     public static final int HORIZONTAL_LIST = LinearLayoutManager.HORIZONTAL;
-
     public static final int VERTICAL_LIST = LinearLayoutManager.VERTICAL;
+    private static final int DIVIDER_HEIGHT = 2;
 
     private Drawable mDivider;
 
@@ -68,7 +68,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
         // draw top divider
         if (parent.getChildCount() > 0) {
             int top = parent.getChildAt(0).getTop();
-            int bottom = top + mDivider.getIntrinsicHeight();
+            int bottom = top + DIVIDER_HEIGHT;
             mDivider.setBounds(left, top, right, bottom);
             mDivider.draw(c);
         }
@@ -79,7 +79,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
             final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child
                     .getLayoutParams();
             final int top = child.getBottom() + params.bottomMargin;
-            final int bottom = top + mDivider.getIntrinsicHeight();
+            final int bottom = top + DIVIDER_HEIGHT;
             mDivider.setBounds(left, top, right, bottom);
             mDivider.draw(c);
         }
