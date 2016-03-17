@@ -1,14 +1,11 @@
-package com.tragicfruit.twitcast.misc;
+package com.tragicfruit.twitcast;
 
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ProgressBar;
-
-import com.tragicfruit.twitcast.R;
 
 /**
  * Created by Jeremy on 23/11/2015.

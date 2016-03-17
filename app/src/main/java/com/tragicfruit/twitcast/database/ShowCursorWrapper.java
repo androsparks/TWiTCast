@@ -3,19 +3,16 @@ package com.tragicfruit.twitcast.database;
 import android.database.Cursor;
 import android.database.CursorWrapper;
 
-import com.tragicfruit.twitcast.show.Show;
 import com.tragicfruit.twitcast.database.TWiTDbSchema.ShowTable;
+import com.tragicfruit.twitcast.show.Show;
 
 /**
  * Created by Jeremy on 5/03/2016.
  */
 public class ShowCursorWrapper extends CursorWrapper {
-    private TWiTLab mDatabase;
 
-    public ShowCursorWrapper(Cursor cursor, TWiTLab database) {
+    public ShowCursorWrapper(Cursor cursor) {
         super(cursor);
-
-        mDatabase = database;
     }
 
     public Show getShow() {

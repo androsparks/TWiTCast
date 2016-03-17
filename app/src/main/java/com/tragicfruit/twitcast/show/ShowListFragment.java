@@ -3,9 +3,6 @@ package com.tragicfruit.twitcast.show;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -33,9 +30,8 @@ import com.tragicfruit.twitcast.dialogs.UpdatingShowsFragment;
 import com.tragicfruit.twitcast.episode.Episode;
 import com.tragicfruit.twitcast.episode.EpisodeListActivity;
 import com.tragicfruit.twitcast.episode.StreamQuality;
-import com.tragicfruit.twitcast.utils.PictureUtils;
 import com.tragicfruit.twitcast.utils.QueryPreferences;
-import com.tragicfruit.twitcast.utils.TWiTFetcher;
+import com.tragicfruit.twitcast.database.TWiTFetcher;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -397,7 +393,9 @@ public class ShowListFragment extends Fragment {
 
                 File folder = new File(getActivity().getFilesDir() + "/" + folderName);
                 if (!folder.exists()) {
-                    folder.mkdir();
+                    if (!folder.mkdir()) {
+                        throw new IOException("Error creating folder");
+                    }
                 }
 
                 File file = new File(getActivity().getFilesDir() + "/" + folderName, filename);
@@ -406,7 +404,7 @@ public class ShowListFragment extends Fragment {
                 outputStream =
                         new FileOutputStream(file);
 
-                int read = 0;
+                int read;
                 byte[] bytes = new byte[1024];
 
                 while ((read = inputStream.read(bytes)) != -1) {
@@ -433,8 +431,11 @@ public class ShowListFragment extends Fragment {
             if (coverArtFolder.exists()) {
                 File[] files = coverArtFolder.listFiles();
                 for (File file : files) {
-                    file.delete();
-                    Log.d(TAG, "Deleted " + file.getAbsolutePath());
+                    if (file.delete()) {
+                        Log.d(TAG, "Deleted " + file.getAbsolutePath());
+                    } else {
+                        Log.d(TAG, "Failed to delete " + file.getAbsolutePath());
+                    }
                 }
             }
         }

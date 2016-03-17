@@ -22,7 +22,7 @@
                    android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".misc.SplashActivity"
+            android:name=".SplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,15 +31,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".misc.MenuPagerActivity"/>
+            android:name=".MenuPagerActivity"/>
         <activity
             android:name=".episode.EpisodeListActivity"
-            android:parentActivityName=".misc.MenuPagerActivity"/>
+            android:parentActivityName=".MenuPagerActivity"/>
         <activity
             android:name="com.google.android.libraries.cast.companionlibrary.cast.player.VideoCastControllerActivity"
             android:label=""
             android:launchMode="singleTask"
-            android:parentActivityName=".misc.MenuPagerActivity"
+            android:parentActivityName=".MenuPagerActivity"
             android:theme="@style/Theme.CastVideosTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

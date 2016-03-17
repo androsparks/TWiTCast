@@ -25,9 +25,9 @@ import android.widget.TextView;
 import com.tragicfruit.twitcast.R;
 import com.tragicfruit.twitcast.database.TWiTLab;
 import com.tragicfruit.twitcast.dialogs.ChooseQualityFragment;
-import com.tragicfruit.twitcast.misc.DividerItemDecoration;
+import com.tragicfruit.twitcast.DividerItemDecoration;
 import com.tragicfruit.twitcast.utils.QueryPreferences;
-import com.tragicfruit.twitcast.utils.TWiTFetcher;
+import com.tragicfruit.twitcast.database.TWiTFetcher;
 
 import java.io.IOException;
 import java.util.ArrayList;

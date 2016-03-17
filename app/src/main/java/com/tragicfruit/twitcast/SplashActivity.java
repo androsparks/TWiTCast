@@ -1,4 +1,4 @@
-package com.tragicfruit.twitcast.misc;
+package com.tragicfruit.twitcast;
 
 import android.content.Intent;
 import android.os.Bundle;

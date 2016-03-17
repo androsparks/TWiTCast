@@ -88,7 +88,7 @@ public class SectionedRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerV
     public void onBindViewHolder(RecyclerView.ViewHolder sectionViewHolder, int position) {
         if (isSectionHeaderPosition(position)) {
             ((SectionViewHolder)sectionViewHolder).title.setText(mSections.get(position).title);
-        }else{
+        } else {
             mBaseAdapter.onBindViewHolder(sectionViewHolder,sectionedPositionToPosition(position));
         }
 

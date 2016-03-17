@@ -4,17 +4,16 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.tragicfruit.twitcast.R;
-import com.tragicfruit.twitcast.stream.Stream;
 import com.tragicfruit.twitcast.constants.Constants;
-import com.tragicfruit.twitcast.episode.Episode;
-import com.tragicfruit.twitcast.show.Show;
 import com.tragicfruit.twitcast.database.TWiTDbSchema.EpisodeTable;
 import com.tragicfruit.twitcast.database.TWiTDbSchema.ShowTable;
+import com.tragicfruit.twitcast.episode.Episode;
+import com.tragicfruit.twitcast.show.Show;
+import com.tragicfruit.twitcast.stream.Stream;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -324,7 +323,7 @@ public class TWiTLab implements TWiTDatabase {
                 null // orderBy
         );
 
-        return new ShowCursorWrapper(cursor, this);
+        return new ShowCursorWrapper(cursor);
     }
 
     private EpisodeCursorWrapper queryEpisodes(String whereClause, String[] whereArgs) {

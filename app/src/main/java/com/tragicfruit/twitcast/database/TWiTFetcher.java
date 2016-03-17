@@ -1,4 +1,4 @@
-package com.tragicfruit.twitcast.utils;
+package com.tragicfruit.twitcast.database;
 
 import android.content.Context;
 import android.net.Uri;
@@ -61,7 +61,7 @@ public class TWiTFetcher {
         mDatabase = TWiTLab.get(context);
     }
 
-    public byte[] getUrlBytes(String urlSpec) throws IOException {
+    private byte[] getUrlBytes(String urlSpec) throws IOException {
         URL url = new URL(urlSpec);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
@@ -73,7 +73,7 @@ public class TWiTFetcher {
                 throw new IOException(connection.getResponseMessage() + ": with " + urlSpec);
             }
 
-            int bytesRead = 0;
+            int bytesRead;
             byte[] buffer = new byte[1024];
             while ((bytesRead = in.read(buffer)) > 0) {
                 out.write(buffer, 0, bytesRead);
@@ -85,7 +85,7 @@ public class TWiTFetcher {
         }
     }
 
-    public String getUrlString(String urlSpec) throws IOException {
+    private String getUrlString(String urlSpec) throws IOException {
         return new String(getUrlBytes(urlSpec));
     }
 
@@ -104,7 +104,9 @@ public class TWiTFetcher {
 
             File coverArtFolder = new File(mContext.getFilesDir() + "/" + Constants.COVER_ART_FOLDER);
             if (!coverArtFolder.exists()) {
-                coverArtFolder.mkdir();
+                if (!coverArtFolder.mkdir()) {
+                    throw new IOException("Error creating cover art folder");
+                }
             }
 
             file = new File(mContext.getFilesDir() + "/" + Constants.COVER_ART_FOLDER, getImageFileName(Uri.parse(show.getCoverArtUrl())));
@@ -136,7 +138,7 @@ public class TWiTFetcher {
         return url.substring(startIndex + 1, endIndex);
     }
 
-    public byte[] getApiUrlBytes(String urlSpec) throws IOException {
+    private byte[] getApiUrlBytes(String urlSpec) throws IOException {
         URL url = new URL(urlSpec);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestProperty("app-id", SecretConstants.TWIT_API_ID);
@@ -150,7 +152,7 @@ public class TWiTFetcher {
                 throw new IOException(connection.getResponseMessage() + ": with " + urlSpec);
             }
 
-            int bytesRead = 0;
+            int bytesRead;
             byte[] buffer = new byte[1024];
             while ((bytesRead = in.read(buffer)) > 0) {
                 out.write(buffer, 0, bytesRead);
@@ -162,7 +164,7 @@ public class TWiTFetcher {
         }
     }
 
-    public String getApiUrlString(String urlSpec) throws IOException {
+    private String getApiUrlString(String urlSpec) throws IOException {
         return new String(getApiUrlBytes(urlSpec));
     }
 
@@ -192,7 +194,7 @@ public class TWiTFetcher {
             JSONObject jsonObject = new JSONObject(jsonBody);
             return parseUpcomingEpisodes(jsonObject);
 
-        } catch (JSONException | ParseException e) {
+        } catch (JSONException e) {
             Log.e(TAG, "Failed to parse JSON", e);
             return null;
         } catch (IOException ioe) {
@@ -201,7 +203,7 @@ public class TWiTFetcher {
         }
     }
 
-    private List<UpcomingEpisode> parseUpcomingEpisodes(JSONObject json) throws JSONException, ParseException {
+    private List<UpcomingEpisode> parseUpcomingEpisodes(JSONObject json) throws JSONException {
         List<UpcomingEpisode> upcomingEpisodeList = new ArrayList<>();
         JSONArray items = json.getJSONArray("items");
 

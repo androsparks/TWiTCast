@@ -12,7 +12,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.tragicfruit.twitcast.R;
-import com.tragicfruit.twitcast.misc.SingleFragmentActivity;
+import com.tragicfruit.twitcast.SingleFragmentActivity;
 
 /**
  * Created by Jeremy on 29/02/2016.
@@ -20,7 +20,6 @@ import com.tragicfruit.twitcast.misc.SingleFragmentActivity;
 public class EpisodeListActivity extends SingleFragmentActivity implements EpisodeListFragment.Callbacks {
     private static final String EXTRA_SHOW_ID = "nz.co.tragicfruit.twitcast.show_id";
 
-    private Fragment mFragment;
     private Toolbar mToolbar;
 
     public static Intent newIntent(Context context, int showId) {
@@ -43,8 +42,7 @@ public class EpisodeListActivity extends SingleFragmentActivity implements Episo
     @Override
     protected Fragment createFragment() {
         int showId = getIntent().getIntExtra(EXTRA_SHOW_ID, 0);
-        mFragment =  EpisodeListFragment.newInstance(showId);
-        return mFragment;
+        return EpisodeListFragment.newInstance(showId);
     }
 
     @Override

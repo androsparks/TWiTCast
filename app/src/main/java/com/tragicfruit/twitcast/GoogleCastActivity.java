@@ -1,4 +1,4 @@
-package com.tragicfruit.twitcast.misc;
+package com.tragicfruit.twitcast;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,14 +18,10 @@ import com.google.android.gms.cast.MediaInfo;
 import com.google.android.gms.cast.MediaMetadata;
 import com.google.android.gms.common.images.WebImage;
 import com.google.android.libraries.cast.companionlibrary.cast.BaseCastManager;
-import com.google.android.libraries.cast.companionlibrary.cast.CastConfiguration;
 import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
 import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCastConsumer;
 import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCastConsumerImpl;
-import com.google.android.libraries.cast.companionlibrary.cast.dialog.video.VideoMediaRouteDialogFactory;
-import com.tragicfruit.twitcast.R;
 import com.tragicfruit.twitcast.constants.Constants;
-import com.tragicfruit.twitcast.constants.SecretConstants;
 import com.tragicfruit.twitcast.database.TWiTLab;
 import com.tragicfruit.twitcast.dialogs.LeaveFeedbackFragment;
 import com.tragicfruit.twitcast.episode.Episode;
@@ -251,7 +247,9 @@ public abstract class GoogleCastActivity extends AppCompatActivity
             mSelectedMediaInfo = getAudioMediaInfo();
         }
 
-        Log.d(TAG, "Playing from url: " + mSelectedMediaInfo.getContentId());
+        if (mSelectedMediaInfo != null)
+            Log.d(TAG, "Playing from url: " + mSelectedMediaInfo.getContentId());
+
         showProgressBar();
 
         try {
@@ -364,8 +362,8 @@ public abstract class GoogleCastActivity extends AppCompatActivity
         }
     }
 
-    public abstract void showProgressBar();
-    public abstract void hideProgressBar();
+    protected abstract void showProgressBar();
+    protected abstract void hideProgressBar();
 
     @Override
     public void showNoConnectionSnackbar() {}

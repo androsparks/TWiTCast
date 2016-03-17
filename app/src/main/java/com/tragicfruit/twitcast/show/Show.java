@@ -17,9 +17,7 @@ public class Show {
     private List<Episode> mEpisodes;
     private String mTitle;
     private String mShortCode;
-    private String mCoverArtSmallUrl;
     private String mCoverArtUrl;
-    private String mCoverArtLargeUrl;
     private String mCoverArtLocalPath;
     private Drawable mCoverArt;
     private int mId;

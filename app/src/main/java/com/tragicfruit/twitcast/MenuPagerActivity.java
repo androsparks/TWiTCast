@@ -1,4 +1,4 @@
-package com.tragicfruit.twitcast.misc;
+package com.tragicfruit.twitcast;
 
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.tragicfruit.twitcast.stream.LiveStreamFragment;
-import com.tragicfruit.twitcast.R;
 import com.tragicfruit.twitcast.episode.LatestEpisodesFragment;
 import com.tragicfruit.twitcast.show.ShowListFragment;
 

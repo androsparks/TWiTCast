@@ -3,51 +3,45 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-    <LinearLayout
+    <RadioGroup
+        android:id="@+id/dialog_choose_quality_radio_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:paddingLeft="24dp"
         android:paddingRight="24dp"
-        android:paddingTop="16dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:paddingTop="16dp">
 
-        <RadioGroup
-            android:id="@+id/dialog_choose_quality_radio_group"
+        <RadioButton
+            android:id="@+id/quality_video_hd"
+            android:text="@string/quality_video_hd"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:layout_marginBottom="12dp"/>
 
-            <RadioButton
-                android:id="@+id/quality_video_hd"
-                android:text="@string/quality_video_hd"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:layout_marginBottom="12dp"/>
+        <RadioButton
+            android:id="@+id/quality_video_large"
+            android:text="@string/quality_video_large"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:layout_marginBottom="12dp"/>
 
-            <RadioButton
-                android:id="@+id/quality_video_large"
-                android:text="@string/quality_video_large"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:layout_marginBottom="12dp"/>
+        <RadioButton
+            android:id="@+id/quality_video_small"
+            android:text="@string/quality_video_small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:layout_marginBottom="12dp"/>
 
-            <RadioButton
-                android:id="@+id/quality_video_small"
-                android:text="@string/quality_video_small"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:layout_marginBottom="12dp"/>
+        <RadioButton
+            android:id="@+id/quality_audio"
+            android:text="@string/quality_audio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"/>
 
-            <RadioButton
-                android:id="@+id/quality_audio"
-                android:text="@string/quality_audio"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"/>
-
-        </RadioGroup>
-
-    </LinearLayout>
+    </RadioGroup>
 
 </ScrollView>

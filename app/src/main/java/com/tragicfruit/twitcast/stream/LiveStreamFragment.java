@@ -23,7 +23,7 @@ import android.widget.TextView;
 import com.tragicfruit.twitcast.R;
 import com.tragicfruit.twitcast.dialogs.ChooseSourceFragment;
 import com.tragicfruit.twitcast.utils.QueryPreferences;
-import com.tragicfruit.twitcast.utils.TWiTFetcher;
+import com.tragicfruit.twitcast.database.TWiTFetcher;
 
 import java.util.ArrayList;
 import java.util.Calendar;

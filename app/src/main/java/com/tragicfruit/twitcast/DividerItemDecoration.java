@@ -1,4 +1,4 @@
-package com.tragicfruit.twitcast.misc;
+package com.tragicfruit.twitcast;
 
 import android.content.Context;
 import android.content.res.TypedArray;
