@@ -81,7 +81,6 @@ public class VideoCastControllerActivity extends AppCompatActivity implements
     private VideoCastManager mCastManager;
     private View mPageView;
     private ImageButton mPlayPause;
-    private TextView mLiveText;
     private TextView mStart;
     private TextView mEnd;
     private SeekBar mSeekbar;
@@ -165,7 +164,6 @@ public class VideoCastControllerActivity extends AppCompatActivity implements
         mStopDrawable = getResources().getDrawable(R.drawable.ic_stop_circle_white_80dp);
         mPageView = findViewById(R.id.pageview);
         mPlayPause = (ImageButton) findViewById(R.id.play_pause_toggle);
-        mLiveText = (TextView) findViewById(R.id.live_text);
         mStart = (TextView) findViewById(R.id.start_text);
         mEnd = (TextView) findViewById(R.id.end_text);
         mSeekbar = (SeekBar) findViewById(R.id.seekbar);
@@ -306,7 +304,6 @@ public class VideoCastControllerActivity extends AppCompatActivity implements
     @Override
     public void adjustControllersForLiveStream(boolean isLive) {
         int visibility = isLive ? View.INVISIBLE : View.VISIBLE;
-        mLiveText.setVisibility(isLive ? View.VISIBLE : View.INVISIBLE);
         mStart.setVisibility(visibility);
         mEnd.setVisibility(visibility);
         mSeekbar.setVisibility(visibility);

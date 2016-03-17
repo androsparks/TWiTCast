@@ -126,18 +126,6 @@
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:src="@drawable/cc" />
 
-                    <TextView
-                        android:id="@+id/live_text"
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
-                        android:layout_marginLeft="5dp"
-                        android:layout_toRightOf="@+id/play_pause_toggle"
-                        android:gravity="center_vertical"
-                        android:maxLines="1"
-                        android:text="@string/ccl_live"
-                        android:textColor="@color/ccl_cast_activity_text_color"
-                        android:visibility="invisible" />
-
                 </RelativeLayout>
 
                 <RelativeLayout

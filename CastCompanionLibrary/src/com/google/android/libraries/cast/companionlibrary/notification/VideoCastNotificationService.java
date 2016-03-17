@@ -254,7 +254,7 @@ public class VideoCastNotificationService extends Service {
             if (existsInLocalStorage("twitlogo_1400x1400.png", "logo")) {
                 try {
                     File imageFile = new File(getFilesDir() + "/logo", "twitlogo_1400x1400.png");
-                    mVideoArtBitmap = Utils.getScaledBitmap(imageFile.getAbsolutePath(), 0.5, this);
+                    mVideoArtBitmap = Utils.getScaledBitmap(imageFile.getAbsolutePath(), 0.25, this);
                     build(info, mVideoArtBitmap, mIsPlaying);
                 } catch (CastException | NoConnectionException | TransientNetworkDisconnectionException e) {
                     LOGE(TAG, "Failed to set notification for " + info.toString(), e);
@@ -271,7 +271,7 @@ public class VideoCastNotificationService extends Service {
         if (existsInLocalStorage(getImageFileName(imgUri), "cover_art")) {
             try {
                 File imageFile = new File(getFilesDir() + "/cover_art", getImageFileName(imgUri));
-                mVideoArtBitmap = Utils.getScaledBitmap(imageFile.getAbsolutePath(), 0.5, this);
+                mVideoArtBitmap = Utils.getScaledBitmap(imageFile.getAbsolutePath(), 0.25, this);
                 build(info, mVideoArtBitmap, mIsPlaying);
             } catch (CastException | NoConnectionException | TransientNetworkDisconnectionException e) {
                 LOGE(TAG, "Failed to set notification for " + info.toString(), e);
