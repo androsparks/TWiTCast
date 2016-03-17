@@ -58,24 +58,6 @@ public abstract class GoogleCastActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         BaseCastManager.checkGooglePlayServices(this);
 
-        CastConfiguration options = new CastConfiguration.Builder(SecretConstants.GOOGLE_CAST_APP_ID)
-                .enableAutoReconnect()
-                .enableDebug()
-                .enableLockScreen()
-                .enableWifiReconnection()
-                .enableNotification()
-//                .addNotificationAction(CastConfiguration.NOTIFICATION_ACTION_SKIP_PREVIOUS, false)
-//                .addNotificationAction(CastConfiguration.NOTIFICATION_ACTION_SKIP_NEXT, false)
-                .addNotificationAction(CastConfiguration.NOTIFICATION_ACTION_REWIND, true)
-                .addNotificationAction(CastConfiguration.NOTIFICATION_ACTION_PLAY_PAUSE, true)
-                .addNotificationAction(CastConfiguration.NOTIFICATION_ACTION_FORWARD, true)
-                .addNotificationAction(CastConfiguration.NOTIFICATION_ACTION_DISCONNECT, false)
-                .setMediaRouteDialogFactory(new VideoMediaRouteDialogFactory())
-                .setNextPrevVisibilityPolicy(CastConfiguration.NEXT_PREV_VISIBILITY_POLICY_ALWAYS)
-                .build();
-
-        VideoCastManager.initialize(this, options);
-
         mCastConsumer = new VideoCastConsumerImpl() {
             @Override
             public void onApplicationConnected(ApplicationMetadata appMetadata, String sessionId, boolean wasLaunched) {
@@ -167,7 +149,7 @@ public abstract class GoogleCastActivity extends AppCompatActivity
         mediaMetadata.putString(MediaMetadata.KEY_SUBTITLE, mEpisodeToPlay.getShortTitle());
         mediaMetadata.putString(MediaMetadata.KEY_STUDIO, getString(R.string.studio_name));
         mediaMetadata.addImage(new WebImage(Uri.parse(mEpisodeToPlay.getShow().getCoverArtUrl())));
-        mediaMetadata.addImage(new WebImage(Uri.parse(mEpisodeToPlay.getShow().getCoverArtLargeUrl())));
+        mediaMetadata.addImage(new WebImage(Uri.parse(mEpisodeToPlay.getShow().getCoverArtUrl())));
 
         String url = getMediaUrl(mEpisodeToPlay);
         String contentType = getContentType(url);
@@ -209,7 +191,7 @@ public abstract class GoogleCastActivity extends AppCompatActivity
         mediaMetadata.putString(MediaMetadata.KEY_SUBTITLE, getString(R.string.twit_live_stream_title));
         mediaMetadata.putString(MediaMetadata.KEY_STUDIO, getString(R.string.studio_name));
         mediaMetadata.addImage(new WebImage(Uri.parse(Constants.LOGO_URL)));
-        mediaMetadata.addImage(new WebImage(Uri.parse(Constants.LOGO_LARGE_URL)));
+        mediaMetadata.addImage(new WebImage(Uri.parse(Constants.LOGO_URL)));
 
         Stream stream = getStream(QueryPreferences.getStreamSource(this));
         String url = null, contentType = null;
@@ -293,7 +275,7 @@ public abstract class GoogleCastActivity extends AppCompatActivity
             mediaMetadata.putString(MediaMetadata.KEY_ALBUM_ARTIST, getString(R.string.studio_name));
             mediaMetadata.putString(MediaMetadata.KEY_ARTIST, getString(R.string.studio_name));
             mediaMetadata.addImage(new WebImage(Uri.parse(mEpisodeToPlay.getShow().getCoverArtUrl())));
-            mediaMetadata.addImage(new WebImage(Uri.parse(mEpisodeToPlay.getShow().getCoverArtLargeUrl())));
+            mediaMetadata.addImage(new WebImage(Uri.parse(mEpisodeToPlay.getShow().getCoverArtUrl())));
 
             String url = mEpisodeToPlay.getAudioUrl();
 
@@ -317,7 +299,7 @@ public abstract class GoogleCastActivity extends AppCompatActivity
             mediaMetadata.putString(MediaMetadata.KEY_ALBUM_ARTIST, getString(R.string.studio_name));
             mediaMetadata.putString(MediaMetadata.KEY_ARTIST, getString(R.string.studio_name));
             mediaMetadata.addImage(new WebImage(Uri.parse(Constants.LOGO_URL)));
-            mediaMetadata.addImage(new WebImage(Uri.parse(Constants.LOGO_LARGE_FILE)));
+            mediaMetadata.addImage(new WebImage(Uri.parse(Constants.LOGO_URL)));
 
             Stream stream = getStream(StreamSource.AUDIO);
             String url = null, contentType = null;

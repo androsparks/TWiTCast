@@ -3,6 +3,8 @@ package com.tragicfruit.twitcast.show;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
@@ -31,6 +33,7 @@ import com.tragicfruit.twitcast.dialogs.UpdatingShowsFragment;
 import com.tragicfruit.twitcast.episode.Episode;
 import com.tragicfruit.twitcast.episode.EpisodeListActivity;
 import com.tragicfruit.twitcast.episode.StreamQuality;
+import com.tragicfruit.twitcast.utils.PictureUtils;
 import com.tragicfruit.twitcast.utils.QueryPreferences;
 import com.tragicfruit.twitcast.utils.TWiTFetcher;
 
@@ -358,7 +361,6 @@ public class ShowListFragment extends Fragment {
         protected Void doInBackground(Void... params) {
             // clean up old cover art
             cleanUp(Constants.COVER_ART_FOLDER);
-            cleanUp(Constants.COVER_ART_LARGE_FOLDER);
             cleanUp(Constants.LOGO_FOLDER);
 
             // download new cover art
@@ -370,7 +372,7 @@ public class ShowListFragment extends Fragment {
                         break;
                     }
 
-                    show.setCoverArt(Drawable.createFromPath(coverArtFile.getAbsolutePath()));
+                    show.setCoverArt(coverArtFile.getAbsolutePath(), getActivity());
                     show.setCoverArtLocalPath(coverArtFile.getAbsolutePath());
                 } catch (IOException e) {
                     Log.e(TAG, "Cannot download cover art for " + show.getTitle(), e);
@@ -380,7 +382,6 @@ public class ShowListFragment extends Fragment {
             // pull logo from assets
             try {
                 saveFromAssets(Constants.LOGO_FILE, Constants.LOGO_FOLDER);
-                saveFromAssets(Constants.LOGO_LARGE_FILE, Constants.LOGO_FOLDER);
             } catch (IOException e) {
                 Log.e(TAG, "Cannot fetch logos from assets", e);
             }

@@ -20,7 +20,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/ccl_cast_activity_background_color"
-    tools:context=".cast.player.VideoCastControllerActivity">
+    tools:context=".cast.player.VideoCastControllerActivity"
+    android:fitsSystemWindows="true">
 
     <com.google.android.libraries.cast.companionlibrary.widgets.MiniController
         android:id="@+id/miniController1"

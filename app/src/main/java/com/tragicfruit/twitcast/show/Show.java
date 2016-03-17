@@ -1,8 +1,11 @@
 package com.tragicfruit.twitcast.show;
 
+import android.content.Context;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
 import com.tragicfruit.twitcast.episode.Episode;
+import com.tragicfruit.twitcast.utils.PictureUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,8 +86,9 @@ public class Show {
         return mCoverArt;
     }
 
-    public void setCoverArt(Drawable coverArt) {
-        mCoverArt = coverArt;
+    public void setCoverArt(String path, Context context) {
+        mCoverArt = new BitmapDrawable(context.getResources(),
+                PictureUtils.getScaledBitmap(path, 0.5, context));
     }
 
     public int getId() {

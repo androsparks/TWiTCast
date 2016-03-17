@@ -296,7 +296,6 @@ public class VideoCastControllerActivity extends AppCompatActivity implements
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-        mToolbar.setPadding(0, getStatusBarHeight(), 0, 0);
     }
 
     @Override

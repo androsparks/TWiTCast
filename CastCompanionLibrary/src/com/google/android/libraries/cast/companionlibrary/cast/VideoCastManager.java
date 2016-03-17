@@ -87,6 +87,7 @@ import android.view.accessibility.CaptioningManager;
 
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
@@ -2336,6 +2337,32 @@ public class VideoCastManager extends BaseCastManager
             bm = BitmapFactory.decodeResource(mContext.getResources(),
                     R.drawable.album_art_placeholder);
         }
+
+        if (imgUrl != null) {
+            if (imgUrl.toString().contains("twitlogo")) {
+                if (existsInLocalStorage("twitlogo_1400x1400.png", "logo")) {
+                    File imageFile = new File(mContext.getFilesDir() + "/logo", "twitlogo_1400x1400.png");
+                    bm = Utils.getScaledBitmap(imageFile.getAbsolutePath(), 1.0, mContext);
+                }
+            } else {
+                if (existsInLocalStorage(getImageFileName(imgUrl), "cover_art")) {
+                    File imageFile = new File(mContext.getFilesDir() + "/cover_art", getImageFileName(imgUrl));
+                    bm = Utils.getScaledBitmap(imageFile.getAbsolutePath(), 1.0, mContext);
+                }
+            }
+
+            if (bm != null) {
+                MediaMetadataCompat currentMetadata = mMediaSessionCompat.getController().getMetadata();
+                MediaMetadataCompat.Builder newBuilder = currentMetadata == null
+                        ? new MediaMetadataCompat.Builder()
+                        : new MediaMetadataCompat.Builder(currentMetadata);
+                mMediaSessionCompat.setMetadata(newBuilder
+                        .putBitmap(MediaMetadataCompat.METADATA_KEY_ART, bm)
+                        .build());
+                return;
+            }
+        }
+
         if (bm != null) {
             MediaMetadataCompat currentMetadata = mMediaSessionCompat.getController().getMetadata();
             MediaMetadataCompat.Builder newBuilder = currentMetadata == null
@@ -2368,6 +2395,25 @@ public class VideoCastManager extends BaseCastManager
             mLockScreenFetchTask.execute(imgUrl);
         }
     }
+
+    private boolean existsInLocalStorage(String filename, String folderName) {
+        File folder = new File(mContext.getFilesDir() + "/" + folderName);
+        if (!folder.exists()) {
+            return false;
+        }
+
+        File file = new File(mContext.getFilesDir() + "/" + folderName, filename);
+        return file.exists();
+    }
+
+    private String getImageFileName(Uri uri) {
+        String url = uri.toString();
+
+        int startIndex = url.lastIndexOf('/');
+        int endIndex = url.lastIndexOf('?');
+        return url.substring(startIndex + 1, endIndex);
+    }
+
     /*
      * Updates the playback status of the Media Session
      */
@@ -2447,6 +2493,25 @@ public class VideoCastManager extends BaseCastManager
                         .putBitmap(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON, bm)
                         .build());
             } else {
+                Bitmap bm = null;
+                if (iconUri.toString().contains("twitlogo")) {
+                    if (existsInLocalStorage("twitlogo_1400x1400.png", "logo")) {
+                        File imageFile = new File(mContext.getFilesDir() + "/logo", "twitlogo_1400x1400.png");
+                        bm = Utils.getScaledBitmap(imageFile.getAbsolutePath(), 0.25, mContext);
+                    }
+                } else {
+                    if (existsInLocalStorage(getImageFileName(iconUri), "cover_art")) {
+                        File imageFile = new File(mContext.getFilesDir() + "/cover_art", getImageFileName(iconUri));
+                        bm = Utils.getScaledBitmap(imageFile.getAbsolutePath(), 0.25, mContext);
+                    }
+                }
+
+                if (bm != null && mMediaSessionCompat != null) {
+                    mMediaSessionCompat.setMetadata(newBuilder.putBitmap(
+                            MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON, bm).build());
+                    return;
+                }
+
                 if (mMediaSessionIconFetchTask != null) {
                     mMediaSessionIconFetchTask.cancel(true);
                 }

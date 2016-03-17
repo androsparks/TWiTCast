@@ -288,16 +288,16 @@ public class MiniController extends RelativeLayout implements IMiniController {
         mIconUri = uri;
 
         if (uri.toString().contains("twitlogo")) {
-            if (existsInLocalStorage("twitlogo_600x600.png", "logo")) {
-                File imageFile = new File(mContext.getFilesDir() + "/logo", "twitlogo_600x600.png");
-                setIcon(BitmapFactory.decodeFile(imageFile.getAbsolutePath()));
+            if (existsInLocalStorage("twitlogo_1400x1400.png", "logo")) {
+                File imageFile = new File(mContext.getFilesDir() + "/logo", "twitlogo_1400x1400.png");
+                setIcon(Utils.getScaledBitmap(imageFile.getAbsolutePath(), 0.25, mContext));
                 return;
             }
         }
 
         if (existsInLocalStorage(getImageFileName(uri), "cover_art")) {
             File imageFile = new File(mContext.getFilesDir() + "/cover_art", getImageFileName(uri));
-            setIcon(BitmapFactory.decodeFile(imageFile.getAbsolutePath()));
+            setIcon(Utils.getScaledBitmap(imageFile.getAbsolutePath(), 0.25, mContext));
             return;
         }
 
@@ -452,24 +452,24 @@ public class MiniController extends RelativeLayout implements IMiniController {
         }
 
         mUpcomingIconUri = uri;
-        if (mFetchUpcomingBitmapTask != null) {
-            mFetchUpcomingBitmapTask.cancel(true);
-        }
-        mFetchUpcomingBitmapTask = new FetchBitmapTask() {
-            @Override
-            protected void onPostExecute(Bitmap bitmap) {
-                if (bitmap == null) {
-                    bitmap = BitmapFactory.decodeResource(getResources(),
-                            R.drawable.album_art_placeholder);
-                }
-                setUpcomingIcon(bitmap);
-                if (this == mFetchUpcomingBitmapTask) {
-                    mFetchUpcomingBitmapTask = null;
-                }
-            }
-        };
-
-        mFetchUpcomingBitmapTask.execute(uri);
+//        if (mFetchUpcomingBitmapTask != null) {
+//            mFetchUpcomingBitmapTask.cancel(true);
+//        }
+//        mFetchUpcomingBitmapTask = new FetchBitmapTask() {
+//            @Override
+//            protected void onPostExecute(Bitmap bitmap) {
+//                if (bitmap == null) {
+//                    bitmap = BitmapFactory.decodeResource(getResources(),
+//                            R.drawable.album_art_placeholder);
+//                }
+//                setUpcomingIcon(bitmap);
+//                if (this == mFetchUpcomingBitmapTask) {
+//                    mFetchUpcomingBitmapTask = null;
+//                }
+//            }
+//        };
+//
+//        mFetchUpcomingBitmapTask.execute(uri);
     }
 
     private void setUpcomingTitle(String title) {

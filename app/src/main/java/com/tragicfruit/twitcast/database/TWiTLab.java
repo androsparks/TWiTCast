@@ -116,7 +116,7 @@ public class TWiTLab implements TWiTDatabase {
 
     private void loadCoverArt() {
         for (Show show : mShows) {
-            show.setCoverArt(Drawable.createFromPath(show.getCoverArtLocalPath()));
+            show.setCoverArt(show.getCoverArtLocalPath(), mContext);
         }
     }
 
@@ -164,7 +164,8 @@ public class TWiTLab implements TWiTDatabase {
             }
 
             if (mEpisodes.contains(episode)) {
-                if (episodeHasAllUrls(episode)) {
+                int index = mEpisodes.indexOf(episode);
+                if (episodeHasAllUrls(mEpisodes.get(index))) {
                     continue;
                 } else {
                     mEpisodes.remove(episode);
@@ -194,7 +195,8 @@ public class TWiTLab implements TWiTDatabase {
             episode.cleanTitle();
 
             if (mEpisodes.contains(episode)) {
-                if (episodeHasAllUrls(episode)) {
+                int index = mEpisodes.indexOf(episode);
+                if (episodeHasAllUrls(mEpisodes.get(index))) {
                     continue;
                 } else {
                     mEpisodes.remove(episode);

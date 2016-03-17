@@ -23,6 +23,7 @@ import android.graphics.Point;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.util.Log;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -51,6 +52,7 @@ public abstract class FetchBitmapTask extends AsyncTask<Uri, Void, Bitmap> {
      * be performed.
      */
     public FetchBitmapTask(int preferredWidth, int preferredHeight, boolean allowedToScale) {
+//        Log.d("FetchBitmapTask", "Constructor", new Throwable());
         mPreferredWidth = preferredWidth;
         mPreferredHeight = preferredHeight;
         mAllowedToScale = allowedToScale;

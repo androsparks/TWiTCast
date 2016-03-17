@@ -104,19 +104,21 @@ public class LatestEpisodesFragment extends Fragment {
     }
 
     private void setupAdapter() {
-        // This is the code to provide a sectioned list
-        List<SectionedRecyclerViewAdapter.Section> sections = new ArrayList<>();
-        addSections(sections);
+        if (isAdded()) {
+            // This is the code to provide a sectioned list
+            List<SectionedRecyclerViewAdapter.Section> sections = new ArrayList<>();
+            addSections(sections);
 
-        //Add your adapter to the sectionAdapter
-        SectionedRecyclerViewAdapter.Section[] dummy = new SectionedRecyclerViewAdapter.Section[sections.size()];
-        SectionedRecyclerViewAdapter mSectionedAdapter = new
-                SectionedRecyclerViewAdapter(getActivity(), R.layout.section_recycler_view, R.id.section_text, new EpisodeAdapter());
-        mSectionedAdapter.setSections(sections.toArray(dummy));
+            //Add your adapter to the sectionAdapter
+            SectionedRecyclerViewAdapter.Section[] dummy = new SectionedRecyclerViewAdapter.Section[sections.size()];
+            SectionedRecyclerViewAdapter mSectionedAdapter = new
+                    SectionedRecyclerViewAdapter(getActivity(), R.layout.section_recycler_view, R.id.section_text, new EpisodeAdapter());
+            mSectionedAdapter.setSections(sections.toArray(dummy));
 
-        // Add sectioned adapter to animation adapter
-        AlphaInAnimationAdapter animationAdapter = new AlphaInAnimationAdapter(mSectionedAdapter);
-        mRecyclerView.setAdapter(animationAdapter);
+            // Add sectioned adapter to animation adapter
+            AlphaInAnimationAdapter animationAdapter = new AlphaInAnimationAdapter(mSectionedAdapter);
+            mRecyclerView.setAdapter(animationAdapter);
+        }
     }
 
     private void addSections(List<SectionedRecyclerViewAdapter.Section> sections) {

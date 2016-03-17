@@ -3,6 +3,7 @@ package com.tragicfruit.twitcast.stream;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -53,6 +54,7 @@ public class LiveStreamFragment extends Fragment {
     public interface Callbacks {
         void playLiveStream();
         void refreshLiveStream();
+        void showNoConnectionSnackbar();
     }
 
     public static LiveStreamFragment newInstance() {
@@ -65,8 +67,12 @@ public class LiveStreamFragment extends Fragment {
         setRetainInstance(true);
         setHasOptionsMenu(true);
 
-        mUpcomingEpisodesTask = new FetchUpcomingEpisodesTask();
-        mUpcomingEpisodesTask.execute();
+        if (isNetworkAvailableAndConnected()) {
+            mUpcomingEpisodesTask = new FetchUpcomingEpisodesTask();
+            mUpcomingEpisodesTask.execute();
+        } else {
+            mCallbacks.showNoConnectionSnackbar();
+        }
     }
 
     @Nullable
@@ -171,6 +177,15 @@ public class LiveStreamFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mCallbacks = null;
+    }
+
+    private boolean isNetworkAvailableAndConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        boolean isNetworkAvailable = cm.getActiveNetworkInfo() != null;
+        boolean isNetworkConnected = isNetworkAvailable && cm.getActiveNetworkInfo().isConnected();
+
+        return isNetworkConnected;
     }
 
     private class UpcomingEpisodeHolder extends RecyclerView.ViewHolder {

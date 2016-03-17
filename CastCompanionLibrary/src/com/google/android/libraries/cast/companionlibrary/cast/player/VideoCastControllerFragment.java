@@ -611,18 +611,18 @@ public class VideoCastControllerFragment extends Fragment implements
 
                 mUrlAndBitmap = new UrlAndBitmap();
                 mUrlAndBitmap.mUrl = uri;
-                mUrlAndBitmap.mBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());;
+                mUrlAndBitmap.mBitmap = Utils.getScaledBitmap(imageFile.getAbsolutePath(), 1.0, getActivity());
                 mCastController.setImage(mUrlAndBitmap.mBitmap);
                 return;
             }
         }
 
-        if (existsInLocalStorage(getImageFileName(uri), "cover_art_large")) {
-            File imageFile = new File(getActivity().getFilesDir() + "/cover_art_large", getImageFileName(uri));
+        if (existsInLocalStorage(getImageFileName(uri), "cover_art")) {
+            File imageFile = new File(getActivity().getFilesDir() + "/cover_art", getImageFileName(uri));
 
             mUrlAndBitmap = new UrlAndBitmap();
             mUrlAndBitmap.mUrl = uri;
-            mUrlAndBitmap.mBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+            mUrlAndBitmap.mBitmap = Utils.getScaledBitmap(imageFile.getAbsolutePath(), 1.0, getActivity());
             mCastController.setImage(mUrlAndBitmap.mBitmap);
 
             return;
@@ -655,7 +655,7 @@ public class VideoCastControllerFragment extends Fragment implements
 
                 if (file != null) {
                     mUrlAndBitmap = new UrlAndBitmap();
-                    mUrlAndBitmap.mBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+                    mUrlAndBitmap.mBitmap = Utils.getScaledBitmap(file.getAbsolutePath(), 1.0, getActivity());
                     mUrlAndBitmap.mUrl = uri;
                     if (!isCancelled()) {
                         mCastController.setImage(mUrlAndBitmap.mBitmap);
@@ -685,12 +685,12 @@ public class VideoCastControllerFragment extends Fragment implements
                 return null;
             }
 
-            File coverArtFolder = new File(getActivity().getFilesDir() + "/cover_art_large");
+            File coverArtFolder = new File(getActivity().getFilesDir() + "/cover_art");
             if (!coverArtFolder.exists()) {
                 coverArtFolder.mkdir();
             }
 
-            file = new File(getActivity().getFilesDir() + "/cover_art_large", getImageFileName(Uri.parse(urlString)));
+            file = new File(getActivity().getFilesDir() + "/cover_art", getImageFileName(Uri.parse(urlString)));
 
             OutputStream out = new FileOutputStream(file);
             writer = new OutputStreamWriter(out);

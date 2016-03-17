@@ -237,7 +237,7 @@ public class VideoCastNotificationService extends Service {
         if (mBitmapDecoderTask != null) {
             mBitmapDecoderTask.cancel(false);
         }
-        Uri imgUri = null;
+        Uri imgUri;
         try {
             if (!info.getMetadata().hasImages()) {
                 build(info, null, mIsPlaying);
@@ -247,13 +247,14 @@ public class VideoCastNotificationService extends Service {
             }
         } catch (CastException e) {
             LOGE(TAG, "Failed to build notification", e);
+            return;
         }
 
         if (imgUri.toString().contains("twitlogo")) {
-            if (existsInLocalStorage("twitlogo_600x600.png", "logo")) {
+            if (existsInLocalStorage("twitlogo_1400x1400.png", "logo")) {
                 try {
-                    File imageFile = new File(getFilesDir() + "/logo", "twitlogo_600x600.png");
-                    mVideoArtBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+                    File imageFile = new File(getFilesDir() + "/logo", "twitlogo_1400x1400.png");
+                    mVideoArtBitmap = Utils.getScaledBitmap(imageFile.getAbsolutePath(), 0.25, this);
                     build(info, mVideoArtBitmap, mIsPlaying);
                 } catch (CastException | NoConnectionException | TransientNetworkDisconnectionException e) {
                     LOGE(TAG, "Failed to set notification for " + info.toString(), e);
@@ -270,7 +271,7 @@ public class VideoCastNotificationService extends Service {
         if (existsInLocalStorage(getImageFileName(imgUri), "cover_art")) {
             try {
                 File imageFile = new File(getFilesDir() + "/cover_art", getImageFileName(imgUri));
-                mVideoArtBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+                mVideoArtBitmap = Utils.getScaledBitmap(imageFile.getAbsolutePath(), 0.25, this);
                 build(info, mVideoArtBitmap, mIsPlaying);
             } catch (CastException | NoConnectionException | TransientNetworkDisconnectionException e) {
                 LOGE(TAG, "Failed to set notification for " + info.toString(), e);
@@ -432,15 +433,15 @@ public class VideoCastNotificationService extends Service {
                 = (NotificationCompat.Builder) new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_notification_icon)
                 .setContentTitle(contentTitle)
-                        .setContentText(castingTo)
-                        .setContentIntent(getContentIntent(info))
-                        .setLargeIcon(bitmap)
-                        .setStyle(new NotificationCompat.MediaStyle()
-                                .setShowActionsInCompactView(notificationActionsArray)
-                                .setMediaSession(mCastManager.getMediaSessionCompatToken()))
-                        .setOngoing(true)
-                        .setShowWhen(false)
-                        .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+                .setContentText(castingTo)
+                .setContentIntent(getContentIntent(info))
+                .setLargeIcon(bitmap)
+                .setStyle(new NotificationCompat.MediaStyle()
+                        .setShowActionsInCompactView(notificationActionsArray)
+                        .setMediaSession(mCastManager.getMediaSessionCompatToken()))
+                .setOngoing(true)
+                .setShowWhen(false)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
 
         for (Integer notificationType : notificationActions) {
             switch (notificationType) {

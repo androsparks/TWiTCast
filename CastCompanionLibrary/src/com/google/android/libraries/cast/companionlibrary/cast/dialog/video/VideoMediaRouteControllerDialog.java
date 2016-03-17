@@ -29,6 +29,7 @@ import com.google.android.libraries.cast.companionlibrary.cast.exceptions.NoConn
 import com.google.android.libraries.cast.companionlibrary.cast.exceptions.TransientNetworkDisconnectionException;
 import com.google.android.libraries.cast.companionlibrary.utils.FetchBitmapTask;
 import com.google.android.libraries.cast.companionlibrary.utils.LogUtils;
+import com.google.android.libraries.cast.companionlibrary.utils.Utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -186,16 +187,16 @@ public class VideoMediaRouteControllerDialog extends MediaRouteControllerDialog 
         }
 
         if (uri.toString().contains("twitlogo")) {
-            if (existsInLocalStorage("twitlogo_600x600.png", "logo")) {
-                File imageFile = new File(mContext.getFilesDir() + "/logo", "twitlogo_600x600.png");
-                mIcon.setImageBitmap(BitmapFactory.decodeFile(imageFile.getAbsolutePath()));
+            if (existsInLocalStorage("twitlogo_1400x1400.png", "logo")) {
+                File imageFile = new File(mContext.getFilesDir() + "/logo", "twitlogo_1400x1400.png");
+                mIcon.setImageBitmap(Utils.getScaledBitmap(imageFile.getAbsolutePath(), 0.25, mContext));
                 return;
             }
         }
 
         if (existsInLocalStorage(getImageFileName(uri), "cover_art")) {
             File imageFile = new File(mContext.getFilesDir() + "/cover_art", getImageFileName(uri));
-            mIcon.setImageBitmap(BitmapFactory.decodeFile(imageFile.getAbsolutePath()));
+            mIcon.setImageBitmap(Utils.getScaledBitmap(imageFile.getAbsolutePath(), 0.25, mContext));
             return;
         }
 

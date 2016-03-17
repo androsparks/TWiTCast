@@ -163,13 +163,14 @@ public class EpisodeListFragment extends Fragment {
 
         // set toolbar colour to dominant cover art colour
         Bitmap bitmap = ((BitmapDrawable) mShow.getCoverArt()).getBitmap();
-        Bitmap bitmapTopHalf = Bitmap.createBitmap(bitmap, 0, 0, 600, 200);
-        Palette palette = Palette.from(bitmapTopHalf).generate();
-        int colour = palette.getDarkVibrantColor(0);
-        if (colour == 0) {
-            palette = Palette.from(bitmap).generate();
+        Bitmap bitmapTop = Bitmap.createBitmap(bitmap, 0, bitmap.getHeight() / 4, bitmap.getWidth(), bitmap.getHeight() / 4);
+        Palette palette = Palette.from(bitmapTop).generate();
+        int colour = palette.getVibrantColor(0);
+        if (colour == 0)
             colour = palette.getDarkVibrantColor(0);
-        }
+
+        if (colour == 0)
+            colour = palette.getMutedColor(0);
 
         mCallbacks.setToolbarColour(colour, getDarkerColour(colour));
 

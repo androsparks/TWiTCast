@@ -263,7 +263,7 @@ public class TWiTFetcher {
             JSONObject coverArt = show.getJSONObject("coverArt");
             JSONObject derivatives = coverArt.getJSONObject("derivatives");
             newShow.setCoverArtSmallUrl(derivatives.getString("twit_album_art_300x300"));
-            newShow.setCoverArtUrl(derivatives.getString("twit_album_art_600x600"));
+            newShow.setCoverArtUrl(derivatives.getString("twit_album_art_1400x1400"));
             newShow.setCoverArtLargeUrl(derivatives.getString("twit_album_art_1400x1400"));
 
             JSONArray hdVideoArray = show.getJSONArray("hdVideoSubscriptionOptions");
@@ -319,8 +319,6 @@ public class TWiTFetcher {
             addVideoFeed(episodeList, show.getVideoLargeFeed(), StreamQuality.VIDEO_LARGE);
             addVideoFeed(episodeList, show.getVideoHdFeed(), StreamQuality.VIDEO_HD);
         }
-
-        Log.d(TAG, "Fetched video feeds");
         return episodeList;
     }
 
@@ -335,14 +333,14 @@ public class TWiTFetcher {
             int episodeListStartingIndex = findFirstMatchingIndex(episodeList, (Element) episodeNodeList.item(0));
 
             // i is index for video feed, j is index for episode list (built from audio feed)
-            for (int i = 0, j = episodeListStartingIndex; j < episodeList.size(); i++, j++) {
+            for (int i = 0, j = episodeListStartingIndex; i < episodeNodeList.getLength() && j < episodeList.size(); i++, j++) {
                 Episode episode = episodeList.get(j);
 
                 Element episodeElement = (Element) episodeNodeList.item(i);
                 String title = episodeElement.getElementsByTagName("title").item(0).getTextContent();
                 if (!title.equals(episode.getTitle())) {
-                    Log.e(TAG, "Video feed does not match with audio feed.");
-                    break;
+                    i--; // stay on video feed episode and find matching one from audio feed
+                    continue;
                 }
 
                 String link = episodeElement.getElementsByTagName("link").item(0).getTextContent();
@@ -359,6 +357,8 @@ public class TWiTFetcher {
                         break;
                 }
             }
+
+            Log.d(TAG, "Fetched video feed " + feedType.toString());
         } catch (ParserConfigurationException | SAXException e) {
             Log.e(TAG, "Error parsing XML", e);
         }
