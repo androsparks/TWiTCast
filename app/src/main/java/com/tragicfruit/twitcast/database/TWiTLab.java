@@ -381,9 +381,7 @@ public class TWiTLab implements TWiTDatabase {
         ContentValues values = new ContentValues();
         values.put(ShowTable.Cols.TITLE, show.getTitle());
         values.put(ShowTable.Cols.SHORT_CODE, show.getShortCode());
-        values.put(ShowTable.Cols.COVER_ART_SMALL_URL, show.getCoverArtSmallUrl());
         values.put(ShowTable.Cols.COVER_ART_URL, show.getCoverArtUrl());
-        values.put(ShowTable.Cols.COVER_ART_LARGE_URL, show.getCoverArtLargeUrl());
         values.put(ShowTable.Cols.COVER_ART_LOCAL_PATH, show.getCoverArtLocalPath());
         values.put(ShowTable.Cols.ID, show.getId());
         values.put(ShowTable.Cols.DESCRIPTION, show.getDescription());

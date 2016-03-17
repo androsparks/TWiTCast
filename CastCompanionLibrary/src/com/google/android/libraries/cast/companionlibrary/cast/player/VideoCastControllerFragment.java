@@ -611,7 +611,7 @@ public class VideoCastControllerFragment extends Fragment implements
 
                 mUrlAndBitmap = new UrlAndBitmap();
                 mUrlAndBitmap.mUrl = uri;
-                mUrlAndBitmap.mBitmap = Utils.getScaledBitmap(imageFile.getAbsolutePath(), 1.0, getActivity());
+                mUrlAndBitmap.mBitmap = Utils.getScaledBitmap(imageFile.getAbsolutePath(), 0.8, getActivity());
                 mCastController.setImage(mUrlAndBitmap.mBitmap);
                 return;
             }
@@ -622,7 +622,7 @@ public class VideoCastControllerFragment extends Fragment implements
 
             mUrlAndBitmap = new UrlAndBitmap();
             mUrlAndBitmap.mUrl = uri;
-            mUrlAndBitmap.mBitmap = Utils.getScaledBitmap(imageFile.getAbsolutePath(), 1.0, getActivity());
+            mUrlAndBitmap.mBitmap = Utils.getScaledBitmap(imageFile.getAbsolutePath(), 0.8, getActivity());
             mCastController.setImage(mUrlAndBitmap.mBitmap);
 
             return;
@@ -655,7 +655,7 @@ public class VideoCastControllerFragment extends Fragment implements
 
                 if (file != null) {
                     mUrlAndBitmap = new UrlAndBitmap();
-                    mUrlAndBitmap.mBitmap = Utils.getScaledBitmap(file.getAbsolutePath(), 1.0, getActivity());
+                    mUrlAndBitmap.mBitmap = Utils.getScaledBitmap(file.getAbsolutePath(), 0.8, getActivity());
                     mUrlAndBitmap.mUrl = uri;
                     if (!isCancelled()) {
                         mCastController.setImage(mUrlAndBitmap.mBitmap);

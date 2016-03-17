@@ -24,9 +24,7 @@ public class TWiTBaseHelper extends SQLiteOpenHelper {
                 " _id integer primary key autoincrement, " +
                 ShowTable.Cols.TITLE + ", " +
                 ShowTable.Cols.SHORT_CODE + ", " +
-                ShowTable.Cols.COVER_ART_SMALL_URL + ", " +
                 ShowTable.Cols.COVER_ART_URL + ", " +
-                ShowTable.Cols.COVER_ART_LARGE_URL + ", " +
                 ShowTable.Cols.COVER_ART_LOCAL_PATH + ", " +
                 ShowTable.Cols.ID + ", " +
                 ShowTable.Cols.DESCRIPTION + ", " +

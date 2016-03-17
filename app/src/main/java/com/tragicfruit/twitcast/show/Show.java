@@ -50,28 +50,12 @@ public class Show {
         mShortCode = shortCode;
     }
 
-    public String getCoverArtSmallUrl() {
-        return mCoverArtSmallUrl;
-    }
-
-    public void setCoverArtSmallUrl(String coverArtSmallUrl) {
-        mCoverArtSmallUrl = coverArtSmallUrl;
-    }
-
     public String getCoverArtUrl() {
         return mCoverArtUrl;
     }
 
     public void setCoverArtUrl(String coverArtUrl) {
         mCoverArtUrl = coverArtUrl;
-    }
-
-    public String getCoverArtLargeUrl() {
-        return mCoverArtLargeUrl;
-    }
-
-    public void setCoverArtLargeUrl(String coverArtLargeUrl) {
-        mCoverArtLargeUrl = coverArtLargeUrl;
     }
 
     public String getCoverArtLocalPath() {
