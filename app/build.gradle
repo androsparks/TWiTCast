@@ -8,8 +8,8 @@ android {
         applicationId "com.tragicfruit.twitcast"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 5
-        versionName "1.0 beta 3"
+        versionCode 6
+        versionName "1.0"
     }
     buildTypes {
         release {
@@ -26,6 +26,6 @@ dependencies {
     compile 'com.android.support:design:23.2.1'
     compile 'com.android.support:palette-v7:23.2.1'
     compile 'com.android.support:recyclerview-v7:23.2.1'
-    compile project(':CastCompanionLibrary')
     compile 'jp.wasabeef:recyclerview-animators:1.2.2'
+    compile project(':CastCompanionLibrary')
 }
