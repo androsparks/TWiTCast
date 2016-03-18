@@ -39,8 +39,8 @@
     <color name="ccl_intro_overlay_button_background_color">#BB33B5E5</color>
     <color name="ccl_intro_overlay_button_foreground_color">#FFFFFF</color>
 
-    <color name="colorAccent">#edaf0d</color>
+    <color name="colorAccent">#DD1F25</color>
     <color name="seekbarBackground">#757575</color>
-    <color name="miniControllerProgress">#edaf0d</color>
+    <color name="miniControllerProgress">@color/colorAccent</color>
 
 </resources>
