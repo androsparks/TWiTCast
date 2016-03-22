@@ -57,4 +57,8 @@ public class AutofitRecyclerView extends RecyclerView {
     public int getStretchedSize() {
         return mStretchedSize;
     }
+
+    public int getSpanCount() {
+        return manager.getSpanCount();
+    }
 }

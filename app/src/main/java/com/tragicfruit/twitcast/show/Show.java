@@ -68,9 +68,13 @@ public class Show {
         return mCoverArt;
     }
 
-    public void setCoverArt(String path, Context context) {
+    public void setCoverArt(String path, Context context, double reduceFactor) {
         mCoverArt = new BitmapDrawable(context.getResources(),
-                PictureUtils.getScaledBitmap(path, 0.5, context));
+                PictureUtils.getScaledBitmap(path, reduceFactor, context));
+    }
+
+    public void setCoverArt(Drawable drawable) {
+        mCoverArt = drawable;
     }
 
     public int getId() {

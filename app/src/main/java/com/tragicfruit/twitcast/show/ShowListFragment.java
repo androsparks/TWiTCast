@@ -19,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -45,7 +46,7 @@ import java.util.List;
 /**
  * Created by Jeremy on 23/02/2016.
  */
-public class ShowListFragment extends Fragment {
+public class ShowListFragment extends Fragment implements ViewTreeObserver.OnGlobalLayoutListener {
     private static final String TAG = "ShowListFragment";
     private static final String DIALOG_UPDATING_SHOWS = "updating_shows";
     private static final String DIALOG_CHOOSE_QUALITY = "choose_quality";
@@ -81,7 +82,7 @@ public class ShowListFragment extends Fragment {
 
         if (mDatabase.getShows().size() == 0) {
             updateShows();
-        } else if (!isCoverArtDownloaded()) {
+        } else if (!isCoverArtSet()) {
             updateCoverArt();
         } else {
             updateEpisodes();
@@ -140,7 +141,7 @@ public class ShowListFragment extends Fragment {
         }
     }
 
-    private boolean isCoverArtDownloaded() {
+    private boolean isCoverArtSet() {
         for (Show show : mDatabase.getShows()) {
             if (show.getCoverArt() == null) {
                 return false;
@@ -155,9 +156,31 @@ public class ShowListFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_show_list, container, false);
 
         mRecyclerView = (AutofitRecyclerView) v.findViewById(R.id.fragment_show_list_recycler_view);
+        mRecyclerView.getViewTreeObserver().addOnGlobalLayoutListener(this);
         setupAdapter();
 
         return v;
+    }
+
+
+    @Override
+    public void onGlobalLayout() {
+        if (isCoverArtSet() || mRefreshingShows) {
+            return;
+        }
+
+        // set up cover art
+        int spanCount = mRecyclerView.getSpanCount();
+        QueryPreferences.setGridSpanCount(getActivity(), spanCount);
+        double reduceFactor = 1.0 / spanCount;
+        for (Show show : mDatabase.getShows()) {
+            show.setCoverArt(show.getCoverArtLocalPath(), getActivity(),
+                    reduceFactor);
+        }
+
+        if (mRecyclerView.getAdapter() != null) {
+            mRecyclerView.getAdapter().notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -358,6 +381,9 @@ public class ShowListFragment extends Fragment {
             // clean up old cover art
             cleanUp(Constants.COVER_ART_FOLDER);
             cleanUp(Constants.LOGO_FOLDER);
+            for (Show show : mDatabase.getShows()) {
+                show.setCoverArt(null);
+            }
 
             // download new cover art
             for (Show show : mDatabase.getShows()) {
@@ -368,7 +394,6 @@ public class ShowListFragment extends Fragment {
                         break;
                     }
 
-                    show.setCoverArt(coverArtFile.getAbsolutePath(), getActivity());
                     show.setCoverArtLocalPath(coverArtFile.getAbsolutePath());
                 } catch (IOException e) {
                     Log.e(TAG, "Cannot download cover art for " + show.getTitle(), e);

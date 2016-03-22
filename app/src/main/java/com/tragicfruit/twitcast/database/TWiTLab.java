@@ -14,6 +14,7 @@ import com.tragicfruit.twitcast.database.TWiTDbSchema.ShowTable;
 import com.tragicfruit.twitcast.episode.Episode;
 import com.tragicfruit.twitcast.show.Show;
 import com.tragicfruit.twitcast.stream.Stream;
+import com.tragicfruit.twitcast.utils.QueryPreferences;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -114,8 +115,9 @@ public class TWiTLab implements TWiTDatabase {
     }
 
     private void loadCoverArt() {
+        double reduceFactor = 1.0 / QueryPreferences.getGridSpanCount(mContext);
         for (Show show : mShows) {
-            show.setCoverArt(show.getCoverArtLocalPath(), mContext);
+            show.setCoverArt(show.getCoverArtLocalPath(), mContext, reduceFactor);
         }
     }
 

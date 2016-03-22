@@ -14,6 +14,7 @@ public class QueryPreferences {
     private static final String PREF_STREAM_QUALITY = "stream_quality";
     private static final String PREF_STREAM_SOURCE = "stream_source";
     private static final String PREF_CAST_DEVICE_AUDIO = "cast_device_audio";
+    private static final String PREF_GRID_SPAN_COUNT = "grid_span_count";
 
     public static StreamQuality getStreamQuality(Context context) {
         String streamQualityValue = PreferenceManager.getDefaultSharedPreferences(context)
@@ -50,6 +51,18 @@ public class QueryPreferences {
         PreferenceManager.getDefaultSharedPreferences(context)
                 .edit()
                 .putBoolean(PREF_CAST_DEVICE_AUDIO, audioOnly)
+                .apply();
+    }
+
+    public static int getGridSpanCount(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getInt(PREF_GRID_SPAN_COUNT, 2);
+    }
+
+    public static void setGridSpanCount(Context context, int spanCount) {
+        PreferenceManager.getDefaultSharedPreferences(context)
+                .edit()
+                .putInt(PREF_GRID_SPAN_COUNT, spanCount)
                 .apply();
     }
 }
