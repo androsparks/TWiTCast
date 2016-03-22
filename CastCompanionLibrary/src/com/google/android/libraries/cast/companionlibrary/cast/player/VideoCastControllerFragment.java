@@ -538,9 +538,9 @@ public class VideoCastControllerFragment extends Fragment implements
         super.onResume();
         try {
             if (mCastManager.isRemoteMediaPaused() || mCastManager.isRemoteMediaPlaying()) {
-                if (mCastManager.getRemoteMediaInformation() != null && mSelectedMedia
-                    .getContentId().equals(
-                        mCastManager.getRemoteMediaInformation().getContentId())) {
+                if (mCastManager.getRemoteMediaInformation() != null && mSelectedMedia != null &&
+                        mSelectedMedia.getContentId().equals(
+                                mCastManager.getRemoteMediaInformation().getContentId())) {
                     mIsFresh = false;
                 }
             }
