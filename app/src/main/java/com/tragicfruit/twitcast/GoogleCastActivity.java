@@ -127,7 +127,7 @@ public abstract class GoogleCastActivity extends AppCompatActivity
     @Override
     public void refreshLiveStream() {
         try {
-            if (mCastManager.isConnected() && mCastManager.isRemoteMediaLoaded()) {
+            if (mCastManager.isConnected() && mCastManager.isRemoteStreamLive()) {
                 playLiveStream();
             }
         } catch (Exception e) {
