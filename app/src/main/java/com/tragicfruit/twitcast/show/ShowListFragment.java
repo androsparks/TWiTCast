@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.tragicfruit.twitcast.R;
 import com.tragicfruit.twitcast.constants.Constants;
@@ -103,7 +104,6 @@ public class ShowListFragment extends Fragment implements ViewTreeObserver.OnGlo
             mRefreshingShows = true;
             getActivity().invalidateOptionsMenu();
 
-            mDatabase.resetEpisodes();
             mFetchShowsTask = new FetchShowsTask();
             mFetchShowsTask.execute();
         } else {
@@ -210,7 +210,7 @@ public class ShowListFragment extends Fragment implements ViewTreeObserver.OnGlo
 
     private void setupAdapter() {
         if (isAdded() && !mRefreshingShows) {
-            if (mDatabase.getShows().size() > 0) {
+            if (!mDatabase.getShows().isEmpty()) {
                 mRecyclerView.setAdapter(new ShowAdapter(mDatabase.getShows()));
             } else {
                 mRecyclerView.setAdapter(new ShowAdapter(new ArrayList<Show>()));
@@ -366,12 +366,15 @@ public class ShowListFragment extends Fragment implements ViewTreeObserver.OnGlo
                 return;
             }
 
-            if (showList != null) {
+            if (showList != null) { // save shows
                 Log.d(TAG, "Fetched shows");
                 mDatabase.setShows(showList);
+                updateCoverArt();
+            } else { // or keep ones from database
+                dismissLoadingDialog();
+                Toast.makeText(getActivity(),
+                        R.string.error_updating_shows_toast, Toast.LENGTH_SHORT).show();
             }
-
-            updateCoverArt();
         }
     }
 
@@ -475,6 +478,7 @@ public class ShowListFragment extends Fragment implements ViewTreeObserver.OnGlo
             mRefreshingShows = false;
             getActivity().invalidateOptionsMenu();
             setupAdapter();
+            mDatabase.resetEpisodes();
             updateEpisodes();
         }
     }
@@ -497,14 +501,14 @@ public class ShowListFragment extends Fragment implements ViewTreeObserver.OnGlo
                 return;
             }
 
-            if (episodeList == null) {
+            if (episodeList == null || episodeList.isEmpty()) {
                 dismissLoadingDialog();
                 mCallbacks.showNoConnectionSnackbar();
                 return;
             }
 
             // reset episodes if local episodes obsolete
-            if (mDatabase.getEpisodes().size() > 0) {
+            if (!mDatabase.getEpisodes().isEmpty()) {
                 Episode newestLocal = mDatabase.getEpisodes().get(0);
                 Episode oldestServer = episodeList.get(episodeList.size() - 1);
 

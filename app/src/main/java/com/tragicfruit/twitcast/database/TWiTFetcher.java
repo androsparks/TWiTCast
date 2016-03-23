@@ -245,6 +245,12 @@ public class TWiTFetcher {
     }
 
     private List<Show> parseShows(JSONObject json) throws JSONException {
+        // Check if TWiT API limit exceeded
+        if (json.has("_status") && json.getInt("_status") == 500) {
+            Log.e(TAG, "TWiT API limit exceeded");
+            return null;
+        }
+
         List<Show> showList = new ArrayList<>();
 
         JSONArray shows = json.getJSONArray("shows");
