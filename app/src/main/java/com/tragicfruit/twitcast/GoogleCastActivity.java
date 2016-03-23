@@ -253,7 +253,8 @@ public abstract class GoogleCastActivity extends AppCompatActivity
         showProgressBar();
 
         try {
-            if (!mCastManager.isRemoteMediaLoaded()) { // beginning episode
+            // if nothing playing
+            if (!(mCastManager.isRemoteMediaLoaded() || mCastManager.isRemoteStreamLive())) {
                 mCastManager.startVideoCastControllerActivity(this, mSelectedMediaInfo, mPosition, true);
             }
             mCastManager.loadMedia(mSelectedMediaInfo, true, mPosition);
