@@ -40,6 +40,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -169,7 +170,7 @@ public class TWiTFetcher {
     }
 
     public List<UpcomingEpisode> fetchUpcomingEpisodes() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'H:m:ssZZZZZ");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'H:m:ssZZZZZ", Locale.US);
         String timeNow = dateFormat.format(new Date());
 
         Calendar c = Calendar.getInstance();
@@ -430,10 +431,8 @@ public class TWiTFetcher {
 
     private Date parseDate(String dateString, String format) {
         try {
-//            TimeZone timeZone = TimeZone.getTimeZone("GMT");
-//            Calendar calendar = Calendar.getInstance(timeZone);
             GregorianCalendar calendar = new GregorianCalendar();
-            SimpleDateFormat dateFormat = new SimpleDateFormat(format);
+            SimpleDateFormat dateFormat = new SimpleDateFormat(format, Locale.US);
 
             dateFormat.setCalendar(calendar);
             calendar.setTime(dateFormat.parse(dateString));
