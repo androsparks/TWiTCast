@@ -39,4 +39,6 @@ public class Constants {
     public static final String STREAM_AUDIO = "http://twit.am/listen";
 
     public static final String GOOGLE_CALENDAR_ID = "mg877fp19824mj30g497frm74o@group.calendar.google.com";
+
+    public static final String TWITTER_USERNAME = "tragicfruit";
 }

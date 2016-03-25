@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.tragicfruit.twitcast.R;
+import com.tragicfruit.twitcast.constants.Constants;
 
 /**
  * Created by Jeremy on 16/03/2016.
@@ -61,17 +62,34 @@ public class LeaveFeedbackFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 String appPackageName = getActivity().getPackageName();
+                Intent intent;
                 try {
-                    Uri playStoreLink = Uri.parse("market://details?id=" + appPackageName);
-                    Intent i = new Intent(Intent.ACTION_VIEW, playStoreLink);
-                    startActivity(i);
+                    intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName));
                 } catch (android.content.ActivityNotFoundException e) {
                     // Devices without Play Store
-                    Uri playStoreLink = Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName);
-                    Intent i = new Intent(Intent.ACTION_VIEW, playStoreLink);
-                    startActivity(i);
+                    intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName));
                 }
+                startActivity(intent);
 
+                dismiss();
+            }
+        });
+
+        View twitter = view.findViewById(R.id.twitter_feedback);
+        twitter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent;
+                try {
+                    // get the Twitter app if possible
+                    getActivity().getPackageManager().getPackageInfo("com.twitter.android", 0);
+                    intent = new Intent(Intent.ACTION_VIEW, Uri.parse("twitter://user?user_id=" + Constants.TWITTER_USERNAME));
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                } catch (Exception e) {
+                    // no Twitter app, revert to browser
+                    intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://twitter.com/" + Constants.TWITTER_USERNAME));
+                }
+                startActivity(intent);
                 dismiss();
             }
         });

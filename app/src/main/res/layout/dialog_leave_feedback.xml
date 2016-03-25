@@ -60,4 +60,30 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/twitter_feedback"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="13dp"
+        android:paddingBottom="13dp"
+        android:paddingLeft="27dp"
+        android:paddingRight="24dp"
+        android:background="?attr/selectableItemBackground">
+
+        <ImageView
+            android:src="@drawable/ic_twitter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:text="@string/leave_feedback_twitter"
+            style="@style/TextAppearance.AppCompat.Subhead"
+            android:paddingLeft="23dp"
+            android:paddingStart="23dp"
+            android:gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"/>
+
+    </LinearLayout>
+
 </LinearLayout>

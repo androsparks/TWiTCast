@@ -81,7 +81,7 @@ public class ShowListFragment extends Fragment implements ViewTreeObserver.OnGlo
 
         mDatabase = TWiTLab.get(getActivity());
 
-        if (mDatabase.getShows().size() == 0) {
+        if (mDatabase.getShows().isEmpty()) {
             updateShows();
         } else if (!isCoverArtSet()) {
             updateCoverArt();

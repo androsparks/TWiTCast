@@ -36,5 +36,6 @@
     <string name="no_email_app_error">No email app found.</string>
     <string name="leave_feedback_email">Email</string>
     <string name="leave_feedback_play_store">Play Store</string>
+    <string name="leave_feedback_twitter">Twitter</string>
     <string name="error_updating_shows_toast">Error updating shows. Please try again later.</string>
 </resources>
