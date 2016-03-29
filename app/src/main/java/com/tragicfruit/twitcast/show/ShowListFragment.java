@@ -181,6 +181,7 @@ public class ShowListFragment extends Fragment implements ViewTreeObserver.OnGlo
         if (mRecyclerView.getAdapter() != null) {
             mRecyclerView.getAdapter().notifyDataSetChanged();
         }
+        mCallbacks.refreshLatestEpisodes();
     }
 
     @Override
