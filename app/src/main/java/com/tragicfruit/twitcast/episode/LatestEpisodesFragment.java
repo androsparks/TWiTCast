@@ -45,7 +45,6 @@ public class LatestEpisodesFragment extends Fragment {
     private static final int REQUEST_QUALITY = 0;
 
     private TWiTLab mTWiTLab;
-    private List<Episode> mEpisodes;
     private FetchEpisodesTask mFetchEpisodesTask;
 
     private RecyclerView mRecyclerView;
@@ -70,7 +69,6 @@ public class LatestEpisodesFragment extends Fragment {
         setHasOptionsMenu(true);
 
         mTWiTLab = TWiTLab.get(getActivity());
-        mEpisodes = mTWiTLab.getEpisodes();
     }
 
     @Nullable
@@ -111,8 +109,12 @@ public class LatestEpisodesFragment extends Fragment {
 
             //Add your adapter to the sectionAdapter
             SectionedRecyclerViewAdapter.Section[] dummy = new SectionedRecyclerViewAdapter.Section[sections.size()];
-            SectionedRecyclerViewAdapter mSectionedAdapter = new
-                    SectionedRecyclerViewAdapter(getActivity(), R.layout.section_recycler_view, R.id.section_text, new EpisodeAdapter());
+            SectionedRecyclerViewAdapter mSectionedAdapter = new SectionedRecyclerViewAdapter(
+                    getActivity(),
+                    R.layout.section_recycler_view,
+                    R.id.section_text,
+                    new EpisodeAdapter(mTWiTLab.getEpisodes())
+            );
             mSectionedAdapter.setSections(sections.toArray(dummy));
 
             // Add sectioned adapter to animation adapter
@@ -122,21 +124,23 @@ public class LatestEpisodesFragment extends Fragment {
     }
 
     private void addSections(List<SectionedRecyclerViewAdapter.Section> sections) {
-        if (mEpisodes.size() == 0) {
+        List<Episode> episodeList = mTWiTLab.getEpisodes();
+
+        if (episodeList.size() == 0) {
             return;
         }
 
         int startingIndex = 0;
-        Episode controlEpisode = mEpisodes.get(0);
+        Episode controlEpisode = episodeList.get(0);
         String sectionTitle = controlEpisode.getDisplayDate();
 
-        if (mEpisodes.size() == 1) {
+        if (episodeList.size() == 1) {
             sections.add(new SectionedRecyclerViewAdapter.Section(startingIndex, sectionTitle));
             return;
         }
 
-        for (int i = 1; i < mEpisodes.size(); i++) {
-            Episode currentEpisode = mEpisodes.get(i);
+        for (int i = 1; i < episodeList.size(); i++) {
+            Episode currentEpisode = episodeList.get(i);
 
             // different day or last item
             if (!isOnSameDay(controlEpisode, currentEpisode)) {
@@ -204,7 +208,6 @@ public class LatestEpisodesFragment extends Fragment {
 
     public void updateList() {
         Log.d(TAG, "Updating latest episode list");
-        mEpisodes = TWiTLab.get(getActivity()).getEpisodes();
         setupAdapter();
     }
 
@@ -260,6 +263,12 @@ public class LatestEpisodesFragment extends Fragment {
     }
 
     private class EpisodeAdapter extends RecyclerView.Adapter<EpisodeHolder> {
+        private List<Episode> mEpisodes;
+
+        public EpisodeAdapter(List<Episode> episodeList) {
+            mEpisodes = episodeList;
+        }
+
         @Override
         public EpisodeHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(getActivity());
@@ -305,9 +314,9 @@ public class LatestEpisodesFragment extends Fragment {
             }
 
             boolean newShows = mTWiTLab.addEpisodes(episodeList);
-            mRecyclerView.getAdapter().notifyDataSetChanged();
-
             if (newShows) {
+                setupAdapter();
+
                 mTWiTLab.saveShows();
                 mTWiTLab.saveEpisodes();
             }
