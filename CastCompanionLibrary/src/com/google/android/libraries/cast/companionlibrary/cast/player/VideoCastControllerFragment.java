@@ -35,6 +35,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.SeekBar;
 
+import com.google.android.gms.cast.CastStatusCodes;
 import com.google.android.gms.cast.MediaInfo;
 import com.google.android.gms.cast.MediaMetadata;
 import com.google.android.gms.cast.MediaQueueItem;
@@ -249,6 +250,16 @@ public class VideoCastControllerFragment extends Fragment implements
                 updateMetadata();
             } catch (TransientNetworkDisconnectionException | NoConnectionException e) {
                 LOGE(TAG, "Failed to update the metadata due to network issues", e);
+            }
+        }
+
+        @Override
+        public void onMediaLoadResult(int statusCode) {
+            if (CastStatusCodes.SUCCESS != statusCode) {
+                LOGD(TAG, "onMediaLoadResult(): Failed to load media with status code: "
+                        + statusCode);
+                Utils.showToast(getActivity(), R.string.ccl_failed_to_load_media);
+                mCastController.closeActivity();
             }
         }
 

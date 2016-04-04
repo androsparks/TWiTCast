@@ -472,7 +472,7 @@ public final class Utils {
      */
     public static String assertNotEmpty(String string, String name) {
         if (TextUtils.isEmpty(string)) {
-            throw new IllegalArgumentException(name + " cannot be null");
+            throw new IllegalArgumentException(name + " cannot be null or empty");
         }
         return string;
     }

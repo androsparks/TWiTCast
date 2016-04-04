@@ -109,12 +109,13 @@ public abstract class FetchBitmapTask extends AsyncTask<Uri, Void, Bitmap> {
             }
         }
         HttpURLConnection urlConnection = null;
+        InputStream stream = null;
         try {
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setDoInput(true);
 
             if (urlConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                InputStream stream = new BufferedInputStream(urlConnection.getInputStream());
+                stream = new BufferedInputStream(urlConnection.getInputStream());
                 bitmap = BitmapFactory.decodeStream(stream, null, options);
                 if ((mPreferredWidth > 0) && (mPreferredHeight > 0) && mAllowedToScale) {
                     bitmap = scaleBitmap(bitmap);
@@ -124,6 +125,12 @@ public abstract class FetchBitmapTask extends AsyncTask<Uri, Void, Bitmap> {
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
+            }
+            if (stream != null) {
+                try {
+                    stream.close();
+                } catch (IOException e) { /* ignore */
+                }
             }
         }
 
@@ -179,16 +186,23 @@ public abstract class FetchBitmapTask extends AsyncTask<Uri, Void, Bitmap> {
         options.inJustDecodeBounds = true;
         options.inSampleSize = inSampleSize;
         HttpURLConnection connection = null;
+        InputStream stream = null;
         try {
-            connection = (HttpURLConnection)url.openConnection();
-            InputStream stream = connection.getInputStream();
+            connection = (HttpURLConnection) url.openConnection();
+            stream = connection.getInputStream();
             BitmapFactory.decodeStream(stream, null, options);
             return new Point(options.outWidth, options.outHeight);
         } catch (IOException e) {
              /* ignore */
-        }  finally {
+        } finally {
             if (connection != null) {
                 connection.disconnect();
+            }
+            if (stream != null) {
+                try {
+                    stream.close();
+                } catch (IOException e) { /* ignore */
+                }
             }
         }
         return new Point(0, 0);

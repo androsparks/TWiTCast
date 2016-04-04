@@ -249,7 +249,7 @@ public class CastConfiguration {
             }
 
             if (mCustomNotificationService != null && !mNotificationEnabled) {
-                throw new IllegalArgumentException("For custom notifications, you should enable"
+                throw new IllegalArgumentException("For custom notifications, you should enable "
                         + "notifications first");
             }
 
@@ -319,8 +319,8 @@ public class CastConfiguration {
 
         /**
          * Adds a notification action to the MediaStyle notification. To use this, you have to
-         * first
-         * enable the notifications feature by calling {@link #enableNotification()}.Note that you
+         * first enable the notifications feature by calling {@link #enableNotification()}. Note
+         * that you cannot have more than 5 actions.
          * cannot have more than 5 actions.
          *
          * @param actionType Type of action to be added. It can be one of the predefined actions:
@@ -348,7 +348,7 @@ public class CastConfiguration {
         }
 
         /**
-         * (Optional) Sets an Target Activity. This will replace the default
+         * Sets the "Target Activity". If called, this will replace the default
          * {@link com.google.android.libraries.cast.companionlibrary.cast.player.VideoCastControllerActivity}
          * that the library provides and will be invoked if user taps on the notification content
          * or
@@ -399,7 +399,7 @@ public class CastConfiguration {
          * non-null {@link Locale} as well.
          */
         public Builder setLaunchOptions(boolean relaunchIfRunning, @NonNull Locale locale) {
-            mLocale = Utils.assertNotNull(locale, "local");
+            mLocale = Utils.assertNotNull(locale, "locale");
             mRelaunchIfRunning = relaunchIfRunning;
             return this;
         }

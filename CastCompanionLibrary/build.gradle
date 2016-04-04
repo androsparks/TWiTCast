@@ -33,8 +33,8 @@ repositories {
 apply plugin: 'com.android.library'
 
 ext {
-    supportLibVersion = '23.2.0'
-    versionName = '2.8.2'
+    supportLibVersion = '23.2.1'
+    versionName = '2.8.3'
 }
 
 android {
