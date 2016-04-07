@@ -276,6 +276,9 @@ public class TWiTLab implements TWiTDatabase {
 
     public void resetEpisodes() {
         mEpisodes = new ArrayList<>();
+        for (Show show: mShows) {
+            show.setLoadedAllEpisodes(false);
+        }
     }
 
     public List<Show> loadShows() {
