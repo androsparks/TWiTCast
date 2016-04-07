@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -46,10 +47,10 @@ public class LatestEpisodesFragment extends Fragment {
 
     private TWiTLab mTWiTLab;
     private FetchEpisodesTask mFetchEpisodesTask;
+    private boolean mLandscape;
 
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefresh;
-
     private Callbacks mCallbacks;
 
     public interface Callbacks {
@@ -77,8 +78,18 @@ public class LatestEpisodesFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_latest_episodes, container, false);
 
         mRecyclerView = (RecyclerView) v.findViewById(R.id.fragment_latest_episodes_recycler_view);
+        if (mRecyclerView != null) {
+            mLandscape = false;
+        } else {
+            mRecyclerView = (RecyclerView) v.findViewById(R.id.fragment_latest_episodes_landscape_recycler_view);
+            mLandscape = true;
+        }
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        if (!mLandscape) {
+            mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        } else {
+            mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+        }
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
 
         setupAdapter();
@@ -139,16 +150,25 @@ public class LatestEpisodesFragment extends Fragment {
             return;
         }
 
+        boolean needsExtraSection = false; // only for landscape layout
         for (int i = 1; i < episodeList.size(); i++) {
             Episode currentEpisode = episodeList.get(i);
 
             // different day or last item
             if (!isOnSameDay(controlEpisode, currentEpisode)) {
+                if (mLandscape && needsExtraSection) {
+                    sections.add(new SectionedRecyclerViewAdapter.Section(startingIndex, ""));
+                }
                 sections.add(new SectionedRecyclerViewAdapter.Section(startingIndex, sectionTitle));
+                if (mLandscape) {
+                    sections.add(new SectionedRecyclerViewAdapter.Section(startingIndex, ""));
+                }
+                needsExtraSection = (i - startingIndex) % 2 != 0;
                 startingIndex = i;
                 controlEpisode = currentEpisode;
                 sectionTitle = controlEpisode.getDisplayDate();
             }
+
         }
 
         // add last section
