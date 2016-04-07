@@ -66,12 +66,18 @@ public class LiveStreamFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         setHasOptionsMenu(true);
+    }
 
-        if (isNetworkAvailableAndConnected()) {
-            mUpcomingEpisodesTask = new FetchUpcomingEpisodesTask();
-            mUpcomingEpisodesTask.execute();
-        } else {
-            mCallbacks.showNoConnectionSnackbar();
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && !mFetchedUpcomingEpisodes) {
+            if (isNetworkAvailableAndConnected()) {
+                mUpcomingEpisodesTask = new FetchUpcomingEpisodesTask();
+                mUpcomingEpisodesTask.execute();
+            } else {
+                mCallbacks.showNoConnectionSnackbar();
+            }
         }
     }
 
