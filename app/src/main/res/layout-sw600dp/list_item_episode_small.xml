@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="?attr/selectableItemBackground"
+              android:padding="8dp">
+
+    <ImageView
+        android:id="@+id/list_item_cover_art"
+        android:layout_gravity="center_vertical"
+        android:layout_width="60dp"
+        android:layout_height="60dp"/>
+
+    <LinearLayout
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:layout_gravity="center_vertical"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/show_title"
+            android:textColor="@color/textColorBlack"
+            style="@style/TextAppearance.AppCompat.Subhead"
+            tools:text="Show title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/episode_number_title"
+            android:textColor="@color/textColorGrey"
+            style="@style/TextAppearance.AppCompat.Body1"
+            tools:text="11: Episode title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/episode_running_time"
+            tools:text="75 min"
+            android:textColor="@color/textColorGrey"
+            style="@style/TextAppearance.AppCompat.Caption"
+            android:layout_marginTop="4sp"
+            android:textStyle="italic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+</LinearLayout>
