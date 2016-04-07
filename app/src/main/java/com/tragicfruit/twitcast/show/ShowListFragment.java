@@ -196,6 +196,9 @@ public class ShowListFragment extends Fragment implements ViewTreeObserver.OnGlo
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.refresh_button:
+                if (mFetchEpisodesTask != null) {
+                    mFetchEpisodesTask.cancel(false);
+                }
                 updateShows();
                 return true;
             case R.id.choose_quality:
