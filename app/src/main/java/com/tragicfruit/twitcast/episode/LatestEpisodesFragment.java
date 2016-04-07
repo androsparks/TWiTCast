@@ -156,23 +156,32 @@ public class LatestEpisodesFragment extends Fragment {
 
             // different day or last item
             if (!isOnSameDay(controlEpisode, currentEpisode)) {
-                if (mLandscape && needsExtraSection) {
-                    sections.add(new SectionedRecyclerViewAdapter.Section(startingIndex, ""));
-                }
-                sections.add(new SectionedRecyclerViewAdapter.Section(startingIndex, sectionTitle));
-                if (mLandscape) {
-                    sections.add(new SectionedRecyclerViewAdapter.Section(startingIndex, ""));
-                }
+                addSection(sections, startingIndex, sectionTitle, needsExtraSection);
                 needsExtraSection = (i - startingIndex) % 2 != 0;
+
+                // reset section
                 startingIndex = i;
                 controlEpisode = currentEpisode;
                 sectionTitle = controlEpisode.getDisplayDate();
             }
-
         }
 
         // add last section
-        sections.add(new SectionedRecyclerViewAdapter.Section(startingIndex, sectionTitle));
+        addSection(sections, startingIndex, sectionTitle, needsExtraSection);
+        if ((episodeList.size() - startingIndex) % 2 != 0) {
+            sections.add(new SectionedRecyclerViewAdapter.Section(episodeList.size(), ""));
+        }
+    }
+
+    private void addSection(List<SectionedRecyclerViewAdapter.Section> sections, int index,
+                            String sectionTitle, boolean needsExtraSection) {
+        if (mLandscape && needsExtraSection) {
+            sections.add(new SectionedRecyclerViewAdapter.Section(index, ""));
+        }
+        sections.add(new SectionedRecyclerViewAdapter.Section(index, sectionTitle));
+        if (mLandscape) {
+            sections.add(new SectionedRecyclerViewAdapter.Section(index, ""));
+        }
     }
 
     private boolean isOnSameDay(Episode episode1, Episode episode2) {

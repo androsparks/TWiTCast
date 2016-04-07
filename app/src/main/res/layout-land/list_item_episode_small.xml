@@ -38,14 +38,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_gravity="center_vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
         <TextView
             android:id="@+id/episode_running_time"
             tools:text="75 min"
