@@ -41,7 +41,7 @@ import jp.wasabeef.recyclerview.animators.adapters.AlphaInAnimationAdapter;
  * Created by Jeremy on 6/03/2016.
  */
 public class LatestFragment extends Fragment {
-    private static final String TAG = "LatestEpisodesFragment";
+    private static final String TAG = "LatestFragment";
     private static final String DIALOG_CHOOSE_QUALITY = "choose_quality";
     private static final int REQUEST_QUALITY = 0;
 

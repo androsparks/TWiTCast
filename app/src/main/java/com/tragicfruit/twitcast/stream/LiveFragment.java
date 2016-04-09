@@ -35,7 +35,7 @@ import java.util.List;
  * Created by Jeremy on 9/03/2016.
  */
 public class LiveFragment extends Fragment {
-    private static final String TAG = "LiveStreamFragment";
+    private static final String TAG = "LiveFragment";
     private static final int REQUEST_SOURCE = 0;
     private static final String DIALOG_CHOOSE_SOURCE = "dialog_choose_source";
 

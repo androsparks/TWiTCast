@@ -48,7 +48,7 @@ import java.util.List;
  * Created by Jeremy on 23/02/2016.
  */
 public class ShowsFragment extends Fragment implements ViewTreeObserver.OnGlobalLayoutListener {
-    private static final String TAG = "ShowListFragment";
+    private static final String TAG = "ShowsFragment";
     private static final String DIALOG_UPDATING_SHOWS = "updating_shows";
     private static final String DIALOG_CHOOSE_QUALITY = "choose_quality";
     private static final int REQUEST_QUALITY = 0;
