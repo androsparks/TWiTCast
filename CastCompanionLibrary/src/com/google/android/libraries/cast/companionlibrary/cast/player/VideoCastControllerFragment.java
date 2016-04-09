@@ -258,7 +258,7 @@ public class VideoCastControllerFragment extends Fragment implements
             if (CastStatusCodes.SUCCESS != statusCode) {
                 LOGD(TAG, "onMediaLoadResult(): Failed to load media with status code: "
                         + statusCode);
-                Utils.showToast(getActivity(), R.string.ccl_failed_to_load_media);
+//                Utils.showToast(getActivity(), R.string.ccl_failed_to_load_media);
                 mCastController.closeActivity();
             }
         }
