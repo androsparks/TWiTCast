@@ -26,8 +26,8 @@ import com.tragicfruit.twitcast.database.TWiTLab;
 import com.tragicfruit.twitcast.dialogs.LeaveFeedbackFragment;
 import com.tragicfruit.twitcast.episode.Episode;
 import com.tragicfruit.twitcast.episode.EpisodeListFragment;
-import com.tragicfruit.twitcast.episode.LatestEpisodesFragment;
-import com.tragicfruit.twitcast.stream.LiveStreamFragment;
+import com.tragicfruit.twitcast.episode.LatestFragment;
+import com.tragicfruit.twitcast.stream.LiveFragment;
 import com.tragicfruit.twitcast.stream.Stream;
 import com.tragicfruit.twitcast.stream.StreamSource;
 import com.tragicfruit.twitcast.utils.QueryPreferences;
@@ -38,7 +38,7 @@ import java.util.concurrent.ConcurrentMap;
  * Created by Jeremy on 4/03/2016.
  */
 public abstract class GoogleCastActivity extends AppCompatActivity
-        implements LatestEpisodesFragment.Callbacks, LiveStreamFragment.Callbacks, EpisodeListFragment.Callbacks {
+        implements LatestFragment.Callbacks, LiveFragment.Callbacks, EpisodeListFragment.Callbacks {
     private static final String TAG = "GoogleCastActivity";
     private static final String DIALOG_FEEDBACK = "feedback";
 

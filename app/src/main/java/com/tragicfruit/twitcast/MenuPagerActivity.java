@@ -10,18 +10,18 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ProgressBar;
 
-import com.tragicfruit.twitcast.stream.LiveStreamFragment;
-import com.tragicfruit.twitcast.episode.LatestEpisodesFragment;
-import com.tragicfruit.twitcast.show.ShowListFragment;
+import com.tragicfruit.twitcast.stream.LiveFragment;
+import com.tragicfruit.twitcast.episode.LatestFragment;
+import com.tragicfruit.twitcast.show.ShowsFragment;
 
 public class MenuPagerActivity extends GoogleCastActivity
-        implements ShowListFragment.Callbacks, LatestEpisodesFragment.Callbacks {
+        implements ShowsFragment.Callbacks, LatestFragment.Callbacks {
     private static final String KEY_PROGRESS_SHOWN = "progress_shown";
 
     private static final Fragment[] mFragments = {
-            ShowListFragment.newInstance(),
-            LatestEpisodesFragment.newInstance(),
-            LiveStreamFragment.newInstance()
+            ShowsFragment.newInstance(),
+            LatestFragment.newInstance(),
+            LiveFragment.newInstance()
     };
 
     private static final int[] mFragmentTitles = {
@@ -86,10 +86,10 @@ public class MenuPagerActivity extends GoogleCastActivity
 
     @Override
     public void refreshLatestEpisodes() {
-        LatestEpisodesFragment latestEpisodesFragment = null;
+        LatestFragment latestEpisodesFragment = null;
         for (Fragment fragment : mFragments) {
-            if (fragment instanceof LatestEpisodesFragment) {
-                latestEpisodesFragment = (LatestEpisodesFragment) fragment;
+            if (fragment instanceof LatestFragment) {
+                latestEpisodesFragment = (LatestFragment) fragment;
                 break;
             }
         }

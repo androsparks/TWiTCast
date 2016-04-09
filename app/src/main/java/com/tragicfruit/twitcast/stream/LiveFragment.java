@@ -34,7 +34,7 @@ import java.util.List;
 /**
  * Created by Jeremy on 9/03/2016.
  */
-public class LiveStreamFragment extends Fragment {
+public class LiveFragment extends Fragment {
     private static final String TAG = "LiveStreamFragment";
     private static final int REQUEST_SOURCE = 0;
     private static final String DIALOG_CHOOSE_SOURCE = "dialog_choose_source";
@@ -57,8 +57,8 @@ public class LiveStreamFragment extends Fragment {
         void showNoConnectionSnackbar();
     }
 
-    public static LiveStreamFragment newInstance() {
-        return new LiveStreamFragment();
+    public static LiveFragment newInstance() {
+        return new LiveFragment();
     }
 
     @Override
@@ -84,7 +84,7 @@ public class LiveStreamFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_live_stream, container, false);
+        View v = inflater.inflate(R.layout.fragment_live, container, false);
 
         mPlayButton = (ImageView) v.findViewById(R.id.twit_live_play_button);
         mPlayButton.setOnClickListener(new View.OnClickListener() {
@@ -152,7 +152,7 @@ public class LiveStreamFragment extends Fragment {
             case R.id.choose_source:
                 FragmentManager fm = getFragmentManager();
                 ChooseSourceFragment dialog = ChooseSourceFragment.newInstance();
-                dialog.setTargetFragment(LiveStreamFragment.this, REQUEST_SOURCE);
+                dialog.setTargetFragment(LiveFragment.this, REQUEST_SOURCE);
                 dialog.show(fm, DIALOG_CHOOSE_SOURCE);
                 return true;
             default:

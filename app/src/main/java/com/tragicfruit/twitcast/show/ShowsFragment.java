@@ -47,7 +47,7 @@ import java.util.List;
 /**
  * Created by Jeremy on 23/02/2016.
  */
-public class ShowListFragment extends Fragment implements ViewTreeObserver.OnGlobalLayoutListener {
+public class ShowsFragment extends Fragment implements ViewTreeObserver.OnGlobalLayoutListener {
     private static final String TAG = "ShowListFragment";
     private static final String DIALOG_UPDATING_SHOWS = "updating_shows";
     private static final String DIALOG_CHOOSE_QUALITY = "choose_quality";
@@ -69,8 +69,8 @@ public class ShowListFragment extends Fragment implements ViewTreeObserver.OnGlo
         void showNoConnectionSnackbar();
     }
 
-    public static ShowListFragment newInstance() {
-        return new ShowListFragment();
+    public static ShowsFragment newInstance() {
+        return new ShowsFragment();
     }
 
     @Override
@@ -153,7 +153,7 @@ public class ShowListFragment extends Fragment implements ViewTreeObserver.OnGlo
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_show_list, container, false);
+        View v = inflater.inflate(R.layout.fragment_shows, container, false);
 
         mRecyclerView = (AutofitRecyclerView) v.findViewById(R.id.fragment_show_list_recycler_view);
         mRecyclerView.getViewTreeObserver().addOnGlobalLayoutListener(this);
@@ -204,7 +204,7 @@ public class ShowListFragment extends Fragment implements ViewTreeObserver.OnGlo
             case R.id.choose_quality:
                 FragmentManager fm = getFragmentManager();
                 ChooseQualityFragment dialog = ChooseQualityFragment.newInstance();
-                dialog.setTargetFragment(ShowListFragment.this, REQUEST_QUALITY);
+                dialog.setTargetFragment(ShowsFragment.this, REQUEST_QUALITY);
                 dialog.show(fm, DIALOG_CHOOSE_QUALITY);
                 return true;
             default:

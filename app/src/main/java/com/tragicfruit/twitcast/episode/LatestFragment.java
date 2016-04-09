@@ -40,7 +40,7 @@ import jp.wasabeef.recyclerview.animators.adapters.AlphaInAnimationAdapter;
 /**
  * Created by Jeremy on 6/03/2016.
  */
-public class LatestEpisodesFragment extends Fragment {
+public class LatestFragment extends Fragment {
     private static final String TAG = "LatestEpisodesFragment";
     private static final String DIALOG_CHOOSE_QUALITY = "choose_quality";
     private static final int REQUEST_QUALITY = 0;
@@ -59,8 +59,8 @@ public class LatestEpisodesFragment extends Fragment {
         void showNoConnectionSnackbar();
     }
 
-    public static LatestEpisodesFragment newInstance() {
-        return new LatestEpisodesFragment();
+    public static LatestFragment newInstance() {
+        return new LatestFragment();
     }
 
     @Override
@@ -75,7 +75,7 @@ public class LatestEpisodesFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_latest_episodes, container, false);
+        View v = inflater.inflate(R.layout.fragment_latest, container, false);
 
         mRecyclerView = (RecyclerView) v.findViewById(R.id.fragment_latest_episodes_recycler_view);
         if (mRecyclerView != null) {
@@ -214,7 +214,7 @@ public class LatestEpisodesFragment extends Fragment {
             case R.id.choose_quality:
                 FragmentManager fm = getFragmentManager();
                 ChooseQualityFragment dialog = ChooseQualityFragment.newInstance();
-                dialog.setTargetFragment(LatestEpisodesFragment.this, REQUEST_QUALITY);
+                dialog.setTargetFragment(LatestFragment.this, REQUEST_QUALITY);
                 dialog.show(fm, DIALOG_CHOOSE_QUALITY);
                 return true;
             default:
