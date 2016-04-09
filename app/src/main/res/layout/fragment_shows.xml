@@ -2,7 +2,6 @@
 <com.tragicfruit.twitcast.show.AutofitRecyclerView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/fragment_show_list_recycler_view"
-    android:layout_above="@id/miniController"
     android:columnWidth="130dp"
     android:layout_height="match_parent"
     android:layout_width="match_parent"/>

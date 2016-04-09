@@ -168,7 +168,7 @@ public class LatestFragment extends Fragment {
 
         // add last section
         addSection(sections, startingIndex, sectionTitle, needsExtraSection);
-        if ((episodeList.size() - startingIndex) % 2 != 0) {
+        if (mLandscape && (episodeList.size() - startingIndex) % 2 != 0) {
             sections.add(new SectionedRecyclerViewAdapter.Section(episodeList.size(), ""));
         }
     }

@@ -382,9 +382,9 @@ public class ShowsFragment extends Fragment implements ViewTreeObserver.OnGlobal
         }
     }
 
-    private class FetchCoverArtTask extends AsyncTask<Void, Integer, Void> {
+    private class FetchCoverArtTask extends AsyncTask<Void, Integer, Boolean> {
         @Override
-        protected Void doInBackground(Void... params) {
+        protected Boolean doInBackground(Void... params) {
             // clean up old cover art
             cleanUp(Constants.COVER_ART_FOLDER);
             cleanUp(Constants.LOGO_FOLDER);
@@ -404,6 +404,7 @@ public class ShowsFragment extends Fragment implements ViewTreeObserver.OnGlobal
                     show.setCoverArtLocalPath(coverArtFile.getAbsolutePath());
                 } catch (IOException e) {
                     Log.e(TAG, "Cannot download cover art for " + show.getTitle(), e);
+                    return false;
                 }
             }
 
@@ -412,8 +413,9 @@ public class ShowsFragment extends Fragment implements ViewTreeObserver.OnGlobal
                 saveFromAssets(Constants.LOGO_FILE, Constants.LOGO_FOLDER);
             } catch (IOException e) {
                 Log.e(TAG, "Cannot fetch logos from assets", e);
+                return false;
             }
-            return null;
+            return true;
         }
 
         private void saveFromAssets(String filename, String folderName) throws IOException {
@@ -473,14 +475,20 @@ public class ShowsFragment extends Fragment implements ViewTreeObserver.OnGlobal
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
+        protected void onPostExecute(Boolean success) {
             if (isCancelled()) {
                 return;
             }
-            Log.d(TAG, "Fetched cover art");
 
             mRefreshingShows = false;
             getActivity().invalidateOptionsMenu();
+
+            if (!success) {
+                mCallbacks.showNoConnectionSnackbar();
+                return;
+            }
+
+            Log.d(TAG, "Fetched cover art");
             setupAdapter();
             mDatabase.resetEpisodes();
             updateEpisodes();
