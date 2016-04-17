@@ -1715,19 +1715,24 @@ public class VideoCastManager extends BaseCastManager
             LOGE(TAG, "Trying to seek a video with no active media session");
             throw new NoConnectionException();
         }
-        mRemoteMediaPlayer.seek(mApiClient,
-                position,
-                RemoteMediaPlayer.RESUME_STATE_UNCHANGED).
-                setResultCallback(new ResultCallback<MediaChannelResult>() {
 
-                    @Override
-                    public void onResult(MediaChannelResult result) {
-                        if (!result.getStatus().isSuccess()) {
-                            onFailed(R.string.ccl_failed_seek, result.getStatus().getStatusCode());
+        try {
+            mRemoteMediaPlayer.seek(mApiClient,
+                    position,
+                    RemoteMediaPlayer.RESUME_STATE_UNCHANGED).
+                    setResultCallback(new ResultCallback<MediaChannelResult>() {
+
+                        @Override
+                        public void onResult(MediaChannelResult result) {
+                            if (!result.getStatus().isSuccess()) {
+                                onFailed(R.string.ccl_failed_seek, result.getStatus().getStatusCode());
+                            }
                         }
-                    }
 
-                });
+                    });
+        } catch (IllegalStateException e) {
+            LOGE(TAG, "Failed to seek video", e);
+        }
     }
 
     /**
