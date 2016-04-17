@@ -35,7 +35,7 @@ public class Constants {
 
     public static final String STREAM_BIT_GRAVITY_HIGH = "http://twit.live-s.cdn.bitgravity.com/cdn-live/_definst_/twit/live/high/playlist.m3u8";
     public static final String STREAM_BIT_GRAVITY_LOW = "http://twit.live-s.cdn.bitgravity.com/cdn-live/_definst_/twit/live/low/playlist.m3u8";
-    public static final String STREAM_FLOSOFT = "http://hls.cdn.flosoft.biz/flosoft/smil:twitStreamAll.smil/playlist.m3u8";
+    public static final String STREAM_FLOSOFT = "http://hls.twit.tv/flosoft/smil:twitStreamAll.smil/playlist.m3u8";
     public static final String STREAM_AUDIO = "http://twit.am/listen";
 
     public static final String GOOGLE_CALENDAR_ID = "mg877fp19824mj30g497frm74o@group.calendar.google.com";
