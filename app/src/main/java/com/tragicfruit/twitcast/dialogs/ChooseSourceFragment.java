@@ -26,6 +26,7 @@ public class ChooseSourceFragment extends DialogFragment {
     private RadioGroup mRadioGroup;
     private RadioButton mBitGravityHighRadioButton;
     private RadioButton mBitGravityLowRadioButton;
+    private RadioButton mUstreamRadioButton;
     private RadioButton mFlosoftRadioButton;
     private RadioButton mAudioRadioButton;
 
@@ -40,6 +41,7 @@ public class ChooseSourceFragment extends DialogFragment {
         mRadioGroup = (RadioGroup) v.findViewById(R.id.dialog_choose_source_radio_group);
         mBitGravityHighRadioButton = (RadioButton) v.findViewById(R.id.source_bitgravity_high);
         mBitGravityLowRadioButton = (RadioButton) v.findViewById(R.id.source_bitgravity_low);
+        mUstreamRadioButton = (RadioButton) v.findViewById(R.id.source_ustream);
         mFlosoftRadioButton = (RadioButton) v.findViewById(R.id.source_flosoft);
         mAudioRadioButton = (RadioButton) v.findViewById(R.id.source_audio);
 
@@ -58,6 +60,9 @@ public class ChooseSourceFragment extends DialogFragment {
                                 break;
                             case R.id.source_bitgravity_low:
                                 sendResult(Activity.RESULT_OK, StreamSource.BIT_GRAVITY_LOW);
+                                break;
+                            case R.id.source_ustream:
+                                sendResult(Activity.RESULT_OK, StreamSource.USTREAM);
                                 break;
                             case R.id.source_flosoft:
                                 sendResult(Activity.RESULT_OK, StreamSource.FLOSOFT);
@@ -79,6 +84,9 @@ public class ChooseSourceFragment extends DialogFragment {
                 break;
             case BIT_GRAVITY_LOW:
                 mBitGravityLowRadioButton.setChecked(true);
+                break;
+            case USTREAM:
+                mUstreamRadioButton.setChecked(true);
                 break;
             case FLOSOFT:
                 mFlosoftRadioButton.setChecked(true);

@@ -40,6 +40,7 @@ public class Constants {
 
     public static final String STREAM_BIT_GRAVITY_HIGH = "http://twit.live-s.cdn.bitgravity.com/cdn-live/_definst_/twit/live/high/playlist.m3u8";
     public static final String STREAM_BIT_GRAVITY_LOW = "http://twit.live-s.cdn.bitgravity.com/cdn-live/_definst_/twit/live/low/playlist.m3u8";
+    public static final String STREAM_USTREAM = "http://iphone-streaming.ustream.tv/uhls/1524/streams/live/iphone/playlist.m3u8";
     public static final String STREAM_FLOSOFT = "http://hls.twit.tv/flosoft/smil:twitStreamAll.smil/playlist.m3u8";
     public static final String STREAM_AUDIO = "http://twit.am/listen";
 

@@ -93,6 +93,13 @@ public class TWiTLab implements TWiTDatabase {
         stream.setType(Constants.LIVE_VIDEO_CONTENT_TYPE);
         streams.put(stream.getTitle(), stream);
 
+        // Ustream
+        stream = new Stream();
+        stream.setTitle(mContext.getString(R.string.ustream_stream));
+        stream.setSource(Constants.STREAM_USTREAM);
+        stream.setType(Constants.LIVE_VIDEO_CONTENT_TYPE);
+        streams.put(stream.getTitle(), stream);
+
         // Flosoft
         stream = new Stream();
         stream.setTitle(mContext.getString(R.string.flosoft_stream));

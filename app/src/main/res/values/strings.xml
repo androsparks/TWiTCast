@@ -21,6 +21,7 @@
     <string name="twit_live_stream_title">TWiT Live</string>
     <string name="bitgravity_high_stream">BitGravity High</string>
     <string name="bitgravity_low_stream">BitGravity Low</string>
+    <string name="ustream_stream">Ustream</string>
     <string name="flosoft_stream">Flosoft</string>
     <string name="audio_stream">Audio</string>
     <string name="choose_source_menu_item">Choose source</string>

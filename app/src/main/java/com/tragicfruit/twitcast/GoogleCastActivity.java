@@ -233,6 +233,8 @@ public abstract class GoogleCastActivity extends AppCompatActivity
                 return streamMap.get(getString(R.string.bitgravity_high_stream));
             case BIT_GRAVITY_LOW:
                 return streamMap.get(getString(R.string.bitgravity_low_stream));
+            case USTREAM:
+                return streamMap.get(getString(R.string.ustream_stream));
             case FLOSOFT:
                 return streamMap.get(getString(R.string.flosoft_stream));
             case AUDIO:

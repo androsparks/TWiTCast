@@ -32,6 +32,15 @@
                 android:layout_marginBottom="12dp"/>
 
             <RadioButton
+                android:id="@+id/source_ustream"
+                android:text="@string/ustream_stream"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:layout_marginBottom="12dp"
+                android:visibility="gone"/>
+
+            <RadioButton
                 android:id="@+id/source_flosoft"
                 android:text="@string/flosoft_stream"
                 android:layout_width="wrap_content"
