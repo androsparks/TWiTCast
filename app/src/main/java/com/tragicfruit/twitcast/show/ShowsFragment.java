@@ -81,7 +81,8 @@ public class ShowsFragment extends Fragment implements ViewTreeObserver.OnGlobal
 
         mDatabase = TWiTLab.get(getActivity());
 
-        if (mDatabase.getShows().isEmpty()) {
+        if (mDatabase.getShows().isEmpty() || QueryPreferences.getForceRefetchShows(getActivity())) {
+            QueryPreferences.setForceRefetchShows(getContext(), false);
             updateShows();
         } else if (!isCoverArtSet()) {
             updateCoverArt();
@@ -251,9 +252,9 @@ public class ShowsFragment extends Fragment implements ViewTreeObserver.OnGlobal
     @Override
     public void onStart() {
         super.onStart();
-        if (mRefreshingShows) {
-            showLoadingDialog();
-        }
+//        if (mRefreshingShows) {
+//            showLoadingDialog();
+//        }
     }
 
     @Override

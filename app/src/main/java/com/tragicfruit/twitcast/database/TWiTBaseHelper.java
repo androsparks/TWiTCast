@@ -6,16 +6,20 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.tragicfruit.twitcast.database.TWiTDbSchema.EpisodeTable;
 import com.tragicfruit.twitcast.database.TWiTDbSchema.ShowTable;
+import com.tragicfruit.twitcast.utils.QueryPreferences;
 
 /**
  * Created by Jeremy on 5/03/2016.
  */
 public class TWiTBaseHelper extends SQLiteOpenHelper {
-    private static final int VERSION = 1;
+    private static final int VERSION = 2;
     private static final String DATABASE_NAME = "twitBase.db";
+
+    private Context mContext;
 
     public TWiTBaseHelper(Context context) {
         super(context, DATABASE_NAME, null, VERSION);
+        mContext = context;
     }
 
     @Override
@@ -55,6 +59,6 @@ public class TWiTBaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        QueryPreferences.setForceRefetchShows(mContext, true);
     }
 }

@@ -3,8 +3,8 @@
     <string name="studio_name">TWiT.tv</string>
     <string name="updating_shows_text">Updating shows - this may take a minute or two.</string>
     <string name="refresh_shows_menu_item">Refresh shows</string>
-    <string name="episode_running_time_long">%1$s hr %2$s min</string>
-    <string name="episode_running_time_short">%1$s min</string>
+    <string name="episode_running_time_long">%1$d hr %2$d min</string>
+    <string name="episode_running_time_short">%1$d min</string>
     <string name="media_route_menu_title">Cast</string>
     <string name="choose_quality_menu_item">Choose quality</string>
     <string name="quality_video_hd">Video (HD)</string>

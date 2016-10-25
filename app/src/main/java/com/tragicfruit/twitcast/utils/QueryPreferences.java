@@ -15,6 +15,7 @@ public class QueryPreferences {
     private static final String PREF_STREAM_SOURCE = "stream_source";
     private static final String PREF_CAST_DEVICE_AUDIO = "cast_device_audio";
     private static final String PREF_GRID_SPAN_COUNT = "grid_span_count";
+    private static final String PREF_FORCE_REFETCH_SHOWS = "force_refetch";
 
     public static StreamQuality getStreamQuality(Context context) {
         String streamQualityValue = PreferenceManager.getDefaultSharedPreferences(context)
@@ -63,6 +64,18 @@ public class QueryPreferences {
         PreferenceManager.getDefaultSharedPreferences(context)
                 .edit()
                 .putInt(PREF_GRID_SPAN_COUNT, spanCount)
+                .apply();
+    }
+
+    public static boolean getForceRefetchShows(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean(PREF_FORCE_REFETCH_SHOWS, true);
+    }
+
+    public static void setForceRefetchShows(Context context, boolean force) {
+        PreferenceManager.getDefaultSharedPreferences(context)
+                .edit()
+                .putBoolean(PREF_FORCE_REFETCH_SHOWS, force)
                 .apply();
     }
 }

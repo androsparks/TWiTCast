@@ -16,6 +16,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -348,7 +349,9 @@ public class TWiTFetcher {
                     continue;
                 }
 
-                String link = episodeElement.getElementsByTagName("link").item(0).getTextContent();
+                String link = episodeElement.getElementsByTagName("guid").item(0).getTextContent();
+//                NamedNodeMap attributes = episodeElement.getElementsByTagName("media:content").item(0).getAttributes();
+//                String link = attributes.getNamedItem("url").getTextContent();
 
                 switch (feedType) {
                     case VIDEO_SMALL:
@@ -411,7 +414,8 @@ public class TWiTFetcher {
                 String duration = episodeElement.getElementsByTagName("itunes:duration").item(0).getTextContent();
                 episode.setRunningTime(parseRunningTime(duration));
 
-                String audioLink = episodeElement.getElementsByTagName("link").item(0).getTextContent();
+                String audioLink = episodeElement.getElementsByTagName("guid").item(0).getTextContent();
+
                 episode.setAudioUrl(audioLink);
 
                 episodeList.add(episode);
