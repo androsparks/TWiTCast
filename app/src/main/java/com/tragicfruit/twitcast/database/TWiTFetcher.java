@@ -4,14 +4,12 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
-import com.tragicfruit.twitcast.stream.UpcomingEpisode;
-import com.tragicfruit.twitcast.episode.Episode;
 import com.tragicfruit.twitcast.R;
-import com.tragicfruit.twitcast.show.Show;
-import com.tragicfruit.twitcast.episode.StreamQuality;
 import com.tragicfruit.twitcast.constants.Constants;
-import com.tragicfruit.twitcast.constants.SecretConstants;
-import com.tragicfruit.twitcast.database.TWiTLab;
+import com.tragicfruit.twitcast.episode.Episode;
+import com.tragicfruit.twitcast.episode.StreamQuality;
+import com.tragicfruit.twitcast.show.Show;
+import com.tragicfruit.twitcast.stream.UpcomingEpisode;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -142,8 +140,8 @@ public class TWiTFetcher {
     private byte[] getApiUrlBytes(String urlSpec) throws IOException {
         URL url = new URL(urlSpec);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestProperty("app-id", SecretConstants.TWIT_API_ID);
-        connection.setRequestProperty("app-key", SecretConstants.TWIT_API_KEY);
+        connection.setRequestProperty("app-id", Constants.TWIT_API_ID);
+        connection.setRequestProperty("app-key", Constants.TWIT_API_KEY);
 
         try {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -183,7 +181,7 @@ public class TWiTFetcher {
         Uri uri = GOOGLE_CALENDAR_ENDPOINT.buildUpon()
                 .appendPath(Constants.GOOGLE_CALENDAR_ID)
                 .appendPath("events")
-                .appendQueryParameter("key", SecretConstants.GOOGLE_CALENDAR_API_KEY)
+                .appendQueryParameter("key", Constants.GOOGLE_CALENDAR_API_KEY)
                 .appendQueryParameter("singleEvents", "true")
                 .appendQueryParameter("orderBy", "startTime")
                 .appendQueryParameter("timeMin", timeNow)
@@ -445,9 +443,21 @@ public class TWiTFetcher {
     }
 
     private String parseRunningTime(String runningTime) {
-        int hours = Integer.parseInt(runningTime.substring(0, 1));
-        int minutes = Integer.parseInt(runningTime.substring(2, 4));
-        int seconds = Integer.parseInt(runningTime.substring(5, 7));
+        int hours = 0;
+        int minutes = 0;
+        int seconds = 0;
+
+        String[] runningTimeComponents = runningTime.split(":");
+        if (runningTimeComponents.length == 3) {
+            seconds = Integer.parseInt(runningTimeComponents[2]);
+            minutes = Integer.parseInt(runningTimeComponents[1]);
+            hours = Integer.parseInt(runningTimeComponents[0]);
+        } else if (runningTimeComponents.length == 2) {
+            seconds = Integer.parseInt(runningTimeComponents[1]);
+            minutes = Integer.parseInt(runningTimeComponents[0]);
+        } else {
+            seconds = Integer.parseInt(runningTimeComponents[0]);
+        }
 
 //        int hoursToMinutes = hours * 60;
         int secondsToMinutes = (int) Math.round((double) seconds / 60);

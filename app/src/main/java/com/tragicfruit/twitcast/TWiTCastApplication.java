@@ -5,7 +5,7 @@ import android.app.Application;
 import com.google.android.libraries.cast.companionlibrary.cast.CastConfiguration;
 import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
 import com.google.android.libraries.cast.companionlibrary.cast.dialog.video.VideoMediaRouteDialogFactory;
-import com.tragicfruit.twitcast.constants.SecretConstants;
+import com.tragicfruit.twitcast.constants.Constants;
 
 /**
  * Created by Jeremy on 17/03/2016.
@@ -15,7 +15,7 @@ public class TWiTCastApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        CastConfiguration options = new CastConfiguration.Builder(SecretConstants.GOOGLE_CAST_APP_ID)
+        CastConfiguration options = new CastConfiguration.Builder(Constants.GOOGLE_CAST_APP_ID)
                 .enableAutoReconnect()
                 .enableDebug()
                 .enableLockScreen()

@@ -7,6 +7,11 @@ import com.tragicfruit.twitcast.stream.StreamSource;
  * Created by Jeremy on 4/03/2016.
  */
 public class Constants {
+    public static final String TWIT_API_ID = "e71e1b45";
+    public static final String TWIT_API_KEY = "6b602234dcdf7ead0fdc7e524c799b36";
+    public static final String GOOGLE_CAST_APP_ID = "C5E513B9";
+    public static final String GOOGLE_CALENDAR_API_KEY = "AIzaSyCk69iAvIOkeufkOHfWcsciYoaYSTbNIVU";
+
     public static final String BRICKHOUSE_AUDIO_FEED = "http://feeds.twit.tv/brickhouse.xml";
     public static final String BRICKHOUSE_VIDEO_SMALL_FEED = "http://feeds.twit.tv/brickhouse_video_small.xml";
     public static final String BRICKHOUSE_VIDEO_LARGE_FEED = "http://feeds.twit.tv/brickhouse_video_large.xml";
