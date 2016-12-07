@@ -81,15 +81,22 @@ public class TWiTLab implements TWiTDatabase {
 
         // BitGravity High
         Stream stream = new Stream();
-        stream.setTitle(mContext.getString(R.string.bitgravity_high_stream));
-        stream.setSource(Constants.STREAM_BIT_GRAVITY_HIGH);
+        stream.setTitle(mContext.getString(R.string.flosoft_high_stream));
+        stream.setSource(Constants.STREAM_FLOSOFT_HIGH);
         stream.setType(Constants.LIVE_VIDEO_CONTENT_TYPE);
         streams.put(stream.getTitle(), stream);
 
         // BitGravity Low
         stream = new Stream();
-        stream.setTitle(mContext.getString(R.string.bitgravity_low_stream));
-        stream.setSource(Constants.STREAM_BIT_GRAVITY_LOW);
+        stream.setTitle(mContext.getString(R.string.flosoft_low_stream));
+        stream.setSource(Constants.STREAM_FLOSOFT_LOW);
+        stream.setType(Constants.LIVE_VIDEO_CONTENT_TYPE);
+        streams.put(stream.getTitle(), stream);
+
+        // Twitch
+        stream = new Stream();
+        stream.setTitle(mContext.getString(R.string.twitch_stream));
+        stream.setSource(Constants.STREAM_TWITCH);
         stream.setType(Constants.LIVE_VIDEO_CONTENT_TYPE);
         streams.put(stream.getTitle(), stream);
 
@@ -97,13 +104,6 @@ public class TWiTLab implements TWiTDatabase {
         stream = new Stream();
         stream.setTitle(mContext.getString(R.string.ustream_stream));
         stream.setSource(Constants.STREAM_USTREAM);
-        stream.setType(Constants.LIVE_VIDEO_CONTENT_TYPE);
-        streams.put(stream.getTitle(), stream);
-
-        // Flosoft
-        stream = new Stream();
-        stream.setTitle(mContext.getString(R.string.flosoft_stream));
-        stream.setSource(Constants.STREAM_FLOSOFT);
         stream.setType(Constants.LIVE_VIDEO_CONTENT_TYPE);
         streams.put(stream.getTitle(), stream);
 

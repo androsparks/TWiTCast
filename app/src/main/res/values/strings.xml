@@ -19,10 +19,10 @@
     <string name="no_connection_snackbar">No internet connection. Please try again later.</string>
     <string name="no_chromecast_toast">No cast device detected.</string>
     <string name="twit_live_stream_title">TWiT Live</string>
-    <string name="bitgravity_high_stream">BitGravity High</string>
-    <string name="bitgravity_low_stream">BitGravity Low</string>
+    <string name="flosoft_high_stream">Flosoft High</string>
+    <string name="flosoft_low_stream">Flosoft Low</string>
+    <string name="twitch_stream">Twitch</string>
     <string name="ustream_stream">Ustream</string>
-    <string name="flosoft_stream">Flosoft</string>
     <string name="audio_stream">Audio</string>
     <string name="choose_source_menu_item">Choose source</string>
     <string name="upcoming_schedule_title">Schedule</string>

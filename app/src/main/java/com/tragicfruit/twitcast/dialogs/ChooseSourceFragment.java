@@ -24,10 +24,10 @@ public class ChooseSourceFragment extends DialogFragment {
     private static final String EXTRA_SOURCE = "com.tragicfruit.twitcast.source";
 
     private RadioGroup mRadioGroup;
-    private RadioButton mBitGravityHighRadioButton;
-    private RadioButton mBitGravityLowRadioButton;
+    private RadioButton mFlosoftHighRadioButton;
+    private RadioButton mFlosoftLowRadioButton;
+    private RadioButton mTwitchRadioButton;
     private RadioButton mUstreamRadioButton;
-    private RadioButton mFlosoftRadioButton;
     private RadioButton mAudioRadioButton;
 
     public static ChooseSourceFragment newInstance() {
@@ -39,10 +39,10 @@ public class ChooseSourceFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         View v = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_choose_source, null);
         mRadioGroup = (RadioGroup) v.findViewById(R.id.dialog_choose_source_radio_group);
-        mBitGravityHighRadioButton = (RadioButton) v.findViewById(R.id.source_bitgravity_high);
-        mBitGravityLowRadioButton = (RadioButton) v.findViewById(R.id.source_bitgravity_low);
+        mFlosoftHighRadioButton = (RadioButton) v.findViewById(R.id.source_flosoft_high);
+        mFlosoftLowRadioButton = (RadioButton) v.findViewById(R.id.source_flosoft_low);
+        mTwitchRadioButton = (RadioButton) v.findViewById(R.id.source_twitch);
         mUstreamRadioButton = (RadioButton) v.findViewById(R.id.source_ustream);
-        mFlosoftRadioButton = (RadioButton) v.findViewById(R.id.source_flosoft);
         mAudioRadioButton = (RadioButton) v.findViewById(R.id.source_audio);
 
         selectSourceButton(QueryPreferences.getStreamSource(getActivity()));
@@ -55,17 +55,17 @@ public class ChooseSourceFragment extends DialogFragment {
                     public void onClick(DialogInterface dialog, int which) {
                         int selectedItem = mRadioGroup.getCheckedRadioButtonId();
                         switch (selectedItem) {
-                            case R.id.source_bitgravity_high:
-                                sendResult(Activity.RESULT_OK, StreamSource.BIT_GRAVITY_HIGH);
+                            case R.id.source_flosoft_high:
+                                sendResult(Activity.RESULT_OK, StreamSource.FLOSOFT_HIGH);
                                 break;
-                            case R.id.source_bitgravity_low:
-                                sendResult(Activity.RESULT_OK, StreamSource.BIT_GRAVITY_LOW);
+                            case R.id.source_flosoft_low:
+                                sendResult(Activity.RESULT_OK, StreamSource.FLOSOFT_LOW);
+                                break;
+                            case R.id.source_twitch:
+                                sendResult(Activity.RESULT_OK, StreamSource.TWITCH);
                                 break;
                             case R.id.source_ustream:
                                 sendResult(Activity.RESULT_OK, StreamSource.USTREAM);
-                                break;
-                            case R.id.source_flosoft:
-                                sendResult(Activity.RESULT_OK, StreamSource.FLOSOFT);
                                 break;
                             case R.id.source_audio:
                                 sendResult(Activity.RESULT_OK, StreamSource.AUDIO);
@@ -79,17 +79,17 @@ public class ChooseSourceFragment extends DialogFragment {
 
     private void selectSourceButton(StreamSource source) {
         switch (source) {
-            case BIT_GRAVITY_HIGH:
-                mBitGravityHighRadioButton.setChecked(true);
+            case FLOSOFT_HIGH:
+                mFlosoftHighRadioButton.setChecked(true);
                 break;
-            case BIT_GRAVITY_LOW:
-                mBitGravityLowRadioButton.setChecked(true);
+            case FLOSOFT_LOW:
+                mFlosoftLowRadioButton.setChecked(true);
+                break;
+            case TWITCH:
+                mTwitchRadioButton.setChecked(true);
                 break;
             case USTREAM:
                 mUstreamRadioButton.setChecked(true);
-                break;
-            case FLOSOFT:
-                mFlosoftRadioButton.setChecked(true);
                 break;
             case AUDIO:
                 mAudioRadioButton.setChecked(true);

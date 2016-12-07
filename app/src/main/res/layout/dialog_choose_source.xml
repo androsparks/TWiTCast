@@ -16,20 +16,29 @@
             android:layout_height="wrap_content">
 
             <RadioButton
-                android:id="@+id/source_bitgravity_high"
-                android:text="@string/bitgravity_high_stream"
+                android:id="@+id/source_flosoft_high"
+                android:text="@string/flosoft_high_stream"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
                 android:layout_marginBottom="12dp"/>
 
             <RadioButton
-                android:id="@+id/source_bitgravity_low"
-                android:text="@string/bitgravity_low_stream"
+                android:id="@+id/source_flosoft_low"
+                android:text="@string/flosoft_low_stream"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
                 android:layout_marginBottom="12dp"/>
+
+            <RadioButton
+                android:id="@+id/source_twitch"
+                android:text="@string/twitch_stream"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:layout_marginBottom="12dp"
+                android:visibility="gone"/>
 
             <RadioButton
                 android:id="@+id/source_ustream"
@@ -39,14 +48,6 @@
                 android:textSize="16sp"
                 android:layout_marginBottom="12dp"
                 android:visibility="gone"/>
-
-            <RadioButton
-                android:id="@+id/source_flosoft"
-                android:text="@string/flosoft_stream"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:layout_marginBottom="12dp"/>
 
             <RadioButton
                 android:id="@+id/source_audio"

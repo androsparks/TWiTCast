@@ -28,7 +28,7 @@ public class Constants {
     public static final String LIVE_VIDEO_CONTENT_TYPE = "video";
 
     public static final StreamQuality DEFAULT_QUALITY = StreamQuality.VIDEO_HD;
-    public static final StreamSource DEFAULT_SOURCE = StreamSource.BIT_GRAVITY_HIGH;
+    public static final StreamSource DEFAULT_SOURCE = StreamSource.FLOSOFT_HIGH;
 
     public static final int MAX_NUMBER_OF_EPISODES = 250;
 
@@ -38,10 +38,10 @@ public class Constants {
             65161 // All TWiT.tv Shows
     };
 
-    public static final String STREAM_BIT_GRAVITY_HIGH = "http://twit.live-s.cdn.bitgravity.com/cdn-live/_definst_/twit/live/high/playlist.m3u8";
-    public static final String STREAM_BIT_GRAVITY_LOW = "http://twit.live-s.cdn.bitgravity.com/cdn-live/_definst_/twit/live/low/playlist.m3u8";
+    public static final String STREAM_FLOSOFT_HIGH = "http://hls.twit.tv/flosoft/smil:twitStreamHi.smil/playlist.m3u8";
+    public static final String STREAM_FLOSOFT_LOW = "http://hls.twit.tv/flosoft/smil:twitStream.smil/playlist.m3u8";
+    public static final String STREAM_TWITCH = "http://usher.twitch.tv/api/channel/hls/twit.m3u8?player=twitchweb&token=%7B%22user_id%22%3Anull%2C%22channel%22%3A%22twit%22%2C%22expires%22%3A1446578769%2C%22chansub%22%3A%7B%22view_until%22%3A1924905600%2C%22restricted_bitrates%22%3A%5B%5D%7D%2C%22private%22%3A%7B%22allowed_to_view%22%3Atrue%7D%2C%22privileged%22%3Afalse%2C%22source_restricted%22%3Afalse%7D&sig=69b99b2c85ce1e8d415f0251e2e458a06f35ed14";
     public static final String STREAM_USTREAM = "http://iphone-streaming.ustream.tv/uhls/1524/streams/live/iphone/playlist.m3u8";
-    public static final String STREAM_FLOSOFT = "http://hls.twit.tv/flosoft/smil:twitStreamAll.smil/playlist.m3u8";
     public static final String STREAM_AUDIO = "http://twit.am/listen";
 
     public static final String GOOGLE_CALENDAR_ID = "mg877fp19824mj30g497frm74o@group.calendar.google.com";

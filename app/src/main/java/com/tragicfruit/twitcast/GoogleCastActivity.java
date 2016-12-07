@@ -229,14 +229,14 @@ public abstract class GoogleCastActivity extends AppCompatActivity
         ConcurrentMap<String, Stream> streamMap = TWiTLab.get(this).getStreams();
 
         switch (source) {
-            case BIT_GRAVITY_HIGH:
-                return streamMap.get(getString(R.string.bitgravity_high_stream));
-            case BIT_GRAVITY_LOW:
-                return streamMap.get(getString(R.string.bitgravity_low_stream));
+            case FLOSOFT_HIGH:
+                return streamMap.get(getString(R.string.flosoft_high_stream));
+            case FLOSOFT_LOW:
+                return streamMap.get(getString(R.string.flosoft_low_stream));
+            case TWITCH:
+                return streamMap.get(getString(R.string.twitch_stream));
             case USTREAM:
                 return streamMap.get(getString(R.string.ustream_stream));
-            case FLOSOFT:
-                return streamMap.get(getString(R.string.flosoft_stream));
             case AUDIO:
                 return streamMap.get(getString(R.string.audio_stream));
         }
