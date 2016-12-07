@@ -12,7 +12,7 @@ import com.tragicfruit.twitcast.utils.QueryPreferences;
  * Created by Jeremy on 5/03/2016.
  */
 public class TWiTBaseHelper extends SQLiteOpenHelper {
-    private static final int VERSION = 2;
+    private static final int VERSION = 3;
     private static final String DATABASE_NAME = "twitBase.db";
 
     private Context mContext;

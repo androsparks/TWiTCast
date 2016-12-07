@@ -2,6 +2,7 @@ package com.tragicfruit.twitcast.utils;
 
 import android.content.Context;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.tragicfruit.twitcast.constants.Constants;
 import com.tragicfruit.twitcast.episode.StreamQuality;
@@ -11,6 +12,8 @@ import com.tragicfruit.twitcast.stream.StreamSource;
  * Created by Jeremy on 6/03/2016.
  */
 public class QueryPreferences {
+    private static final String TAG = QueryPreferences.class.getSimpleName();
+
     private static final String PREF_STREAM_QUALITY = "stream_quality";
     private static final String PREF_STREAM_SOURCE = "stream_source";
     private static final String PREF_CAST_DEVICE_AUDIO = "cast_device_audio";
@@ -31,9 +34,15 @@ public class QueryPreferences {
     }
 
     public static StreamSource getStreamSource(Context context) {
-        String streamSourceValue = PreferenceManager.getDefaultSharedPreferences(context)
-                .getString(PREF_STREAM_SOURCE, Constants.DEFAULT_SOURCE.toString());
-        return StreamSource.valueOf(streamSourceValue);
+        try {
+            String streamSourceValue = PreferenceManager.getDefaultSharedPreferences(context)
+                    .getString(PREF_STREAM_SOURCE, Constants.DEFAULT_SOURCE.toString());
+            return StreamSource.valueOf(streamSourceValue);
+        } catch (IllegalArgumentException e) {
+            Log.e(TAG, "Invalid stream source, setting to default");
+            setStreamSource(context, Constants.DEFAULT_SOURCE);
+            return Constants.DEFAULT_SOURCE;
+        }
     }
 
     public static void setStreamSource(Context context, StreamSource source) {
