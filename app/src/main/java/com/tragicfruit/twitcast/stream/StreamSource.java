@@ -6,7 +6,10 @@ package com.tragicfruit.twitcast.stream;
 public enum StreamSource {
     FLOSOFT_HIGH,
     FLOSOFT_LOW,
-    TWITCH,
+    FLOSOFT_ABR,
+    TWITCH_HD,
+    TWITCH_HIGH,
+    TWITCH_LOW,
     USTREAM,
     AUDIO
 }

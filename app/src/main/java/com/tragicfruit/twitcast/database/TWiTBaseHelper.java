@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.tragicfruit.twitcast.constants.Constants;
 import com.tragicfruit.twitcast.database.TWiTDbSchema.EpisodeTable;
 import com.tragicfruit.twitcast.database.TWiTDbSchema.ShowTable;
 import com.tragicfruit.twitcast.utils.QueryPreferences;
@@ -12,7 +13,7 @@ import com.tragicfruit.twitcast.utils.QueryPreferences;
  * Created by Jeremy on 5/03/2016.
  */
 public class TWiTBaseHelper extends SQLiteOpenHelper {
-    private static final int VERSION = 3;
+    private static final int VERSION = 4;
     private static final String DATABASE_NAME = "twitBase.db";
 
     private Context mContext;
@@ -60,5 +61,9 @@ public class TWiTBaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         QueryPreferences.setForceRefetchShows(mContext, true);
+
+        if (newVersion == 4) {
+            QueryPreferences.setStreamSource(mContext, Constants.DEFAULT_SOURCE);
+        }
     }
 }

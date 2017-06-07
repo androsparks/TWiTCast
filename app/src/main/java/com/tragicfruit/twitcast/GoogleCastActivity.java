@@ -233,8 +233,14 @@ public abstract class GoogleCastActivity extends AppCompatActivity
                 return streamMap.get(getString(R.string.flosoft_high_stream));
             case FLOSOFT_LOW:
                 return streamMap.get(getString(R.string.flosoft_low_stream));
-            case TWITCH:
-                return streamMap.get(getString(R.string.twitch_stream));
+            case FLOSOFT_ABR:
+                return streamMap.get(getString(R.string.flosoft_abr_stream));
+            case TWITCH_HD:
+                return streamMap.get(getString(R.string.twitch_hd_stream));
+            case TWITCH_HIGH:
+                return streamMap.get(getString(R.string.twitch_high_stream));
+            case TWITCH_LOW:
+                return streamMap.get(getString(R.string.twitch_low_stream));
             case USTREAM:
                 return streamMap.get(getString(R.string.ustream_stream));
             case AUDIO:

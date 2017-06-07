@@ -79,24 +79,45 @@ public class TWiTLab implements TWiTDatabase {
     private ConcurrentMap<String, Stream> loadStreams() {
         ConcurrentMap<String, Stream> streams = new ConcurrentHashMap<>();
 
-        // BitGravity High
+        // Flosoft High
         Stream stream = new Stream();
         stream.setTitle(mContext.getString(R.string.flosoft_high_stream));
         stream.setSource(Constants.STREAM_FLOSOFT_HIGH);
         stream.setType(Constants.LIVE_VIDEO_CONTENT_TYPE);
         streams.put(stream.getTitle(), stream);
 
-        // BitGravity Low
+        // Flosoft Low
         stream = new Stream();
         stream.setTitle(mContext.getString(R.string.flosoft_low_stream));
         stream.setSource(Constants.STREAM_FLOSOFT_LOW);
         stream.setType(Constants.LIVE_VIDEO_CONTENT_TYPE);
         streams.put(stream.getTitle(), stream);
 
-        // Twitch
+        // Flosoft ABR
         stream = new Stream();
-        stream.setTitle(mContext.getString(R.string.twitch_stream));
-        stream.setSource(Constants.STREAM_TWITCH);
+        stream.setTitle(mContext.getString(R.string.flosoft_abr_stream));
+        stream.setSource(Constants.STREAM_FLOSOFT_ABR);
+        stream.setType(Constants.LIVE_VIDEO_CONTENT_TYPE);
+        streams.put(stream.getTitle(), stream);
+
+        // Twitch HD
+        stream = new Stream();
+        stream.setTitle(mContext.getString(R.string.twitch_hd_stream));
+        stream.setSource(Constants.STREAM_TWITCH_HD);
+        stream.setType(Constants.LIVE_VIDEO_CONTENT_TYPE);
+        streams.put(stream.getTitle(), stream);
+
+        // Twitch High
+        stream = new Stream();
+        stream.setTitle(mContext.getString(R.string.twitch_high_stream));
+        stream.setSource(Constants.STREAM_TWITCH_HIGH);
+        stream.setType(Constants.LIVE_VIDEO_CONTENT_TYPE);
+        streams.put(stream.getTitle(), stream);
+
+        // Twitch Low
+        stream = new Stream();
+        stream.setTitle(mContext.getString(R.string.twitch_low_stream));
+        stream.setSource(Constants.STREAM_TWITCH_LOW);
         stream.setType(Constants.LIVE_VIDEO_CONTENT_TYPE);
         streams.put(stream.getTitle(), stream);
 

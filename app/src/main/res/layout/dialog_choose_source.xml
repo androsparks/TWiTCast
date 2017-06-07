@@ -16,12 +16,37 @@
             android:layout_height="wrap_content">
 
             <RadioButton
+                android:id="@+id/source_twitch_hd"
+                android:text="@string/twitch_hd_stream"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:layout_marginBottom="12dp"/>
+
+            <RadioButton
+                android:id="@+id/source_twitch_high"
+                android:text="@string/twitch_high_stream"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:layout_marginBottom="12dp"/>
+
+            <RadioButton
+                android:id="@+id/source_twitch_low"
+                android:text="@string/twitch_low_stream"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:layout_marginBottom="12dp"/>
+
+            <RadioButton
                 android:id="@+id/source_flosoft_high"
                 android:text="@string/flosoft_high_stream"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
-                android:layout_marginBottom="12dp"/>
+                android:layout_marginBottom="12dp"
+                android:visibility="gone"/>
 
             <RadioButton
                 android:id="@+id/source_flosoft_low"
@@ -29,16 +54,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
-                android:layout_marginBottom="12dp"/>
+                android:layout_marginBottom="12dp"
+                android:visibility="gone"/>
 
             <RadioButton
-                android:id="@+id/source_twitch"
-                android:text="@string/twitch_stream"
+                android:id="@+id/source_flosoft_abr"
+                android:text="@string/flosoft_abr_stream"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
-                android:layout_marginBottom="12dp"
-                android:visibility="gone"/>
+                android:layout_marginBottom="12dp"/>
 
             <RadioButton
                 android:id="@+id/source_ustream"

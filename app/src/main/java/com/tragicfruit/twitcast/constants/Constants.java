@@ -28,7 +28,7 @@ public class Constants {
     public static final String LIVE_VIDEO_CONTENT_TYPE = "video";
 
     public static final StreamQuality DEFAULT_QUALITY = StreamQuality.VIDEO_HD;
-    public static final StreamSource DEFAULT_SOURCE = StreamSource.FLOSOFT_HIGH;
+    public static final StreamSource DEFAULT_SOURCE = StreamSource.TWITCH_HD;
 
     public static final int MAX_NUMBER_OF_EPISODES = 250;
 
@@ -40,7 +40,10 @@ public class Constants {
 
     public static final String STREAM_FLOSOFT_HIGH = "http://hls.twit.tv/flosoft/smil:twitStreamHi.smil/playlist.m3u8";
     public static final String STREAM_FLOSOFT_LOW = "http://hls.twit.tv/flosoft/smil:twitStream.smil/playlist.m3u8";
-    public static final String STREAM_TWITCH = "http://usher.twitch.tv/api/channel/hls/twit.m3u8?player=twitchweb&token=%7B%22user_id%22%3Anull%2C%22channel%22%3A%22twit%22%2C%22expires%22%3A1446578769%2C%22chansub%22%3A%7B%22view_until%22%3A1924905600%2C%22restricted_bitrates%22%3A%5B%5D%7D%2C%22private%22%3A%7B%22allowed_to_view%22%3Atrue%7D%2C%22privileged%22%3Afalse%2C%22source_restricted%22%3Afalse%7D&sig=69b99b2c85ce1e8d415f0251e2e458a06f35ed14";
+    public static final String STREAM_FLOSOFT_ABR = "http://hls.twit.tv/flosoft/smil:twitStreamAll.smil/playlist.m3u8";
+    public static final String STREAM_TWITCH_HD = "http://video-edge-8fab14.syd01.hls.ttvnw.net/v0/CscBK-k3Nz5XUHCXV64ZMuEOf0AWQ837p-WYb5BPqFW9bCW4MwmUqgxfOELdcCzxl3t9byVY1s_siTRAxwsYqVhHURGde2llfLTvokt8LbQHmCQzvpLLvM91Jzc0FsHQewjb3ypLySMf7dMq3gQkudlvX-iXdZTiNL9xQ98ykYKmJ721fBzLI8mbKOQInEhUXnNVIIMPyWYol_XdRoxn4SG3dJ7d6drHF5i1M26Zk4j-g3m4GH-NsM2sVOHpfBiyke5Zx99wBh63zhIQvNJhRyQL0F9WkpcxgrpQLBoMBJ6mDsXM4ymbh-n3/index-live.m3u8";
+    public static final String STREAM_TWITCH_HIGH = "http://video-edge-8fab14.syd01.hls.ttvnw.net/v0/CscBVZUT_PohyRgeQ4ZH77XYHnuEXPvtRqTsool4XtpLRckdruSde73_KPyPybyVVF21Os_EpqPrd-VEnjvW6e0yshfFYlv23Ry56CcHS8Hy7NTlixqQj5wO0nbhm4gvuCjfO6Eozww5wLf9uKaMID6cwBxvYRr0a3-oAmX6IXCYWcRXbJ4ofiiSoKEnP7ze8CytesmkTTPVb29okdXfIowOuzVjR6hfH-Q_xwNj4zvyYsqwVPI7BYuUfaSdVn_aMd4xKHGBHcl6pxIQfiNthTdfbBOnjYTviGSStxoMPMo2G1ncIJh3c_7I/index-live.m3u8";
+    public static final String STREAM_TWITCH_LOW = "http://video-edge-8fab14.syd01.hls.ttvnw.net/v0/CscBpsTydRT64dMac1oFmHTRxBhoCIX-q3pO72sevptCI6zE31wiQBdECSXCihLREf4utywUbzXj1rU2CdK9yK5x1cTR_1mtJcFtYpMYFQ8QoC_Mwg1BZ9ot8MgeohTFD74WNOgzx7oS2c15BXVb_I8Y4LrpTLsdFTjosk_FVB7X5F0uVRmSNVDVphMsPuryM4TbWhhsuiSSvWKC_4lF5i6hA2k9zwmqcCvX4TcFgDpe0I7H6EyV0Aie0_fumme3dfGmKXBjs3PqlRIQta-h61v9-lkFrVIUD-kXCBoM4ztQEB_fgmWHSx5m/index-live.m3u8";
     public static final String STREAM_USTREAM = "http://iphone-streaming.ustream.tv/uhls/1524/streams/live/iphone/playlist.m3u8";
     public static final String STREAM_AUDIO = "http://twit.am/listen";
 

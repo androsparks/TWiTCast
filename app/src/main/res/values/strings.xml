@@ -21,7 +21,10 @@
     <string name="twit_live_stream_title">TWiT Live</string>
     <string name="flosoft_high_stream">Flosoft High</string>
     <string name="flosoft_low_stream">Flosoft Low</string>
-    <string name="twitch_stream">Twitch</string>
+    <string name="flosoft_abr_stream">Flosoft</string>
+    <string name="twitch_hd_stream">Twitch (HD)</string>
+    <string name="twitch_high_stream">Twitch (High)</string>
+    <string name="twitch_low_stream">Twitch (Low)</string>
     <string name="ustream_stream">Ustream</string>
     <string name="audio_stream">Audio</string>
     <string name="choose_source_menu_item">Choose source</string>

@@ -26,7 +26,10 @@ public class ChooseSourceFragment extends DialogFragment {
     private RadioGroup mRadioGroup;
     private RadioButton mFlosoftHighRadioButton;
     private RadioButton mFlosoftLowRadioButton;
-    private RadioButton mTwitchRadioButton;
+    private RadioButton mFlosoftAbrRadioButton;
+    private RadioButton mTwitchHdRadioButton;
+    private RadioButton mTwitchHighRadioButton;
+    private RadioButton mTwitchLowRadioButton;
     private RadioButton mUstreamRadioButton;
     private RadioButton mAudioRadioButton;
 
@@ -41,7 +44,10 @@ public class ChooseSourceFragment extends DialogFragment {
         mRadioGroup = (RadioGroup) v.findViewById(R.id.dialog_choose_source_radio_group);
         mFlosoftHighRadioButton = (RadioButton) v.findViewById(R.id.source_flosoft_high);
         mFlosoftLowRadioButton = (RadioButton) v.findViewById(R.id.source_flosoft_low);
-        mTwitchRadioButton = (RadioButton) v.findViewById(R.id.source_twitch);
+        mFlosoftAbrRadioButton = (RadioButton) v.findViewById(R.id.source_flosoft_abr);
+        mTwitchHdRadioButton = (RadioButton) v.findViewById(R.id.source_twitch_hd);
+        mTwitchHighRadioButton = (RadioButton) v.findViewById(R.id.source_twitch_high);
+        mTwitchLowRadioButton = (RadioButton) v.findViewById(R.id.source_twitch_low);
         mUstreamRadioButton = (RadioButton) v.findViewById(R.id.source_ustream);
         mAudioRadioButton = (RadioButton) v.findViewById(R.id.source_audio);
 
@@ -61,8 +67,17 @@ public class ChooseSourceFragment extends DialogFragment {
                             case R.id.source_flosoft_low:
                                 sendResult(Activity.RESULT_OK, StreamSource.FLOSOFT_LOW);
                                 break;
-                            case R.id.source_twitch:
-                                sendResult(Activity.RESULT_OK, StreamSource.TWITCH);
+                            case R.id.source_flosoft_abr:
+                                sendResult(Activity.RESULT_OK, StreamSource.FLOSOFT_ABR);
+                                break;
+                            case R.id.source_twitch_hd:
+                                sendResult(Activity.RESULT_OK, StreamSource.TWITCH_HD);
+                                break;
+                            case R.id.source_twitch_high:
+                                sendResult(Activity.RESULT_OK, StreamSource.TWITCH_HIGH);
+                                break;
+                            case R.id.source_twitch_low:
+                                sendResult(Activity.RESULT_OK, StreamSource.TWITCH_LOW);
                                 break;
                             case R.id.source_ustream:
                                 sendResult(Activity.RESULT_OK, StreamSource.USTREAM);
@@ -85,8 +100,17 @@ public class ChooseSourceFragment extends DialogFragment {
             case FLOSOFT_LOW:
                 mFlosoftLowRadioButton.setChecked(true);
                 break;
-            case TWITCH:
-                mTwitchRadioButton.setChecked(true);
+            case FLOSOFT_ABR:
+                mFlosoftAbrRadioButton.setChecked(true);
+                break;
+            case TWITCH_HD:
+                mTwitchHdRadioButton.setChecked(true);
+                break;
+            case TWITCH_HIGH:
+                mTwitchHighRadioButton.setChecked(true);
+                break;
+            case TWITCH_LOW:
+                mTwitchLowRadioButton.setChecked(true);
                 break;
             case USTREAM:
                 mUstreamRadioButton.setChecked(true);
