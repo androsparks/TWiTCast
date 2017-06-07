@@ -189,6 +189,8 @@ public abstract class BaseCastManager
     protected BaseCastManager(Context context, CastConfiguration castConfiguration) {
         mCastConfiguration = castConfiguration;
         mCapabilities = castConfiguration.getCapabilities();
+        LogUtils.setDebug(isFeatureEnabled(CastConfiguration.FEATURE_DEBUGGING));
+
         sCclVersion = context.getString(R.string.ccl_version);
         mApplicationId = castConfiguration.getApplicationId();
         LOGD(TAG, "BaseCastManager is instantiated\nVersion: " + sCclVersion

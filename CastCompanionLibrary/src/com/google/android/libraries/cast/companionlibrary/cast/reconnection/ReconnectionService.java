@@ -39,6 +39,10 @@ import android.os.SystemClock;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A service to run in the background when the playback of a media starts, to help with reconnection
@@ -59,8 +63,8 @@ public class ReconnectionService extends Service {
     private VideoCastManager mCastManager;
     private BroadcastReceiver mWifiBroadcastReceiver;
     private boolean mWifiConnectivity = true;
-    private Timer mEndTimer;
-    private TimerTask mEndTimerTask;
+    private ScheduledFuture<?> mTerminationHandler;
+    private final ScheduledExecutorService mScheduler = Executors.newScheduledThreadPool(1);
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -155,6 +159,16 @@ public class ReconnectionService extends Service {
         return null;
     }
 
+    final private Runnable mTerminationRunnable = new Runnable() {
+
+        @Override
+        public void run() {
+            LOGD(TAG, "setUpEndTimer(): stopping ReconnectionService since reached the end of"
+                    + " allotted time");
+            handleTermination();
+        }
+    };
+
     private void setUpEndTimer() {
         LOGD(TAG, "setUpEndTimer(): setting up a timer for the end of current media");
         long timeLeft = getMediaRemainingTime();
@@ -163,27 +177,13 @@ public class ReconnectionService extends Service {
             return;
         }
         clearEndTimer();
-        mEndTimer = new Timer();
-        mEndTimerTask = new TimerTask() {
-            @Override
-            public void run() {
-                LOGD(TAG, "setUpEndTimer(): stopping ReconnectionService since reached the end of"
-                        + " allotted time");
-                handleTermination();
-            }
-        };
-        mEndTimer.schedule(mEndTimerTask, timeLeft);
+        mTerminationHandler = mScheduler
+                .schedule(mTerminationRunnable, timeLeft, TimeUnit.MILLISECONDS);
     }
 
     private void clearEndTimer() {
-        if (mEndTimerTask != null) {
-            mEndTimerTask.cancel();
-            mEndTimerTask = null;
-        }
-
-        if (mEndTimer != null) {
-            mEndTimer.cancel();
-            mEndTimer = null;
+        if (mTerminationHandler != null && !mTerminationHandler.isCancelled()) {
+            mTerminationHandler.cancel(true);
         }
     }
 

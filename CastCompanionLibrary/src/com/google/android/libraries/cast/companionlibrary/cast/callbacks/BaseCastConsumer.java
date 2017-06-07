@@ -59,7 +59,7 @@ public interface BaseCastConsumer extends OnFailedListener {
      *     <li>{@link BaseCastManager#DISCONNECT_REASON_EXPLICIT}</li>
      *     <li>{@link BaseCastManager#DISCONNECT_REASON_CONNECTIVITY}</li>
      *     <li>{@link BaseCastManager#DISCONNECT_REASON_OTHER}</li>
-     * </ul>@BaseCastManager.DISCONNECT_REASON
+     * </ul>
      */
     void onDisconnectionReason(@BaseCastManager.DisconnectReason int reason);
 

@@ -503,8 +503,8 @@ public class VideoCastControllerFragment extends Fragment implements
                 LOGD(TAG, "Idle Reason: " + (mCastManager.getIdleReason()));
                 switch (mCastManager.getIdleReason()) {
                     case MediaStatus.IDLE_REASON_FINISHED:
-                        if (!mIsFresh && mMediaStatus.getLoadingItemId()
-                                == MediaQueueItem.INVALID_ITEM_ID) {
+                        if (!mIsFresh && (mMediaStatus == null || mMediaStatus.getLoadingItemId()
+                                == MediaQueueItem.INVALID_ITEM_ID)) {
                             mCastController.closeActivity();
                         }
                         break;
@@ -549,8 +549,8 @@ public class VideoCastControllerFragment extends Fragment implements
         super.onResume();
         try {
             if (mCastManager.isRemoteMediaPaused() || mCastManager.isRemoteMediaPlaying()) {
-                if (mCastManager.getRemoteMediaInformation() != null && mSelectedMedia != null &&
-                        mSelectedMedia.getContentId().equals(
+                if (mCastManager.getRemoteMediaInformation() != null
+                        && TextUtils.equals(mSelectedMedia.getContentId(),
                                 mCastManager.getRemoteMediaInformation().getContentId())) {
                     mIsFresh = false;
                 }
@@ -576,6 +576,9 @@ public class VideoCastControllerFragment extends Fragment implements
             }
         } catch (TransientNetworkDisconnectionException | NoConnectionException e) {
             LOGE(TAG, "Failed to get media information or status of media playback", e);
+            if (e instanceof NoConnectionException) {
+                mCastController.closeActivity();
+            }
         } finally {
             mCastManager.incrementUiCounter();
         }

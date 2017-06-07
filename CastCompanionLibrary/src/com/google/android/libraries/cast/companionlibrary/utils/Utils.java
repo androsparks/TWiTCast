@@ -74,6 +74,7 @@ public final class Utils {
     private static final String KEY_TRACK_CONTENT_ID = "track-custom-id";
     private static final String KEY_TRACK_NAME = "track-name";
     private static final String KEY_TRACK_TYPE = "track-type";
+    private static final String KEY_TRACK_CONTENT_TYPE = "track-content-type";
     private static final String KEY_TRACK_SUBTYPE = "track-subtype";
     private static final String KEY_TRACK_LANGUAGE = "track-language";
     private static final String KEY_TRACK_CUSTOM_DATA = "track-custom-data";
@@ -209,6 +210,7 @@ public final class Utils {
                     jsonObject.put(KEY_TRACK_ID, mt.getId());
                     jsonObject.put(KEY_TRACK_LANGUAGE, mt.getLanguage());
                     jsonObject.put(KEY_TRACK_TYPE, mt.getType());
+                    jsonObject.put(KEY_TRACK_CONTENT_TYPE, mt.getContentType());
                     if (mt.getSubtype() != MediaTrack.SUBTYPE_UNKNOWN) {
                         jsonObject.put(KEY_TRACK_SUBTYPE, mt.getSubtype());
                     }
@@ -299,6 +301,9 @@ public final class Utils {
                         if (jsonObj.has(KEY_TRACK_CONTENT_ID)) {
                             builder.setContentId(jsonObj.getString(KEY_TRACK_CONTENT_ID));
                         }
+                        if (jsonObj.has(KEY_CONTENT_TYPE)) {
+                            builder.setContentType(jsonObj.getString(KEY_TRACK_CONTENT_TYPE));
+                        }
                         if (jsonObj.has(KEY_TRACK_LANGUAGE)) {
                             builder.setLanguage(jsonObj.getString(KEY_TRACK_LANGUAGE));
                         }
@@ -362,7 +367,9 @@ public final class Utils {
 
         RectF targetRect = new RectF(left, top, left + scaledWidth, top + scaledHeight);
 
-        Bitmap destination = Bitmap.createBitmap(newWidth, newHeight, source.getConfig());
+        Bitmap.Config config = source.getConfig() == null ? Bitmap.Config.ARGB_8888
+                : source.getConfig();
+        Bitmap destination = Bitmap.createBitmap(newWidth, newHeight, config);
         Canvas canvas = new Canvas(destination);
         canvas.drawBitmap(source, null, targetRect, null);
 

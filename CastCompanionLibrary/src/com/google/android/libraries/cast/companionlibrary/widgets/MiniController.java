@@ -112,6 +112,9 @@ public class MiniController extends RelativeLayout implements IMiniController {
         mPlayDrawable = getResources().getDrawable(R.drawable.ic_mini_controller_play);
         mStopDrawable = getResources().getDrawable(R.drawable.ic_mini_controller_stop);
         mHandler = new Handler();
+        if (!isInEditMode()) {
+            mCastManager = VideoCastManager.getInstance();
+        }
         mCastManager = VideoCastManager.getInstance();
         loadViews();
         setUpCallbacks();
@@ -342,7 +345,7 @@ public class MiniController extends RelativeLayout implements IMiniController {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        if (mAutoSetup) {
+        if (mAutoSetup && !isInEditMode()) {
             mCastManager.addMiniController(this);
         }
     }
@@ -354,7 +357,7 @@ public class MiniController extends RelativeLayout implements IMiniController {
             mFetchBitmapTask.cancel(true);
             mFetchBitmapTask = null;
         }
-        if (mAutoSetup) {
+        if (mAutoSetup && !isInEditMode()) {
             mCastManager.removeMiniController(this);
         }
     }
