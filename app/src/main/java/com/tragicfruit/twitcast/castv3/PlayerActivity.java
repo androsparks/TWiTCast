@@ -5,15 +5,20 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.google.android.gms.cast.MediaMetadata;
 import com.google.android.gms.cast.framework.CastButtonFactory;
+import com.google.android.gms.cast.framework.CastSession;
+import com.google.android.gms.cast.framework.media.ImagePicker;
+import com.google.android.gms.cast.framework.media.RemoteMediaClient;
 import com.google.android.gms.cast.framework.media.uicontroller.UIMediaController;
-import com.google.android.gms.cast.framework.media.widget.ExpandedControllerActivity;
 import com.tragicfruit.twitcast.GoogleCastActivity;
 import com.tragicfruit.twitcast.R;
 
@@ -22,7 +27,8 @@ import com.tragicfruit.twitcast.R;
  */
 
 public class PlayerActivity extends GoogleCastActivity {
-    private View mPageView;
+
+    private ImageView mPageView;
     private ImageButton mPlayPause;
     private TextView mStart;
     private TextView mEnd;
@@ -43,6 +49,8 @@ public class PlayerActivity extends GoogleCastActivity {
     private Toolbar mToolbar;
     private boolean mImmersive;
 
+    private UIMediaController mUIMediaController;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +59,8 @@ public class PlayerActivity extends GoogleCastActivity {
         mPauseDrawable = ContextCompat.getDrawable(this, R.drawable.ic_pause_circle_white_80dp);
         mPlayDrawable = ContextCompat.getDrawable(this, R.drawable.ic_play_circle_white_80dp);
         mStopDrawable = ContextCompat.getDrawable(this, R.drawable.ic_stop_circle_white_80dp);
-        mPageView = findViewById(R.id.pageview);
+
+        mPageView = (ImageView) findViewById(R.id.pageview);
         mPlayPause = (ImageButton) findViewById(R.id.play_pause_toggle);
         mStart = (TextView) findViewById(R.id.start_text);
         mEnd = (TextView) findViewById(R.id.end_text);
@@ -63,9 +72,72 @@ public class PlayerActivity extends GoogleCastActivity {
         mForward = (ImageButton) findViewById(R.id.forward);
         mRewind = (ImageButton) findViewById(R.id.rewind);
         mPlaybackControls = findViewById(R.id.playback_controls);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        UIMediaController uiMediaController = new UIMediaController(this);
-        uiMediaController.bindImageViewToPlayPauseToggle(mPlayPause, mPlayDrawable, mPauseDrawable, mStopDrawable, );
+        setSupportActionBar(mToolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle("");
+        }
+
+        mUIMediaController = new UIMediaController(this);
+        mUIMediaController.bindImageViewToPlayPauseToggle(mPlayPause, mPlayDrawable, mPauseDrawable, mStopDrawable, mLoading, false);
+        mUIMediaController.bindSeekBar(mSeekbar);
+        mUIMediaController.bindViewToRewind(mRewind, 30 * 1000);
+        mUIMediaController.bindViewToForward(mForward, 30 * 1000);
+        mUIMediaController.bindTextViewToStreamPosition(mStart, true);
+        mUIMediaController.bindTextViewToStreamDuration(mEnd);
+        mUIMediaController.bindTextViewToMetadataOfCurrentItem(mLine1, MediaMetadata.KEY_TITLE);
+        mUIMediaController.bindTextViewToMetadataOfCurrentItem(mLine2, MediaMetadata.KEY_SUBTITLE);
+        mUIMediaController.bindImageViewToImageOfCurrentItem(mPageView, ImagePicker.IMAGE_TYPE_MEDIA_ROUTE_CONTROLLER_DIALOG_BACKGROUND, null);
+        mUIMediaController.setPostRemoteMediaClientListener(new RemoteMediaClient.Listener() {
+            @Override
+            public void onStatusUpdated() {
+                updateUIForLiveStream();
+            }
+
+            @Override
+            public void onMetadataUpdated() {
+
+            }
+
+            @Override
+            public void onQueueStatusUpdated() {
+
+            }
+
+            @Override
+            public void onPreloadStatusUpdated() {
+
+            }
+
+            @Override
+            public void onSendingRemoteMediaRequest() {
+
+            }
+
+            @Override
+            public void onAdBreakStatusUpdated() {
+
+            }
+        });
+    }
+
+    private void updateUIForLiveStream() {
+        if (mUIMediaController.getRemoteMediaClient() != null
+                && mUIMediaController.getRemoteMediaClient().isLiveStream()) {
+            mRewind.setVisibility(View.GONE);
+            mForward.setVisibility(View.GONE);
+            mSeekbar.setVisibility(View.GONE);
+            mStart.setVisibility(View.GONE);
+            mEnd.setVisibility(View.GONE);
+        } else {
+            mRewind.setVisibility(View.VISIBLE);
+            mForward.setVisibility(View.VISIBLE);
+            mSeekbar.setVisibility(View.VISIBLE);
+            mStart.setVisibility(View.VISIBLE);
+            mEnd.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -77,6 +149,22 @@ public class PlayerActivity extends GoogleCastActivity {
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateUIForLiveStream();
+    }
+
+    @Override
     protected void showProgressBar() {
 
     }
@@ -85,4 +173,17 @@ public class PlayerActivity extends GoogleCastActivity {
     protected void hideProgressBar() {
 
     }
+
+    @Override
+    public void onSessionEnded(CastSession castSession, int i) {
+        super.onSessionEnded(castSession, i);
+        finish();
+    }
+
+    @Override
+    public void onSessionSuspended(CastSession castSession, int i) {
+        super.onSessionSuspended(castSession, i);
+        finish();
+    }
 }
+

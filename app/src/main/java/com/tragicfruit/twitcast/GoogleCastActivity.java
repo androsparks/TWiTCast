@@ -45,13 +45,12 @@ import java.util.concurrent.ConcurrentMap;
  * Created by Jeremy on 4/03/2016.
  */
 public abstract class GoogleCastActivity extends AppCompatActivity
-        implements LatestFragment.Callbacks, LiveFragment.Callbacks, EpisodeListFragment.Callbacks {
+        implements LatestFragment.Callbacks, LiveFragment.Callbacks, EpisodeListFragment.Callbacks,
+        SessionManagerListener<CastSession> {
     private static final String TAG = "GoogleCastActivity";
     private static final String DIALOG_FEEDBACK = "feedback";
 
-    private CastContext mCastContext;
     private SessionManager mCastSessionManager;
-    private CastSessionManagerListener mCastSessionManagerListener;
     private RemoteMediaClient mRemoteMediaClient;
     private CastMediaClientListener mRemoteMediaClientListener;
 
@@ -59,87 +58,6 @@ public abstract class GoogleCastActivity extends AppCompatActivity
     private MediaInfo mSelectedMediaInfo;
     private Episode mEpisodeToPlay;
     private int mPosition;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mCastContext = CastContext.getSharedInstance(this);
-    }
-
-    private class CastSessionManagerListener implements SessionManagerListener<CastSession> {
-
-        @Override
-        public void onSessionStarting(CastSession castSession) {
-
-        }
-
-        @Override
-        public void onSessionStarted(CastSession castSession, String s) {
-            Log.d(TAG, "onSessionStarted");
-
-//            if (mSelectedMediaInfo != null) {
-//                startPlayingSelectedMedia();
-//            }
-
-            // onDeviceSelected =========================
-
-            if (castSession.getCastDevice() != null) {
-                boolean audioOnly = !castSession.getCastDevice().hasCapability(CastDevice.CAPABILITY_VIDEO_OUT);
-                QueryPreferences.setCastDeviceAudioOnly(GoogleCastActivity.this, audioOnly);
-            }
-
-//            if (mSelectedMediaInfo != null) {
-//                showProgressBar();
-//            }
-
-            mRemoteMediaClient = castSession.getRemoteMediaClient();
-            mRemoteMediaClientListener = new CastMediaClientListener();
-            mRemoteMediaClient.addListener(mRemoteMediaClientListener);
-        }
-
-        @Override
-        public void onSessionStartFailed(CastSession castSession, int i) {
-
-        }
-
-        @Override
-        public void onSessionEnding(CastSession castSession) {
-
-        }
-
-        @Override
-        public void onSessionEnded(CastSession castSession, int i) {
-            if (mRemoteMediaClient != null) {
-                mRemoteMediaClient.removeListener(mRemoteMediaClientListener);
-            }
-        }
-
-        @Override
-        public void onSessionResuming(CastSession castSession, String s) {
-
-        }
-
-        @Override
-        public void onSessionResumed(CastSession castSession, boolean b) {
-            Log.d(TAG, "onSessionResumed");
-
-            mRemoteMediaClient = castSession.getRemoteMediaClient();
-            mRemoteMediaClientListener = new CastMediaClientListener();
-            mRemoteMediaClient.addListener(mRemoteMediaClientListener);
-        }
-
-        @Override
-        public void onSessionResumeFailed(CastSession castSession, int i) {
-
-        }
-
-        @Override
-        public void onSessionSuspended(CastSession castSession, int i) {
-            if (mRemoteMediaClient != null) {
-                mRemoteMediaClient.removeListener(mRemoteMediaClientListener);
-            }
-        }
-    }
 
     private class CastMediaClientListener implements RemoteMediaClient.Listener {
 
@@ -157,19 +75,27 @@ public abstract class GoogleCastActivity extends AppCompatActivity
 //                showProgressBar();
             }
 
-            mRemoteMediaClient.removeListener(this);
+//            mRemoteMediaClient.removeListener(this);
         }
 
         @Override
         public void onSendingRemoteMediaRequest() {
+            Log.e(TAG, "onSendingRemoteMediaRequest()");
         }
 
         @Override
         public void onQueueStatusUpdated() {
+            Log.e(TAG, "onQueueStatusUpdated()");
         }
 
         @Override
         public void onPreloadStatusUpdated() {
+            Log.e(TAG, "onPreloadStatusUpdated()");
+        }
+
+        @Override
+        public void onAdBreakStatusUpdated() {
+            Log.e(TAG, "onAdBreakStatusUpdated()");
         }
     }
 
@@ -220,17 +146,14 @@ public abstract class GoogleCastActivity extends AppCompatActivity
 
         mCastSessionManager =
                 CastContext.getSharedInstance(this).getSessionManager();
-        mCastSessionManagerListener = new CastSessionManagerListener();
-        mCastSessionManager.addSessionManagerListener(mCastSessionManagerListener,
-                CastSession.class);
+        mCastSessionManager.addSessionManagerListener(this, CastSession.class);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
 
-        mCastSessionManager.removeSessionManagerListener(mCastSessionManagerListener,
-                CastSession.class);
+        mCastSessionManager.removeSessionManagerListener(this, CastSession.class);
     }
 
     private boolean isConnected() {
@@ -314,7 +237,7 @@ public abstract class GoogleCastActivity extends AppCompatActivity
         mediaMetadata.putString(MediaMetadata.KEY_TITLE, getString(R.string.twit_live_stream_title));
         mediaMetadata.putString(MediaMetadata.KEY_SUBTITLE, getString(R.string.twit_live_stream_title));
         mediaMetadata.putString(MediaMetadata.KEY_STUDIO, getString(R.string.studio_name));
-        mediaMetadata.addImage(new WebImage(Uri.parse(Constants.LOGO_URL)));
+        mediaMetadata.addImage(new WebImage(Uri.parse(Constants.LOGO_SMALL_URL)));
         mediaMetadata.addImage(new WebImage(Uri.parse(Constants.LOGO_URL)));
 
         Stream stream = getStream(QueryPreferences.getStreamSource(this));
@@ -411,7 +334,7 @@ public abstract class GoogleCastActivity extends AppCompatActivity
             mediaMetadata.putString(MediaMetadata.KEY_ALBUM_TITLE, mEpisodeToPlay.getShortTitle());
             mediaMetadata.putString(MediaMetadata.KEY_ALBUM_ARTIST, getString(R.string.studio_name));
             mediaMetadata.putString(MediaMetadata.KEY_ARTIST, getString(R.string.studio_name));
-            mediaMetadata.addImage(new WebImage(Uri.parse(mEpisodeToPlay.getShow().getCoverArtUrl())));
+            mediaMetadata.addImage(new WebImage(Uri.parse(mEpisodeToPlay.getShow().getCoverArtUrlSmall())));
             mediaMetadata.addImage(new WebImage(Uri.parse(mEpisodeToPlay.getShow().getCoverArtUrl())));
 
             String url = mEpisodeToPlay.getAudioUrl();
@@ -435,7 +358,7 @@ public abstract class GoogleCastActivity extends AppCompatActivity
             mediaMetadata.putString(MediaMetadata.KEY_ALBUM_TITLE, getString(R.string.twit_live_stream_title));
             mediaMetadata.putString(MediaMetadata.KEY_ALBUM_ARTIST, getString(R.string.studio_name));
             mediaMetadata.putString(MediaMetadata.KEY_ARTIST, getString(R.string.studio_name));
-            mediaMetadata.addImage(new WebImage(Uri.parse(Constants.LOGO_URL)));
+            mediaMetadata.addImage(new WebImage(Uri.parse(Constants.LOGO_SMALL_URL)));
             mediaMetadata.addImage(new WebImage(Uri.parse(Constants.LOGO_URL)));
 
             Stream stream = getStream(StreamSource.AUDIO);
@@ -509,4 +432,76 @@ public abstract class GoogleCastActivity extends AppCompatActivity
 
     @Override
     public void setToolbarColour(int toolbarColour, int statusBarColour) {}
+
+    @Override
+    public void onSessionStarting(CastSession castSession) {
+
+    }
+
+    @Override
+    public void onSessionStarted(CastSession castSession, String s) {
+        Log.d(TAG, "onSessionStarted");
+
+//            if (mSelectedMediaInfo != null) {
+//                startPlayingSelectedMedia();
+//            }
+
+        // onDeviceSelected =========================
+
+        if (castSession.getCastDevice() != null) {
+            boolean audioOnly = !castSession.getCastDevice().hasCapability(CastDevice.CAPABILITY_VIDEO_OUT);
+            QueryPreferences.setCastDeviceAudioOnly(GoogleCastActivity.this, audioOnly);
+        }
+
+//            if (mSelectedMediaInfo != null) {
+//                showProgressBar();
+//            }
+
+        mRemoteMediaClient = castSession.getRemoteMediaClient();
+        mRemoteMediaClientListener = new CastMediaClientListener();
+        mRemoteMediaClient.addListener(mRemoteMediaClientListener);
+    }
+
+    @Override
+    public void onSessionStartFailed(CastSession castSession, int i) {
+
+    }
+
+    @Override
+    public void onSessionEnding(CastSession castSession) {
+
+    }
+
+    @Override
+    public void onSessionEnded(CastSession castSession, int i) {
+        if (mRemoteMediaClient != null) {
+            mRemoteMediaClient.removeListener(mRemoteMediaClientListener);
+        }
+    }
+
+    @Override
+    public void onSessionResuming(CastSession castSession, String s) {
+
+    }
+
+    @Override
+    public void onSessionResumed(CastSession castSession, boolean b) {
+        Log.d(TAG, "onSessionResumed");
+
+        mRemoteMediaClient = castSession.getRemoteMediaClient();
+        mRemoteMediaClientListener = new CastMediaClientListener();
+        mRemoteMediaClient.addListener(mRemoteMediaClientListener);
+    }
+
+    @Override
+    public void onSessionResumeFailed(CastSession castSession, int i) {
+
+    }
+
+    @Override
+    public void onSessionSuspended(CastSession castSession, int i) {
+        if (mRemoteMediaClient != null) {
+            mRemoteMediaClient.removeListener(mRemoteMediaClientListener);
+        }
+    }
 }

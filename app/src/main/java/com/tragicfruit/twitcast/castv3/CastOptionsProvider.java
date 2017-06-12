@@ -60,9 +60,9 @@ public class CastOptionsProvider implements OptionsProvider {
                 return images.get(0);
             } else {
                 if (type == ImagePicker.IMAGE_TYPE_MEDIA_ROUTE_CONTROLLER_DIALOG_BACKGROUND) {
-                    return images.get(0);
-                } else {
                     return images.get(1);
+                } else {
+                    return images.get(0);
                 }
             }
         }

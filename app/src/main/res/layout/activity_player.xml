@@ -108,14 +108,16 @@
             android:id="@+id/textview1"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/textview2"
             android:ellipsize="end"
             android:gravity="center_horizontal"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:maxLines="1"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@color/ccl_cast_activity_progress_text_color" />
+            android:textColor="@color/ccl_cast_activity_progress_text_color"
+            android:layout_above="@+id/textview2"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"/>
 
         <TextView
             android:id="@+id/textview2"
@@ -135,12 +137,11 @@
         <ImageView
             android:id="@+id/pageview"
             android:layout_above="@id/textview1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingTop="80dp"
-            android:paddingLeft="50dp"
-            android:paddingRight="50dp"
-            android:scaleType="centerInside" />
+            android:layout_width="280dp"
+            android:layout_height="280dp"
+            android:scaleType="fitCenter"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="40dp"/>
 
     </RelativeLayout>
 
@@ -150,7 +151,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:visibility="gone" />
+        />
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
