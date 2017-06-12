@@ -1,26 +1,32 @@
 package com.tragicfruit.twitcast;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.MediaRouteActionProvider;
-import android.support.v7.media.MediaRouter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.google.android.gms.cast.ApplicationMetadata;
 import com.google.android.gms.cast.CastDevice;
 import com.google.android.gms.cast.MediaInfo;
 import com.google.android.gms.cast.MediaMetadata;
+import com.google.android.gms.cast.framework.CastButtonFactory;
+import com.google.android.gms.cast.framework.CastContext;
+import com.google.android.gms.cast.framework.CastSession;
+import com.google.android.gms.cast.framework.SessionManager;
+import com.google.android.gms.cast.framework.SessionManagerListener;
+import com.google.android.gms.cast.framework.media.RemoteMediaClient;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.images.WebImage;
-import com.google.android.libraries.cast.companionlibrary.cast.BaseCastManager;
-import com.google.android.libraries.cast.companionlibrary.cast.VideoCastManager;
-import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCastConsumer;
-import com.google.android.libraries.cast.companionlibrary.cast.callbacks.VideoCastConsumerImpl;
+import com.tragicfruit.twitcast.castv3.PlayerActivity;
 import com.tragicfruit.twitcast.constants.Constants;
 import com.tragicfruit.twitcast.database.TWiTLab;
 import com.tragicfruit.twitcast.dialogs.LeaveFeedbackFragment;
@@ -42,8 +48,12 @@ public abstract class GoogleCastActivity extends AppCompatActivity
     private static final String TAG = "GoogleCastActivity";
     private static final String DIALOG_FEEDBACK = "feedback";
 
-    private VideoCastManager mCastManager;
-    private VideoCastConsumer mCastConsumer;
+    private CastContext mCastContext;
+    private SessionManager mCastSessionManager;
+    private CastSessionManagerListener mCastSessionManagerListener;
+    private RemoteMediaClient mRemoteMediaClient;
+    private CastMediaClientListener mRemoteMediaClientListener;
+
     private MenuItem mMediaRouteMenuItem;
     private MediaInfo mSelectedMediaInfo;
     private Episode mEpisodeToPlay;
@@ -52,35 +62,140 @@ public abstract class GoogleCastActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        BaseCastManager.checkGooglePlayServices(this);
+        mCastContext = CastContext.getSharedInstance(this);
+    }
 
-        mCastConsumer = new VideoCastConsumerImpl() {
-            @Override
-            public void onApplicationConnected(ApplicationMetadata appMetadata, String sessionId, boolean wasLaunched) {
-                if (mSelectedMediaInfo != null) {
-                    startPlayingSelectedMedia();
-                }
+    private class CastSessionManagerListener implements SessionManagerListener<CastSession> {
+
+        @Override
+        public void onSessionStarting(CastSession castSession) {
+
+        }
+
+        @Override
+        public void onSessionStarted(CastSession castSession, String s) {
+            Log.d(TAG, "onSessionStarted");
+
+//            if (mSelectedMediaInfo != null) {
+//                startPlayingSelectedMedia();
+//            }
+
+            // onDeviceSelected =========================
+
+            if (castSession.getCastDevice() != null) {
+                boolean audioOnly = !castSession.getCastDevice().hasCapability(CastDevice.CAPABILITY_VIDEO_OUT);
+                QueryPreferences.setCastDeviceAudioOnly(GoogleCastActivity.this, audioOnly);
             }
 
-            @Override
-            public void onDeviceSelected(CastDevice device, MediaRouter.RouteInfo routeInfo) {
-                if (device != null) {
-                    boolean audioOnly = !device.hasCapability(CastDevice.CAPABILITY_VIDEO_OUT);
-                    QueryPreferences.setCastDeviceAudioOnly(GoogleCastActivity.this, audioOnly);
-                }
+//            if (mSelectedMediaInfo != null) {
+//                showProgressBar();
+//            }
 
-                if (mSelectedMediaInfo != null) {
-                    showProgressBar();
-                }
+            mRemoteMediaClient = castSession.getRemoteMediaClient();
+            mRemoteMediaClientListener = new CastMediaClientListener();
+            mRemoteMediaClient.addListener(mRemoteMediaClientListener);
+        }
+
+        @Override
+        public void onSessionStartFailed(CastSession castSession, int i) {
+
+        }
+
+        @Override
+        public void onSessionEnding(CastSession castSession) {
+
+        }
+
+        @Override
+        public void onSessionEnded(CastSession castSession, int i) {
+            if (mRemoteMediaClient != null) {
+                mRemoteMediaClient.removeListener(mRemoteMediaClientListener);
             }
-        };
+        }
+
+        @Override
+        public void onSessionResuming(CastSession castSession, String s) {
+
+        }
+
+        @Override
+        public void onSessionResumed(CastSession castSession, boolean b) {
+            Log.d(TAG, "onSessionResumed");
+
+            mRemoteMediaClient = castSession.getRemoteMediaClient();
+            mRemoteMediaClientListener = new CastMediaClientListener();
+            mRemoteMediaClient.addListener(mRemoteMediaClientListener);
+        }
+
+        @Override
+        public void onSessionResumeFailed(CastSession castSession, int i) {
+
+        }
+
+        @Override
+        public void onSessionSuspended(CastSession castSession, int i) {
+            if (mRemoteMediaClient != null) {
+                mRemoteMediaClient.removeListener(mRemoteMediaClientListener);
+            }
+        }
+    }
+
+    private class CastMediaClientListener implements RemoteMediaClient.Listener {
+
+        @Override
+        public void onMetadataUpdated() {
+            Log.e(TAG, "onMetadataUpdated()");
+        }
+
+        @Override
+        public void onStatusUpdated() {
+            Log.e(TAG, "onStatusUpdated()");
+
+            if (mSelectedMediaInfo != null) {
+                startPlayingSelectedMedia();
+//                showProgressBar();
+            }
+
+            mRemoteMediaClient.removeListener(this);
+        }
+
+        @Override
+        public void onSendingRemoteMediaRequest() {
+        }
+
+        @Override
+        public void onQueueStatusUpdated() {
+        }
+
+        @Override
+        public void onPreloadStatusUpdated() {
+        }
+    }
+
+    public boolean checkGooglePlayServices() {
+        final int googlePlayServicesCheck = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this);
+        switch (googlePlayServicesCheck) {
+            case ConnectionResult.SUCCESS:
+                return true;
+            default:
+                Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(this, googlePlayServicesCheck, 0);
+                dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialogInterface) {
+                        finish();
+                    }
+                });
+                dialog.show();
+        }
+        return false;
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.activity_google_cast, menu);
-        mMediaRouteMenuItem = mCastManager.addMediaRouterButton(menu, R.id.media_route_menu_item);
+        mMediaRouteMenuItem = CastButtonFactory
+                .setUpMediaRouteButton(getApplicationContext(),menu, R.id.media_route_menu_item);
         return true;
     }
 
@@ -100,23 +215,35 @@ public abstract class GoogleCastActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        mCastManager = VideoCastManager.getInstance();
-        mCastManager.incrementUiCounter();
-        mCastManager.addVideoCastConsumer(mCastConsumer);
+        checkGooglePlayServices();
+
+        mCastSessionManager =
+                CastContext.getSharedInstance(this).getSessionManager();
+        mCastSessionManagerListener = new CastSessionManagerListener();
+        mCastSessionManager.addSessionManagerListener(mCastSessionManagerListener,
+                CastSession.class);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mCastManager.decrementUiCounter();
-        mCastManager.removeVideoCastConsumer(mCastConsumer);
+
+        mCastSessionManager.removeSessionManagerListener(mCastSessionManagerListener,
+                CastSession.class);
+    }
+
+    private boolean isConnected() {
+        CastSession castSession = CastContext.getSharedInstance(this)
+                .getSessionManager()
+                .getCurrentCastSession();
+        return (castSession != null && castSession.isConnected());
     }
 
     @Override
     public void refreshVideo() {
         try {
-            if (mCastManager.isConnected() && mCastManager.isRemoteMediaLoaded()) {
-                int position = (int) mCastManager.getCurrentMediaPosition();
+            if (isConnected() && mRemoteMediaClient.hasMediaSession()) {
+                int position = (int) mRemoteMediaClient.getApproximateStreamPosition();
                 playVideo(mEpisodeToPlay, position);
             }
         } catch (Exception e) {
@@ -127,7 +254,7 @@ public abstract class GoogleCastActivity extends AppCompatActivity
     @Override
     public void refreshLiveStream() {
         try {
-            if (mCastManager.isConnected() && mCastManager.isRemoteStreamLive()) {
+            if (isConnected() && mRemoteMediaClient.isLiveStream()) {
                 playLiveStream();
             }
         } catch (Exception e) {
@@ -164,7 +291,7 @@ public abstract class GoogleCastActivity extends AppCompatActivity
                 .setMetadata(mediaMetadata)
                 .build();
 
-        if (mCastManager.isConnected()) {
+        if (isConnected()) {
             startPlayingSelectedMedia();
         } else {
             // cast device detected but not connected
@@ -210,7 +337,7 @@ public abstract class GoogleCastActivity extends AppCompatActivity
                 .setMetadata(mediaMetadata)
                 .build();
 
-        if (mCastManager.isConnected()) {
+        if (isConnected()) {
             startPlayingSelectedMedia();
         } else {
             // cast device detected but not connected
@@ -258,18 +385,20 @@ public abstract class GoogleCastActivity extends AppCompatActivity
         if (mSelectedMediaInfo != null)
             Log.d(TAG, "Playing from url: " + mSelectedMediaInfo.getContentId());
 
-        showProgressBar();
+//        showProgressBar();
 
         try {
             // if nothing playing
-            if (!(mCastManager.isRemoteMediaLoaded() || mCastManager.isRemoteStreamLive())) {
-                mCastManager.startVideoCastControllerActivity(this, mSelectedMediaInfo, mPosition, true);
+            if (!(mRemoteMediaClient.hasMediaSession() || mRemoteMediaClient.isLiveStream())) {
+                Intent intent = new Intent(this, PlayerActivity.class);
+                startActivity(intent);
             }
-            mCastManager.loadMedia(mSelectedMediaInfo, true, mPosition);
+            mRemoteMediaClient.load(mSelectedMediaInfo, true, mPosition);
             hideProgressBar();
             mSelectedMediaInfo = null;
             mPosition = 0;
         } catch (Exception e) {
+            e.printStackTrace();
             // Cast device not ready - will play automatically once connected
         }
     }

@@ -28,7 +28,7 @@ public class Constants {
     public static final String LIVE_VIDEO_CONTENT_TYPE = "video";
 
     public static final StreamQuality DEFAULT_QUALITY = StreamQuality.VIDEO_HD;
-    public static final StreamSource DEFAULT_SOURCE = StreamSource.TWITCH_HD;
+    public static final StreamSource DEFAULT_SOURCE = StreamSource.FLOSOFT_HIGH;
 
     public static final int MAX_NUMBER_OF_EPISODES = 250;
 
