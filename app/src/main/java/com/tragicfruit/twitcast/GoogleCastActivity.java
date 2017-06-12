@@ -313,7 +313,7 @@ public abstract class GoogleCastActivity extends AppCompatActivity
 
         try {
             // if nothing playing
-            if (!(mRemoteMediaClient.hasMediaSession() || mRemoteMediaClient.isLiveStream())) {
+            if (!(mRemoteMediaClient.hasMediaSession())) {
                 Intent intent = new Intent(this, PlayerActivity.class);
                 startActivity(intent);
             }

@@ -1,6 +1,7 @@
 package com.tragicfruit.twitcast.castv3;
 
 import android.content.Context;
+import android.text.format.DateUtils;
 
 import com.google.android.gms.cast.MediaMetadata;
 import com.google.android.gms.cast.framework.CastOptions;
@@ -13,7 +14,7 @@ import com.google.android.gms.cast.framework.media.NotificationOptions;
 import com.google.android.gms.common.images.WebImage;
 import com.tragicfruit.twitcast.constants.Constants;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,11 +24,18 @@ import java.util.List;
 public class CastOptionsProvider implements OptionsProvider {
     @Override
     public CastOptions getCastOptions(Context context) {
+
+        List<String> buttonActions = new ArrayList<>();
+        buttonActions.add(MediaIntentReceiver.ACTION_REWIND);
+        buttonActions.add(MediaIntentReceiver.ACTION_TOGGLE_PLAYBACK);
+        buttonActions.add(MediaIntentReceiver.ACTION_FORWARD);
+        buttonActions.add(MediaIntentReceiver.ACTION_STOP_CASTING);
+        // Showing "play/pause" and "stop casting" in the compat view of the notification.
+        int[] compatButtonActionsIndicies = new int[]{0, 1, 2};
+
         NotificationOptions notificationOptions = new NotificationOptions.Builder()
-                .setActions(Arrays.asList(MediaIntentReceiver.ACTION_REWIND,
-                        MediaIntentReceiver.ACTION_TOGGLE_PLAYBACK,
-                        MediaIntentReceiver.ACTION_FORWARD,
-                        MediaIntentReceiver.ACTION_DISCONNECT), new int[]{0, 1, 2})
+                .setActions(buttonActions, compatButtonActionsIndicies)
+                .setSkipStepMs(30 * DateUtils.SECOND_IN_MILLIS)
                 .setTargetActivityClassName(PlayerActivity.class.getName())
                 .build();
 

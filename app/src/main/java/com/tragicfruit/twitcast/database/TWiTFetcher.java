@@ -270,7 +270,7 @@ public class TWiTFetcher {
 
             JSONObject coverArt = show.getJSONObject("coverArt");
             JSONObject derivatives = coverArt.getJSONObject("derivatives");
-            newShow.setCoverArtUrl(derivatives.getString("twit_album_art_1400x1400"));
+            newShow.setCoverArtUrl(derivatives.getString("twit_album_art_600x600"));
             newShow.setCoverArtUrlSmall(derivatives.getString("twit_album_art_300x300"));
 
             JSONArray hdVideoArray = show.getJSONArray("hdVideoSubscriptionOptions");
