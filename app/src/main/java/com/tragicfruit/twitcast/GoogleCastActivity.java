@@ -37,6 +37,7 @@ import com.tragicfruit.twitcast.stream.LiveFragment;
 import com.tragicfruit.twitcast.stream.Stream;
 import com.tragicfruit.twitcast.stream.StreamSource;
 import com.tragicfruit.twitcast.utils.QueryPreferences;
+import com.tragicfruit.twitcast.utils.Utils;
 
 import java.util.concurrent.ConcurrentMap;
 
@@ -271,8 +272,8 @@ public abstract class GoogleCastActivity extends AppCompatActivity
         mediaMetadata.putString(MediaMetadata.KEY_TITLE, mEpisodeToPlay.getShow().getTitle());
         mediaMetadata.putString(MediaMetadata.KEY_SUBTITLE, mEpisodeToPlay.getShortTitle());
         mediaMetadata.putString(MediaMetadata.KEY_STUDIO, getString(R.string.studio_name));
-        mediaMetadata.addImage(new WebImage(Uri.parse(mEpisodeToPlay.getShow().getCoverArtUrl())));
-        mediaMetadata.addImage(new WebImage(Uri.parse(mEpisodeToPlay.getShow().getCoverArtUrl())));
+        mediaMetadata.addImage(new WebImage(Uri.parse(Utils.getUrlWithPrefix(mEpisodeToPlay.getShow().getCoverArtUrlSmall(), true))));
+        mediaMetadata.addImage(new WebImage(Uri.parse(Utils.getUrlWithPrefix(mEpisodeToPlay.getShow().getCoverArtUrl(), true))));
 
         String url = getMediaUrl(mEpisodeToPlay);
         String contentType = getContentType(url);

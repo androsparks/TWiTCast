@@ -11,6 +11,7 @@ public class TWiTDbSchema {
             public static final String TITLE = "title";
             public static final String SHORT_CODE = "short_code";
             public static final String COVER_ART_URL = "cover_art_url";
+            public static final String COVER_ART_URL_SMALL = "cover_art_url_small";
             public static final String COVER_ART_LOCAL_PATH = "cover_art_local_path";
             public static final String ID = "id";
             public static final String DESCRIPTION = "description";

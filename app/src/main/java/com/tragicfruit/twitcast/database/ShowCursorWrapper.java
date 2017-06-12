@@ -19,6 +19,7 @@ public class ShowCursorWrapper extends CursorWrapper {
         String title = getString(getColumnIndex(ShowTable.Cols.TITLE));
         String shortCode = getString(getColumnIndex(ShowTable.Cols.SHORT_CODE));
         String coverArtUrl = getString(getColumnIndex(ShowTable.Cols.COVER_ART_URL));
+        String coverArtUrlSmall = getString(getColumnIndex(ShowTable.Cols.COVER_ART_URL_SMALL));
         String coverArtLocalPath = getString(getColumnIndex(ShowTable.Cols.COVER_ART_LOCAL_PATH));
         int id = getInt(getColumnIndex(ShowTable.Cols.ID));
         String description = getString(getColumnIndex(ShowTable.Cols.DESCRIPTION));
@@ -32,6 +33,7 @@ public class ShowCursorWrapper extends CursorWrapper {
         show.setTitle(title);
         show.setShortCode(shortCode);
         show.setCoverArtUrl(coverArtUrl);
+        show.setCoverArtUrlSmall(coverArtUrlSmall);
         show.setCoverArtLocalPath(coverArtLocalPath);
         show.setId(id);
         show.setDescription(description);

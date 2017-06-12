@@ -30,6 +30,7 @@ public class TWiTBaseHelper extends SQLiteOpenHelper {
                 ShowTable.Cols.TITLE + ", " +
                 ShowTable.Cols.SHORT_CODE + ", " +
                 ShowTable.Cols.COVER_ART_URL + ", " +
+                ShowTable.Cols.COVER_ART_URL_SMALL + ", " +
                 ShowTable.Cols.COVER_ART_LOCAL_PATH + ", " +
                 ShowTable.Cols.ID + ", " +
                 ShowTable.Cols.DESCRIPTION + ", " +
@@ -60,10 +61,10 @@ public class TWiTBaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        QueryPreferences.setForceRefetchShows(mContext, true);
-
         if (newVersion == 4) {
-            QueryPreferences.setStreamSource(mContext, Constants.DEFAULT_SOURCE);
+            db.execSQL("alter table " + ShowTable.NAME + " add " + ShowTable.Cols.COVER_ART_URL_SMALL);
         }
+
+        QueryPreferences.setForceRefetchShows(mContext, true);
     }
 }
