@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ccl_cast_activity_background_color"
+    tools:context=".castv3.PlayerActivity"
+    android:fitsSystemWindows="true">
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="-6dp"
+        android:background="@drawable/cast_player_bg_gradient_light">
+
+        <RelativeLayout
+            android:id="@+id/controllers"
+            android:layout_width="fill_parent"
+            android:layout_height="128dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="10dp"
+            android:visibility="visible">
+
+            <RelativeLayout
+                android:id="@+id/playback_controls"
+                android:layout_width="fill_parent"
+                android:layout_height="80dp"
+                android:layout_below="@+id/progressbar_controls">
+
+                <ImageButton
+                    android:id="@+id/play_pause_toggle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_play_circle_white_80dp" />
+
+                <ImageButton
+                    android:id="@+id/forward"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:layout_toRightOf="@+id/play_pause_toggle"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_fast_forward_white_48dp" />
+
+                <ImageButton
+                    android:id="@+id/rewind"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="20dp"
+                    android:layout_toLeftOf="@+id/play_pause_toggle"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_fast_rewind_white_48dp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/progressbar_controls"
+                android:layout_width="fill_parent"
+                android:layout_height="48dp"
+                android:layout_alignParentTop="true">
+
+                <TextView
+                    android:id="@+id/start_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="16dp"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:text="00:00"
+                    android:textColor="@color/ccl_cast_activity_text_color" />
+
+                <TextView
+                    android:id="@+id/end_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignWithParentIfMissing="true"
+                    android:layout_marginRight="16dp"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:text="00:00"
+                    android:textColor="@color/ccl_cast_activity_text_color" />
+
+                <SeekBar
+                    android:id="@+id/seekbar"
+                    android:progressDrawable="@drawable/seekbar"
+                    android:minHeight="2dp"
+                    android:maxHeight="2dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="60dp"
+                    android:layout_marginRight="60dp"/>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/textview1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/textview2"
+            android:ellipsize="end"
+            android:gravity="center_horizontal"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:maxLines="1"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/ccl_cast_activity_progress_text_color" />
+
+        <TextView
+            android:id="@+id/textview2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/controllers"
+            android:layout_marginBottom="20dp"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-light"
+            android:gravity="center_horizontal"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:maxLines="1"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:textColor="@color/ccl_cast_activity_progress_text_color" />
+
+        <ImageView
+            android:id="@+id/pageview"
+            android:layout_above="@id/textview1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="80dp"
+            android:paddingLeft="50dp"
+            android:paddingRight="50dp"
+            android:scaleType="centerInside" />
+
+    </RelativeLayout>
+
+    <ProgressBar
+        android:id="@+id/progressbar1"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/actionbar_bg_gradient_light"
+        android:minHeight="?attr/actionBarSize"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+</RelativeLayout>
