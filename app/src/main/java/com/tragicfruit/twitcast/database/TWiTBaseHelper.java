@@ -13,7 +13,7 @@ import com.tragicfruit.twitcast.utils.QueryPreferences;
  * Created by Jeremy on 5/03/2016.
  */
 public class TWiTBaseHelper extends SQLiteOpenHelper {
-    private static final int VERSION = 4;
+    private static final int VERSION = 5;
     private static final String DATABASE_NAME = "twitBase.db";
 
     private Context mContext;
@@ -63,6 +63,11 @@ public class TWiTBaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (newVersion == 4) {
             db.execSQL("alter table " + ShowTable.NAME + " add " + ShowTable.Cols.COVER_ART_URL_SMALL);
+            newVersion++;
+        }
+
+        if (newVersion == 5) {
+            QueryPreferences.setStreamSource(mContext, Constants.DEFAULT_SOURCE);
         }
 
         QueryPreferences.setForceRefetchShows(mContext, true);
