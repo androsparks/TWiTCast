@@ -90,7 +90,7 @@ public class TWiTFetcher {
     }
 
     public File getCoverArt(Show show) throws IOException {
-        URL url = new URL("https:" + show.getCoverArtUrl());
+        URL url = new URL(show.getCoverArtUrl());
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         Writer writer = null;
